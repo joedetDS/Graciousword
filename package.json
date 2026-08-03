@@ -1,0 +1,7 @@
+{
+  "name": "graciousword",
+  "private": true,
+  "scripts": {
+    "build": "node inject-env.js"
+  }
+}
