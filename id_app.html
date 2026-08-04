@@ -106,8 +106,7 @@
     <main class="bg-paper rounded-2xl shadow-2xl p-5 sm:p-8 border border-white/10">
       <form id="registrationForm" novalidate>
 
-        <div class="grid sm:grid-cols-[auto,1fr] gap-6 sm:gap-8">
-          <!-- Photo upload -->
+                  <!-- Photo upload (max 300 KB; prefers ≤ 200 KB) -->
           <div class="flex flex-col items-center gap-3">
             <label for="photoInput" class="sr-only">Upload profile photo</label>
             <div id="photoDrop" class="photo-drop w-32 h-32 sm:w-36 sm:h-36 rounded-xl border-2 border-dashed border-brand/20 bg-white flex items-center justify-center overflow-hidden cursor-pointer relative">
@@ -117,8 +116,10 @@
                 <span class="text-xs">Add photo</span>
               </div>
             </div>
-            <input type="file" id="photoInput" accept="image/*" class="hidden" />
+            <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" class="hidden" />
             <button type="button" id="photoBtn" class="text-xs font-medium text-brand2 hover:text-accent transition-colors">Choose file</button>
+            <p id="photoHint" class="text-[11px] text-slate/60 text-center leading-snug max-w-[9rem]">JPG, PNG or WebP · max 300 KB</p>
+            <p id="photoError" class="hidden text-[11px] text-red-600 text-center leading-snug max-w-[10rem]"></p>
           </div>
 
           <!-- Text fields -->
@@ -470,24 +471,100 @@
 
   document.getElementById('viewExistingBtn').addEventListener('click', () => showView('card'));
 
-  let photoDataUrl = '';
+  
 
-  function handlePhotoFile(file) {
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      photoDataUrl = e.target.result;
-      photoPreview.src = photoDataUrl;
-      photoPreview.classList.remove('hidden');
-      photoPlaceholder.classList.add('hidden');
-    };
-    reader.readAsDataURL(file);
+  let photoDataUrl = '';
+  const PHOTO_MAX_BYTES = 300 * 1024;
+  const PHOTO_TARGET_BYTES = 200 * 1024;
+  const photoErrorEl = document.getElementById('photoError');
+  const photoHintEl = document.getElementById('photoHint');
+
+  function showPhotoError(msg) {
+    if (photoErrorEl) { photoErrorEl.textContent = msg; photoErrorEl.classList.remove('hidden'); }
+    if (photoHintEl) photoHintEl.classList.add('hidden');
+  }
+  function clearPhotoError() {
+    if (photoErrorEl) { photoErrorEl.textContent = ''; photoErrorEl.classList.add('hidden'); }
+    if (photoHintEl) photoHintEl.classList.remove('hidden');
+  }
+  function clearPhoto() {
+    photoDataUrl = '';
+    photoPreview.src = '';
+    photoPreview.classList.add('hidden');
+    photoPlaceholder.classList.remove('hidden');
+    photoInput.value = '';
+  }
+  function applyPhotoDataUrl(dataUrl) {
+    photoDataUrl = dataUrl;
+    photoPreview.src = dataUrl;
+    photoPreview.classList.remove('hidden');
+    photoPlaceholder.classList.add('hidden');
+    clearPhotoError();
+  }
+
+  function compressImageFile(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const maxSide = 600;
+        let w = img.naturalWidth || img.width;
+        let h = img.naturalHeight || img.height;
+        if (w > maxSide || h > maxSide) {
+          if (w >= h) { h = Math.round((h * maxSide) / w); w = maxSide; }
+          else { w = Math.round((w * maxSide) / h); h = maxSide; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const approx = (du) => Math.ceil((du.length - du.indexOf(',') - 1) * 0.75);
+        let q = 0.85, dataUrl = canvas.toDataURL('image/jpeg', q);
+        while (approx(dataUrl) > PHOTO_TARGET_BYTES && q > 0.45) {
+          q -= 0.1;
+          dataUrl = canvas.toDataURL('image/jpeg', q);
+        }
+        if (approx(dataUrl) > PHOTO_MAX_BYTES) {
+          reject(new Error('Could not compress under 300 KB. Choose a smaller photo.'));
+          return;
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read image.')); };
+      img.src = url;
+    });
+  }
+
+  async function handlePhotoFile(file) {
+    clearPhotoError();
+    if (!file) return;
+    if (!file.type || !file.type.startsWith('image/')) {
+      clearPhoto(); showPhotoError('Please choose a JPG, PNG, or WebP image.'); return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      clearPhoto(); showPhotoError('Image too large. Max 300 KB after compress.'); return;
+    }
+    try {
+      if (file.size <= PHOTO_MAX_BYTES && file.size <= PHOTO_TARGET_BYTES) {
+        const reader = new FileReader();
+        const dataUrl = await new Promise((res, rej) => {
+          reader.onload = () => res(reader.result);
+          reader.onerror = () => rej(new Error('Failed to read file.'));
+          reader.readAsDataURL(file);
+        });
+        applyPhotoDataUrl(dataUrl);
+        return;
+      }
+      applyPhotoDataUrl(await compressImageFile(file));
+    } catch (err) {
+      clearPhoto();
+      showPhotoError(err.message || 'Photo must be 300 KB or smaller.');
+    }
   }
 
   photoBtn.addEventListener('click', () => photoInput.click());
   photoDrop.addEventListener('click', () => photoInput.click());
   photoInput.addEventListener('change', (e) => handlePhotoFile(e.target.files[0]));
-
   ['dragover', 'dragenter'].forEach(evt =>
     photoDrop.addEventListener(evt, (e) => { e.preventDefault(); photoDrop.classList.add('dragover'); })
   );
