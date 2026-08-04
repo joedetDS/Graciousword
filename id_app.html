@@ -107,7 +107,7 @@
       <form id="registrationForm" novalidate>
 
         <div class="grid sm:grid-cols-[auto,1fr] gap-6 sm:gap-8">
-          <!-- Photo upload -->
+          <!-- Photo upload (max 300 KB; prefers ≤ 200 KB) -->
           <div class="flex flex-col items-center gap-3">
             <label for="photoInput" class="sr-only">Upload profile photo</label>
             <div id="photoDrop" class="photo-drop w-32 h-32 sm:w-36 sm:h-36 rounded-xl border-2 border-dashed border-brand/20 bg-white flex items-center justify-center overflow-hidden cursor-pointer relative">
@@ -117,8 +117,10 @@
                 <span class="text-xs">Add photo</span>
               </div>
             </div>
-            <input type="file" id="photoInput" accept="image/*" class="hidden" />
+            <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" class="hidden" />
             <button type="button" id="photoBtn" class="text-xs font-medium text-brand2 hover:text-accent transition-colors">Choose file</button>
+            <p id="photoHint" class="text-[11px] text-slate/60 text-center leading-snug max-w-[9rem]">JPG, PNG or WebP · max 300 KB</p>
+            <p id="photoError" class="hidden text-[11px] text-red-600 text-center leading-snug max-w-[10rem]"></p>
           </div>
 
           <!-- Text fields -->
@@ -346,30 +348,66 @@
   //   created_at (timestamptz, default now())
   // Enable Row Level Security and add policies appropriate for your app.
   // Paste your project URL and anon (public) key below.
+  // Placeholders replaced at Vercel build time by inject-env.js
+  // Until then (or if build inject is missing), client stays null → local-only mode.
   const SUPABASE_URL = '__SUPABASE_URL__';
   const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
 
-  const supabaseClient =
-    (window.supabase && SUPABASE_URL && !SUPABASE_URL.includes('YOUR_PROJECT_REF'))
-      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      : null;
+  function isSupabaseConfigured() {
+    if (!window.supabase) return false;
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return false;
+    const bad = ['__SUPABASE_URL__', '__SUPABASE_ANON_KEY__', 'YOUR_PROJECT_REF', 'YOUR_SUPABASE_ANON_KEY'];
+    if (bad.some((t) => SUPABASE_URL.includes(t) || SUPABASE_ANON_KEY.includes(t))) return false;
+    if (!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(SUPABASE_URL.replace(/\/$/, ''))) {
+      // allow URL with path-less project host
+      if (!SUPABASE_URL.startsWith('https://') || !SUPABASE_URL.includes('supabase.co')) return false;
+    }
+    return true;
+  }
+
+  const supabaseClient = isSupabaseConfigured()
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
 
   if (!supabaseClient) {
-    console.warn('Supabase is not configured yet. Set SUPABASE_URL and SUPABASE_ANON_KEY. Local cache only until then.');
+    console.warn(
+      '[GWGM] Supabase is NOT connected. Placeholders are still in the page or keys are invalid. ' +
+      'Registrations save only in this browser until Vercel injects SUPABASE_URL / SUPABASE_ANON_KEY.'
+    );
+  } else {
+    console.info('[GWGM] Supabase client ready:', SUPABASE_URL);
   }
 
   const AUTHORIZING_OFFICER = 'Pst. Georgewealth';
   const MEMBER_CACHE_KEY = 'memberData';
 
+  const LOCAL_SEQ_KEY = 'gwgmMembershipSeq';
+
+  function nextLocalSeq() {
+    let seq = parseInt(localStorage.getItem(LOCAL_SEQ_KEY) || '0', 10);
+    if (!Number.isFinite(seq) || seq < 0) seq = 0;
+    seq += 1;
+    localStorage.setItem(LOCAL_SEQ_KEY, String(seq));
+    return seq;
+  }
+
   async function generateMembershipId() {
     const year = new Date().getFullYear();
-    let nextSeq = 1;
+    let nextSeq = nextLocalSeq();
+
+    // Prefer the higher of local seq and (Supabase count + 1) so IDs keep climbing
     if (supabaseClient) {
       try {
         const { count, error } = await supabaseClient
           .from('members')
           .select('*', { count: 'exact', head: true });
-        if (!error && typeof count === 'number') nextSeq = count + 1;
+        if (!error && typeof count === 'number') {
+          const remoteNext = count + 1;
+          if (remoteNext > nextSeq) {
+            nextSeq = remoteNext;
+            localStorage.setItem(LOCAL_SEQ_KEY, String(nextSeq));
+          }
+        }
       } catch (err) {
         console.warn('Could not count members for ID sequence:', err.message);
       }
@@ -378,7 +416,10 @@
   }
 
   async function saveMemberToSupabase(memberData) {
-    if (!supabaseClient) return null;
+    if (!supabaseClient) {
+      console.warn('[GWGM] Skipping Supabase save — client not configured.');
+      return null;
+    }
     const row = {
       membership_id: memberData.membershipId,
       full_name: memberData.fullName,
@@ -389,27 +430,30 @@
       created_at: memberData.createdAt
     };
     try {
-      const { data, error } = await supabaseClient
-        .from('members')
-        .insert([row])
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
+      let result = await supabaseClient.from('members').insert([row]).select().single();
+      // Retry without photo if payload is too large or column rejects it
+      if (result.error && row.photo) {
+        console.warn('[GWGM] Insert with photo failed, retrying without photo:', result.error.message);
+        row.photo = null;
+        result = await supabaseClient.from('members').insert([row]).select().single();
+      }
+      if (result.error) throw result.error;
+      console.info('[GWGM] Saved to Supabase:', result.data?.membership_id);
+      return result.data;
     } catch (err) {
-      console.warn('Supabase insert failed; data kept in local cache only:', err.message || err);
+      console.error('[GWGM] Supabase insert failed:', err.message || err);
       return null;
     }
   }
 
   async function fetchMemberFromSupabase(membershipId) {
-    if (!supabaseClient) return null;
+    if (!supabaseClient || !membershipId) return null;
     try {
-      let query = supabaseClient.from('members').select('*').order('created_at', { ascending: false }).limit(1);
-      if (membershipId) {
-        query = supabaseClient.from('members').select('*').eq('membership_id', membershipId).limit(1);
-      }
-      const { data, error } = await query;
+      const { data, error } = await supabaseClient
+        .from('members')
+        .select('*')
+        .eq('membership_id', membershipId)
+        .limit(1);
       if (error) throw error;
       if (!data || !data.length) return null;
       const row = data[0];
@@ -423,7 +467,7 @@
         createdAt: row.created_at
       };
     } catch (err) {
-      console.warn('Supabase fetch failed:', err.message || err);
+      console.warn('[GWGM] Supabase fetch failed:', err.message || err);
       return null;
     }
   }
@@ -471,17 +515,152 @@
   document.getElementById('viewExistingBtn').addEventListener('click', () => showView('card'));
 
   let photoDataUrl = '';
+  const PHOTO_MAX_BYTES = 300 * 1024;       // hard limit: 300 KB
+  const PHOTO_TARGET_BYTES = 200 * 1024;    // preferred size after compress
+  const photoErrorEl = document.getElementById('photoError');
+  const photoHintEl = document.getElementById('photoHint');
 
-  function handlePhotoFile(file) {
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      photoDataUrl = e.target.result;
-      photoPreview.src = photoDataUrl;
-      photoPreview.classList.remove('hidden');
-      photoPlaceholder.classList.add('hidden');
-    };
-    reader.readAsDataURL(file);
+  function showPhotoError(msg) {
+    if (photoErrorEl) {
+      photoErrorEl.textContent = msg;
+      photoErrorEl.classList.remove('hidden');
+    }
+    if (photoHintEl) photoHintEl.classList.add('hidden');
+  }
+
+  function clearPhotoError() {
+    if (photoErrorEl) {
+      photoErrorEl.textContent = '';
+      photoErrorEl.classList.add('hidden');
+    }
+    if (photoHintEl) photoHintEl.classList.remove('hidden');
+  }
+
+  function clearPhoto() {
+    photoDataUrl = '';
+    photoPreview.src = '';
+    photoPreview.classList.add('hidden');
+    photoPlaceholder.classList.remove('hidden');
+    photoInput.value = '';
+  }
+
+  function applyPhotoDataUrl(dataUrl) {
+    photoDataUrl = dataUrl;
+    photoPreview.src = dataUrl;
+    photoPreview.classList.remove('hidden');
+    photoPlaceholder.classList.add('hidden');
+    clearPhotoError();
+  }
+
+  /** Compress / resize image so the data-URL stays under PHOTO_TARGET_BYTES when possible. */
+  function compressImageFile(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const maxSide = 600;
+        let w = img.naturalWidth || img.width;
+        let h = img.naturalHeight || img.height;
+        if (w > maxSide || h > maxSide) {
+          if (w >= h) {
+            h = Math.round((h * maxSide) / w);
+            w = maxSide;
+          } else {
+            w = Math.round((w * maxSide) / h);
+            h = maxSide;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+
+        let quality = 0.85;
+        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+        // data URL size ≈ 3/4 of base64 length; approximate byte size:
+        const approxBytes = (du) => Math.ceil((du.length - (du.indexOf(',') + 1)) * 0.75);
+
+        while (approxBytes(dataUrl) > PHOTO_TARGET_BYTES && quality > 0.45) {
+          quality -= 0.1;
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+
+        // If still over hard max, shrink further
+        if (approxBytes(dataUrl) > PHOTO_MAX_BYTES) {
+          const scale = Math.sqrt(PHOTO_TARGET_BYTES / approxBytes(dataUrl));
+          const w2 = Math.max(80, Math.round(w * scale));
+          const h2 = Math.max(80, Math.round(h * scale));
+          canvas.width = w2;
+          canvas.height = h2;
+          ctx.drawImage(img, 0, 0, w2, h2);
+          dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        }
+
+        if (approxBytes(dataUrl) > PHOTO_MAX_BYTES) {
+          reject(new Error('Could not compress this image under 300 KB. Please choose a smaller photo.'));
+          return;
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Could not read that image. Try JPG or PNG.'));
+      };
+      img.src = url;
+    });
+  }
+
+  async function handlePhotoFile(file) {
+    clearPhotoError();
+    if (!file) return;
+
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    if (!file.type || !allowed.includes(file.type) && !file.type.startsWith('image/')) {
+      clearPhoto();
+      showPhotoError('Please choose a JPG, PNG, or WebP image.');
+      return;
+    }
+
+    // Reject obviously huge files before reading (e.g. 5 MB camera shots)
+    if (file.size > 5 * 1024 * 1024) {
+      clearPhoto();
+      showPhotoError('Image is too large. Use a photo under 300 KB (or we can compress one under 5 MB).');
+      return;
+    }
+
+    try {
+      // Small enough already — use as-is if under max
+      if (file.size <= PHOTO_MAX_BYTES) {
+        const reader = new FileReader();
+        const dataUrl = await new Promise((resolve, reject) => {
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error('Failed to read file.'));
+          reader.readAsDataURL(file);
+        });
+        // Prefer compressing toward 200 KB when file is between 200–300 KB
+        if (file.size > PHOTO_TARGET_BYTES) {
+          try {
+            const compressed = await compressImageFile(file);
+            applyPhotoDataUrl(compressed);
+            return;
+          } catch (_) {
+            applyPhotoDataUrl(dataUrl);
+            return;
+          }
+        }
+        applyPhotoDataUrl(dataUrl);
+        return;
+      }
+
+      // Over 300 KB — try compress
+      const compressed = await compressImageFile(file);
+      applyPhotoDataUrl(compressed);
+    } catch (err) {
+      clearPhoto();
+      showPhotoError(err.message || 'Photo must be 300 KB or smaller.');
+    }
   }
 
   photoBtn.addEventListener('click', () => photoInput.click());
@@ -543,8 +722,12 @@
         }
       }
 
-      // Supabase is best-effort; failures are logged inside saveMemberToSupabase
-      await saveMemberToSupabase(memberData);
+      const saved = await saveMemberToSupabase(memberData);
+      if (!supabaseClient) {
+        console.warn('[GWGM] Card generated locally only — Supabase not connected on this deploy.');
+      } else if (!saved) {
+        console.warn('[GWGM] Card generated locally; Supabase insert failed (check RLS policies / table columns).');
+      }
 
       showView('card');
     } catch (err) {
@@ -604,26 +787,30 @@
   }
 
   async function loadMemberData() {
+    // Only show a card if THIS browser already registered (local cache).
+    // Unregistered visitors always get the empty state.
     const stored = localStorage.getItem(MEMBER_CACHE_KEY);
     if (stored) {
       try {
         const data = JSON.parse(stored);
+        if (data.membershipId && supabaseClient) {
+          const remote = await fetchMemberFromSupabase(data.membershipId);
+          if (remote) {
+            try { localStorage.setItem(MEMBER_CACHE_KEY, JSON.stringify(remote)); } catch (_) {}
+            populateCard(remote);
+            return;
+          }
+        }
         populateCard(data);
         return;
       } catch (err) {
         console.error('Stored member data was corrupted:', err);
+        localStorage.removeItem(MEMBER_CACHE_KEY);
       }
     }
 
-    const remote = await fetchMemberFromSupabase();
-    if (remote) {
-      localStorage.setItem(MEMBER_CACHE_KEY, JSON.stringify(remote));
-      populateCard(remote);
-      return;
-    }
-
-    emptyState.classList.remove('hidden');
-    cardArea.classList.add('hidden');
+    if (emptyState) emptyState.classList.remove('hidden');
+    if (cardArea) cardArea.classList.add('hidden');
   }
 
   document.getElementById('backBtn').addEventListener('click', () => showView('register'));
