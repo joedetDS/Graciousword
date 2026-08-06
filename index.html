@@ -60,7 +60,10 @@
     --gold-light: #E9C874;
   }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: auto; }
+  @media (min-width: 768px) {
+    html { scroll-behavior: smooth; }
+  }
 
   body {
     font-family: 'Work Sans', sans-serif;
@@ -120,15 +123,13 @@
     outline-offset: 3px;
   }
 
-  /* Card lift on hover (desktop/mouse only — avoids sticky-hover repaints on touch) */
+  /* Card lift on hover */
   .lift-hover {
     transition: transform 0.35s ease, box-shadow 0.35s ease;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .lift-hover:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px -12px rgba(75, 29, 143, 0.28);
-    }
+  .lift-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -12px rgba(75, 29, 143, 0.28);
   }
 
   /* Gold underline flourish for section headings */
@@ -156,7 +157,7 @@
 <body class="bg-cream text-ink antialiased">
 
 <!-- ============================= NAVIGATION ============================= -->
-<nav id="navbar" class="fixed top-0 left-0 w-full z-50 bg-royal-deep/95 transition-colors duration-300">
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 bg-royal-deep/95 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 md:h-20">
     <a href="#hero" class="flex items-center gap-3">
       <img
@@ -204,7 +205,9 @@
       src="land_image.jpg"
       alt="Worship gathering background"
       class="w-full h-full object-cover"
+      loading="eager"
       decoding="async"
+      fetchpriority="high"
     />
     <div class="absolute inset-0 bg-gradient-to-b from-royal-deep/90 via-royal-deep/80 to-royal-deep/95"></div>
   </div>
@@ -509,7 +512,6 @@
           src="logo.png"
           alt="Gracious Word Global Mission Logo"
           class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]"
-          loading="lazy"
         />
         <span class="text-white font-display font-semibold">Gracious Word Global Mission</span>
       </div>
@@ -598,17 +600,16 @@
     });
   });
 
-  // --- Sticky nav shadow/background on scroll (rAF-throttled + passive so it never blocks the scroll gesture) ---
+  // --- Sticky nav shadow/background on scroll ---
   const navbar = document.getElementById('navbar');
   let scrollTicking = false;
   window.addEventListener('scroll', () => {
-    if (!scrollTicking) {
-      scrollTicking = true;
-      requestAnimationFrame(() => {
-        navbar.classList.toggle('scrolled', window.scrollY > 40);
-        scrollTicking = false;
-      });
-    }
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+      scrollTicking = false;
+    });
   }, { passive: true });
 
   // --- Scroll-triggered fade-in reveal ---
