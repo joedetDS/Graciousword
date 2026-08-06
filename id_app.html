@@ -478,11 +478,39 @@
       registrationView.classList.remove('hidden');
       registrationView.classList.add('view-fade');
       window.location.hash = 'register';
-      // Only mint a new ID for a brand-new registration. When editing an
-      // existing member, editingMembershipId is already set and the field is
-      // populated by enterEditMode() — regenerating here would silently swap
-      // in a new ID every time "Edit details" is pressed.
-      if (!editingMembershipId) {
+
+      // Edit details (same session): prefill and KEEP the same membership ID
+      if (currentMemberData && currentMemberData.membershipId) {
+        membershipIdField.textContent = currentMemberData.membershipId;
+        const nameEl = document.getElementById('fullName');
+        const branchEl = document.getElementById('branch');
+        if (nameEl) nameEl.value = currentMemberData.fullName || '';
+        if (branchEl) branchEl.value = currentMemberData.branch || '';
+        if (issueDateField && currentMemberData.issueDate) {
+          issueDateField.value = String(currentMemberData.issueDate).slice(0, 10);
+        }
+        if (currentMemberData.photo) {
+          photoDataUrl = currentMemberData.photo;
+          if (photoPreview) {
+            photoPreview.src = currentMemberData.photo;
+            photoPreview.classList.remove('hidden');
+          }
+          if (photoPlaceholder) photoPlaceholder.classList.add('hidden');
+        }
+      } else {
+        // Fresh registration on this device — blank form + new ID
+        const nameEl = document.getElementById('fullName');
+        const branchEl = document.getElementById('branch');
+        if (nameEl) nameEl.value = '';
+        if (branchEl) branchEl.value = '';
+        if (issueDateField) issueDateField.value = new Date().toISOString().split('T')[0];
+        photoDataUrl = '';
+        if (photoPreview) {
+          photoPreview.src = '';
+          photoPreview.classList.add('hidden');
+        }
+        if (photoPlaceholder) photoPlaceholder.classList.remove('hidden');
+        if (typeof photoInput !== 'undefined' && photoInput) photoInput.value = '';
         generateMembershipId().then((id) => {
           membershipIdField.textContent = id;
         });
@@ -512,26 +540,10 @@
   // on the form directly, not via the "Edit details" button) would insert a
   // second row for the same person.
   (function initializeRegistrationDefaults() {
-    const stored = localStorage.getItem(MEMBER_CACHE_KEY);
-    if (stored) {
-      try {
-        currentMember = JSON.parse(stored);
-        editingMembershipId = currentMember.membershipId || null;
-      } catch (err) {
-        currentMember = null;
-      }
-    }
-    if (editingMembershipId && currentMember) {
-      document.getElementById('fullName').value = currentMember.fullName || '';
-      document.getElementById('branch').value = currentMember.branch || '';
-      if (currentMember.issueDate) issueDateField.value = currentMember.issueDate;
-      membershipIdField.textContent = currentMember.membershipId || '—';
-      if (currentMember.photo) applyPhotoDataUrl(currentMember.photo);
-    } else {
-      generateMembershipId().then((id) => {
-        membershipIdField.textContent = id;
-      });
-    }
+    // Always start clean — no localStorage restore of a previous member
+    generateMembershipId().then((id) => {
+      membershipIdField.textContent = id;
+    });
   })();
 
   const PHOTO_MAX_BYTES = 300 * 1024;
@@ -669,19 +681,9 @@
         createdAt: (isEdit && currentMember && currentMember.createdAt) || new Date().toISOString()
       };
 
-      // Cache locally so the card works offline. Large photos can exceed quota —
       // if that happens, retry without the photo rather than blocking the card.
-      try {
-        localStorage.setItem(MEMBER_CACHE_KEY, JSON.stringify(memberData));
-      } catch (storageErr) {
-        console.warn('localStorage full or blocked; caching without photo.', storageErr);
-        const slim = { ...memberData, photo: '' };
-        try {
-          localStorage.setItem(MEMBER_CACHE_KEY, JSON.stringify(slim));
-        } catch (e2) {
-          console.warn('Could not write local cache at all:', e2);
-        }
-      }
+            // Session only — for Edit details + download in this tab
+      currentMemberData = memberData;
 
       // Supabase is best-effort; failures are logged inside saveMemberToSupabase
       await saveMemberToSupabase(memberData);
@@ -746,28 +748,12 @@
   }
 
   async function loadMemberData() {
-    const stored = localStorage.getItem(MEMBER_CACHE_KEY);
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        populateCard(data);
-        return;
-      } catch (err) {
-        console.error('Stored member data was corrupted:', err);
-      }
-    }
-
-    const remote = await fetchMemberFromSupabase();
-    if (remote) {
-      localStorage.setItem(MEMBER_CACHE_KEY, JSON.stringify(remote));
-      populateCard(remote);
+    if (currentMemberData && currentMemberData.membershipId) {
+      populateCard(currentMemberData);
       return;
     }
-
-    currentMember = null;
-    editingMembershipId = null;
-    emptyState.classList.remove('hidden');
-    cardArea.classList.add('hidden');
+    if (emptyState) emptyState.classList.remove('hidden');
+    if (cardArea) cardArea.classList.add('hidden');
   }
 
   function enterEditMode() {
@@ -855,11 +841,9 @@
 
   // ============================= Initial routing on load =============================
   document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.hash === '#card' && localStorage.getItem(MEMBER_CACHE_KEY)) {
-      showView('card');
-    } else {
-      showView('register');
-    }
+    // Always start on the registration form so a new person on this device
+    // never sees a previous member's card.
+    showView('register');
   });
 </script>
 </body>
