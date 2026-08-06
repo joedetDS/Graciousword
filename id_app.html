@@ -368,7 +368,7 @@
   }
 
   const AUTHORIZING_OFFICER = 'Pst. Georgewealth';
-  const MEMBER_CACHE_KEY = 'memberData';
+  // Session-only (RAM). Not written to localStorage — each visit starts clean   // so a new person on the same device can register without seeing the last user.   let currentMemberData = null;
 
   // The member record currently loaded on the card (from local cache or Supabase),
   // and — while the registration form is open — the membership_id we're editing
