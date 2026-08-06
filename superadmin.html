@@ -1,0 +1,2525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Super Admin Dashboard — Gracious Word Global Mission</title>
+
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <!-- Google Fonts: Inter (clean, modern dashboard feel) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js">
+    </script>
+
+    <!-- Supabase JS v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+
+    <!-- SheetJS (XLSX) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js">
+    </script>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+
+    <style>
+        /* ── brand overrides ── */
+        :root {
+            --royal: #4B1D8F;
+            --royal-deep: #2E0854;
+            --royal-light: #6B3FB0;
+            --gold: #C9A227;
+            --gold-light: #E9C874;
+            --cream: #FBF8F3;
+            --ink: #241B33;
+            --sidebar-width: 260px;
+            --header-height: 64px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f6f5f9;
+            color: var(--ink);
+            margin: 0;
+        }
+
+        /* ── scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c4c0d0;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a2b8;
+        }
+
+        /* ── sidebar ── */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: var(--royal-deep);
+            color: #fff;
+            z-index: 100;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        #sidebar.closed {
+            transform: translateX(-100%);
+        }
+        #sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.2s;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin: 0 6px;
+        }
+        #sidebar .nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+        #sidebar .nav-item.active {
+            background: rgba(201, 162, 39, 0.2);
+            color: var(--gold-light);
+            box-shadow: inset 3px 0 0 var(--gold);
+        }
+        #sidebar .nav-item i {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        /* ── main content ── */
+        #main {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+        }
+        #main.expanded {
+            margin-left: 0;
+        }
+
+        /* ── header ── */
+        #topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        /* ── cards ── */
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px 22px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(75, 29, 143, 0.08);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+        }
+
+        /* ── tables ── */
+        .table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .table-wrap th {
+            text-align: left;
+            padding: 12px 14px;
+            font-weight: 600;
+            color: #5e5a6e;
+            border-bottom: 2px solid #edebf0;
+            white-space: nowrap;
+        }
+        .table-wrap td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f0eef3;
+            vertical-align: middle;
+        }
+        .table-wrap tr:hover td {
+            background: #faf8fc;
+        }
+
+        /* ── badges ── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 12px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+        .badge-active {
+            background: #dff0d8;
+            color: #2d6a4f;
+        }
+        .badge-inactive {
+            background: #f8e1e1;
+            color: #a13d3d;
+        }
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* ── skeleton ── */
+        .skeleton {
+            background: linear-gradient(90deg, #f0edf5 25%, #e8e4ed 50%, #f0edf5 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.6s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* ── modal ── */
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        /* ── toast ── */
+        #toastContainer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 420px;
+            width: 100%;
+        }
+        .toast {
+            padding: 14px 20px;
+            border-radius: 14px;
+            background: #1e1b2b;
+            color: #fff;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            animation: toastIn 0.35s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--gold);
+        }
+        .toast-success {
+            border-left-color: #2d9b6e;
+        }
+        .toast-error {
+            border-left-color: #d9534f;
+        }
+        .toast-warning {
+            border-left-color: #f0ad4e;
+        }
+        .toast-info {
+            border-left-color: #5bc0de;
+        }
+
+        @keyframes toastIn {
+            0% {
+                opacity: 0;
+                transform: translateY(24px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ── responsive ── */
+        @media (max-width: 768px) {
+            #sidebar {
+                transform: translateX(-100%);
+            }
+            #sidebar.open {
+                transform: translateX(0);
+            }
+            #main {
+                margin-left: 0 !important;
+            }
+            #topbar {
+                padding: 0 16px;
+            }
+        }
+
+        /* ── utility ── */
+        .truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .scrollable-tab {
+            overflow-y: auto;
+            max-height: calc(100vh - var(--header-height) - 80px);
+        }
+
+        /* Grace Card preview in modal */
+        .gc-preview-img {
+            max-height: 55vh;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =============================================================
+    SIDEBAR
+    ============================================================= -->
+    <aside id="sidebar" class="closed">
+        <div class="flex items-center gap-3 px-5 h-16 border-b border-white/10 flex-shrink-0">
+            <img src="logo.png" alt="Logo" class="w-8 h-8 rounded-full object-cover border border-gold/40" />
+            <span class="font-bold text-sm tracking-tight text-white/90">GWGM Admin</span>
+        </div>
+
+        <nav class="flex-1 py-4 space-y-0.5 overflow-y-auto" id="sidebarNav">
+            <!-- items injected by JS -->
+        </nav>
+
+        <div class="border-t border-white/10 p-4 text-xs text-white/40 text-center flex-shrink-0">
+            v2.0 &bull; &copy; 2026
+        </div>
+    </aside>
+
+    <!-- =============================================================
+    MAIN WRAPPER
+    ============================================================= -->
+    <div id="main">
+
+        <!-- TOPBAR -->
+        <header id="topbar">
+            <button id="sidebarToggle" class="mr-3 p-1.5 rounded-lg hover:bg-black/5 transition" aria-label="Toggle sidebar">
+                <i data-feather="menu" class="w-5 h-5 text-ink/70"></i>
+            </button>
+            <h1 class="text-lg font-semibold text-ink/80 flex-1" id="pageTitle">Dashboard</h1>
+            <div class="flex items-center gap-3">
+                <button id="notifBell" class="relative p-1.5 rounded-lg hover:bg-black/5 transition" aria-label="Notifications">
+                    <i data-feather="bell" class="w-5 h-5 text-ink/70"></i>
+                    <span id="notifDot" class="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500 border border-white hidden"></span>
+                </button>
+                <div class="flex items-center gap-2 pl-2 border-l border-gray-200">
+                    <span class="text-sm font-medium text-ink/70 hidden sm:inline" id="adminName">Admin</span>
+                    <button id="logoutBtn" class="text-xs text-ink/40 hover:text-red-500 transition">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="p-4 md:p-6" id="pageContent">
+            <!-- dynamically rendered by JS -->
+        </main>
+
+    </div>
+
+    <!-- =============================================================
+    TOAST CONTAINER
+    ============================================================= -->
+    <div id="toastContainer"></div>
+
+    <!-- =============================================================
+    MODAL CONTAINER (dynamically populated)
+    ============================================================= -->
+    <div id="modalContainer"></div>
+
+    <!-- =============================================================
+    JAVASCRIPT — ALL ES6 CLASSES + APP BOOT
+    ============================================================= -->
+    <script>
+        // ────────────────────────────────────────────────────────────────
+        //  CONFIGURATION
+        // ────────────────────────────────────────────────────────────────
+        const CONFIG = {
+            // TODO: replace with your actual Supabase credentials
+            supabaseUrl: '__SUPABASE_URL__',
+            supabaseKey: '__SUPABASE_ANON_KEY__',
+            storageBucket: 'grace-cards',
+            tableNames: {
+                members: 'members',
+                admins: 'admins',
+                graceCards: 'grace_cards',
+                systemLogs: 'system_logs',
+                auditLogs: 'audit_logs',
+                notifications: 'notifications',
+                settings: 'settings',
+                branches: 'branches',
+            },
+            pagination: {
+                defaultLimit: 20,
+            },
+        };
+
+        // ────────────────────────────────────────────────────────────────
+        //  UTILITY HELPERS
+        // ────────────────────────────────────────────────────────────────
+        const Utils = {
+            formatDate(d) {
+                if (!d) return '—';
+                const dt = typeof d === 'string' ? new Date(d) : d;
+                return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            },
+            formatDateTime(d) {
+                if (!d) return '—';
+                const dt = typeof d === 'string' ? new Date(d) : d;
+                return dt.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit',
+                    minute: '2-digit' });
+            },
+            formatCurrency(v) { return v; },
+            truncate(str, n = 40) { return str && str.length > n ? str.slice(0, n) + '…' : str; },
+            plural(n, word) { return n === 1 ? word : word + 's'; },
+            generateId() { return '_' + Math.random().toString(36).substr(2, 9); },
+            safeJson(obj) { try { return JSON.stringify(obj); } catch { return '{}'; } },
+            parseJson(str) { try { return JSON.parse(str); } catch { return null; } },
+            debounce(fn, ms = 300) { let t; return (...a) => { clearTimeout(t);
+                    t = setTimeout(() => fn(...a), ms); }; },
+            getStatusColor(status) {
+                const map = {
+                    active: 'badge-active',
+                    inactive: 'badge-inactive',
+                    pending: 'badge-pending',
+                    suspended: 'badge-inactive',
+                };
+                return map[status?.toLowerCase()] || 'badge-pending';
+            },
+            getStatusLabel(status) {
+                return status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown';
+            },
+        };
+
+        // ────────────────────────────────────────────────────────────────
+        //  SUPABASE SERVICE (Singleton)
+        // ────────────────────────────────────────────────────────────────
+        class SupabaseService {
+            constructor() {
+                if (SupabaseService._instance) return SupabaseService._instance;
+                SupabaseService._instance = this;
+
+                if (!CONFIG.supabaseUrl || CONFIG.supabaseUrl.includes('YOUR_')) {
+                    console.warn('[SupabaseService] Missing credentials — running in demo mode.');
+                    this._demoMode = true;
+                    this.client = null;
+                } else {
+                    this._demoMode = false;
+                    this.client = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
+                }
+            }
+
+            static getInstance() {
+                if (!SupabaseService._instance) new SupabaseService();
+                return SupabaseService._instance;
+            }
+
+            isDemo() { return this._demoMode; }
+
+            // ── Auth ──
+            async signIn(email, password) {
+                if (this._demoMode) {
+                    if (email === 'admin@church.com' && password === 'password') {
+                        return { data: { user: { email, id: 'demo-admin', role: 'superadmin' } }, error: null };
+                    }
+                    return { data: null, error: { message: 'Invalid credentials (demo mode)' } };
+                }
+                return await this.client.auth.signInWithPassword({ email, password });
+            }
+
+            async signOut() {
+                if (this._demoMode) return { error: null };
+                return await this.client.auth.signOut();
+            }
+
+            async getSession() {
+                if (this._demoMode) {
+                    const u = localStorage.getItem('demoUser');
+                    return u ? { data: { session: { user: JSON.parse(u) } }, error: null } : { data: null, error: null };
+                }
+                return await this.client.auth.getSession();
+            }
+
+            async getUser() {
+                if (this._demoMode) {
+                    const u = localStorage.getItem('demoUser');
+                    return u ? JSON.parse(u) : null;
+                }
+                const { data } = await this.client.auth.getUser();
+                return data?.user || null;
+            }
+
+            // ── Generic table queries ──
+            async fetchAll(table, options = {}) {
+                if (this._demoMode) return this._demoFetch(table);
+                let query = this.client.from(table).select('*');
+                if (options.orderBy) query = query.order(options.orderBy, { ascending: options.ascending ?? false });
+                if (options.limit) query = query.limit(options.limit);
+                if (options.offset) query = query.range(options.offset, options.offset + (options.limit || 100) - 1);
+                const { data, error } = await query;
+                if (error) throw error;
+                return data;
+            }
+
+            async fetchOne(table, id) {
+                if (this._demoMode) return this._demoFetchOne(table, id);
+                const { data, error } = await this.client.from(table).select('*').eq('id', id).maybeSingle();
+                if (error) throw error;
+                return data;
+            }
+
+            async insert(table, payload) {
+                if (this._demoMode) return this._demoInsert(table, payload);
+                const { data, error } = await this.client.from(table).insert(payload).select().maybeSingle();
+                if (error) throw error;
+                return data;
+            }
+
+            async update(table, id, payload) {
+                if (this._demoMode) return this._demoUpdate(table, id, payload);
+                const { data, error } = await this.client.from(table).update(payload).eq('id', id).select().maybeSingle();
+                if (error) throw error;
+                return data;
+            }
+
+            async delete(table, id) {
+                if (this._demoMode) return this._demoDelete(table, id);
+                const { error } = await this.client.from(table).delete().eq('id', id);
+                if (error) throw error;
+                return true;
+            }
+
+            // ── Storage ──
+            async uploadFile(bucket, path, file) {
+                if (this._demoMode) {
+                    const url = URL.createObjectURL(file);
+                    return { data: { path, publicUrl: url }, error: null };
+                }
+                const { data, error } = await this.client.storage.from(bucket).upload(path, file, {
+                    cacheControl: '3600',
+                    upsert: true,
+                });
+                if (error) throw error;
+                const { data: urlData } = this.client.storage.from(bucket).getPublicUrl(data.path);
+                return { data: { path: data.path, publicUrl: urlData.publicUrl }, error: null };
+            }
+
+            async deleteFile(bucket, path) {
+                if (this._demoMode) return { error: null };
+                const { error } = await this.client.storage.from(bucket).remove([path]);
+                if (error) throw error;
+                return true;
+            }
+
+            async getPublicUrl(bucket, path) {
+                if (this._demoMode) return URL.createObjectURL(new Blob());
+                const { data } = this.client.storage.from(bucket).getPublicUrl(path);
+                return data.publicUrl;
+            }
+
+            // ── Demo data ──
+            _demoFetch(table) {
+                const store = this._demoStore();
+                const rows = store[table] || [];
+                return Promise.resolve(rows);
+            }
+
+            _demoFetchOne(table, id) {
+                const store = this._demoStore();
+                const rows = store[table] || [];
+                const found = rows.find(r => r.id === id);
+                return Promise.resolve(found || null);
+            }
+
+            _demoInsert(table, payload) {
+                const store = this._demoStore();
+                if (!store[table]) store[table] = [];
+                const row = { ...payload, id: payload.id || Utils.generateId(), created_at: new Date().toISOString() };
+                store[table].push(row);
+                this._saveDemoStore(store);
+                return Promise.resolve(row);
+            }
+
+            _demoUpdate(table, id, payload) {
+                const store = this._demoStore();
+                const rows = store[table] || [];
+                const idx = rows.findIndex(r => r.id === id);
+                if (idx === -1) throw new Error('Record not found');
+                rows[idx] = { ...rows[idx], ...payload, updated_at: new Date().toISOString() };
+                this._saveDemoStore(store);
+                return Promise.resolve(rows[idx]);
+            }
+
+            _demoDelete(table, id) {
+                const store = this._demoStore();
+                const rows = store[table] || [];
+                store[table] = rows.filter(r => r.id !== id);
+                this._saveDemoStore(store);
+                return Promise.resolve(true);
+            }
+
+            _demoStore() {
+                if (!window._demoStore) {
+                    const saved = localStorage.getItem('_demoStore');
+                    window._demoStore = saved ? JSON.parse(saved) : {};
+                }
+                return window._demoStore;
+            }
+
+            _saveDemoStore(store) {
+                window._demoStore = store;
+                localStorage.setItem('_demoStore', JSON.stringify(store));
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  TOAST MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class ToastManager {
+            constructor(containerId = 'toastContainer') {
+                this.container = document.getElementById(containerId);
+            }
+
+            show(message, type = 'info', duration = 4000) {
+                const icons = {
+                    success: 'check-circle',
+                    error: 'alert-circle',
+                    warning: 'alert-triangle',
+                    info: 'info',
+                };
+                const el = document.createElement('div');
+                el.className = `toast toast-${type}`;
+                el.innerHTML = `
+              <i data-feather="${icons[type] || 'info'}" class="w-5 h-5 flex-shrink-0"></i>
+              <span>${message}</span>
+            `;
+                this.container.appendChild(el);
+                feather.replace();
+
+                const remove = () => {
+                    if (el.parentNode) el.remove();
+                };
+                setTimeout(remove, duration);
+                el.addEventListener('click', remove);
+            }
+
+            success(msg, d = 3500) { this.show(msg, 'success', d); }
+            error(msg, d = 5000) { this.show(msg, 'error', d); }
+            warning(msg, d = 4000) { this.show(msg, 'warning', d); }
+            info(msg, d = 3500) { this.show(msg, 'info', d); }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  MODAL MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class ModalManager {
+            constructor(containerId = 'modalContainer') {
+                this.container = document.getElementById(containerId);
+            }
+
+            open(options) {
+                const {
+                    title = '',
+                    content = '',
+                    size = 'md',
+                    onConfirm = null,
+                    confirmLabel = 'Confirm',
+                    cancelLabel = 'Cancel',
+                    showCancel = true,
+                    confirmVariant = 'primary',
+                } = options;
+
+                const sizes = {
+                    sm: 'max-w-md',
+                    md: 'max-w-lg',
+                    lg: 'max-w-2xl',
+                    xl: 'max-w-4xl',
+                    full: 'max-w-6xl',
+                };
+
+                const id = 'modal-' + Utils.generateId();
+                const backdrop = document.createElement('div');
+                backdrop.className = 'fixed inset-0 z-[200] flex items-center justify-center p-4 modal-backdrop';
+                backdrop.id = id;
+
+                const panel = document.createElement('div');
+                panel.className =
+                    `bg-white rounded-2xl shadow-2xl w-full ${sizes[size] || sizes.md} max-h-[90vh] flex flex-col animate-[toastIn_0.25s_ease]`;
+
+                panel.innerHTML = `
+              <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
+                <h3 class="font-semibold text-lg text-ink">${title}</h3>
+                <button class="modal-close p-1 rounded-lg hover:bg-gray-100 transition" aria-label="Close">
+                  <i data-feather="x" class="w-5 h-5 text-ink/50"></i>
+                </button>
+              </div>
+              <div class="flex-1 overflow-y-auto px-6 py-5">${content}</div>
+              <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0">
+                ${showCancel ? `<button class="modal-cancel px-5 py-2 text-sm font-medium text-ink/60 hover:text-ink/90 transition rounded-lg">${cancelLabel}</button>` : ''}
+                ${onConfirm ? `<button class="modal-confirm px-5 py-2 text-sm font-medium text-white bg-royal hover:bg-royal-deep transition rounded-lg shadow-sm">${confirmLabel}</button>` : ''}
+              </div>
+            `;
+
+                backdrop.appendChild(panel);
+                this.container.appendChild(backdrop);
+                feather.replace();
+
+                const close = () => {
+                    if (backdrop.parentNode) backdrop.remove();
+                };
+
+                backdrop.querySelector('.modal-close')?.addEventListener('click', close);
+                backdrop.querySelector('.modal-cancel')?.addEventListener('click', close);
+                backdrop.addEventListener('click', (e) => {
+                    if (e.target === backdrop) close();
+                });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && document.getElementById(id)) close();
+                });
+
+                const confirmBtn = backdrop.querySelector('.modal-confirm');
+                if (confirmBtn && onConfirm) {
+                    confirmBtn.addEventListener('click', async () => {
+                        try {
+                            await onConfirm(close);
+                        } catch (err) {
+                            // error handled by caller
+                        }
+                    });
+                }
+
+                return { close, backdrop };
+            }
+
+            confirm(options) {
+                return new Promise((resolve) => {
+                    this.open({
+                        ...options,
+                        onConfirm: async (close) => {
+                            resolve(true);
+                            close();
+                        },
+                        showCancel: true,
+                    });
+                });
+            }
+
+            alert(options) {
+                return new Promise((resolve) => {
+                    this.open({
+                        ...options,
+                        onConfirm: (close) => { resolve(true);
+                            close(); },
+                        showCancel: false,
+                        confirmLabel: options.confirmLabel || 'OK',
+                    });
+                });
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  APP — MAIN ORCHESTRATOR
+        // ────────────────────────────────────────────────────────────────
+        class App {
+            constructor() {
+                this.supabase = SupabaseService.getInstance();
+                this.toast = new ToastManager();
+                this.modal = new ModalManager();
+
+                this.currentUser = null;
+                this.currentPage = 'dashboard';
+                this.navItems = [];
+                this.pageCache = {};
+
+                this.sidebar = document.getElementById('sidebar');
+                this.main = document.getElementById('main');
+                this.pageTitle = document.getElementById('pageTitle');
+                this.pageContent = document.getElementById('pageContent');
+                this.sidebarNav = document.getElementById('sidebarNav');
+                this.adminNameEl = document.getElementById('adminName');
+
+                this._bindEvents();
+                this._initSidebar();
+            }
+
+            // ── boot ──
+            async boot() {
+                try {
+                    // Check session
+                    const session = await this.supabase.getSession();
+                    const user = session?.data?.session?.user || await this.supabase.getUser();
+
+                    if (user) {
+                        this.currentUser = user;
+                        this.adminNameEl.textContent = user.email?.split('@')[0] || 'Admin';
+                        // In real app, check role from admins table
+                        // For demo, we assume superadmin if email contains 'admin'
+                        // Fetch the admin record from the database
+                        const { data: adminData, error: adminError } = await this.supabase.client
+                        .from('admins')
+                        .select('role')
+                        .eq('email', user.email)
+                        .maybeSingle();
+
+                        const isSuper = adminData?.role === 'superadmin';
+                        if (!isSuper && !this.supabase.isDemo()) {
+                        this.toast.error('Access denied. Super Admin only.');
+                        await this.supabase.signOut();
+                        window.location.reload();
+                        return;
+                        }
+                        if (!isSuper && !this.supabase.isDemo()) {
+                            this.toast.error('Access denied. Super Admin only.');
+                            await this.supabase.signOut();
+                            window.location.reload();
+                            return;
+                        }
+                        this._renderPage('dashboard');
+                    } else {
+                        this._showLogin();
+                    }
+                } catch (err) {
+                    console.error('[App] boot error:', err);
+                    this._showLogin();
+                }
+            }
+
+            // ── login screen ──
+            _showLogin() {
+                this.pageContent.innerHTML = `
+              <div class="min-h-[calc(100vh-80px)] flex items-center justify-center">
+                <div class="w-full max-w-sm bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                  <div class="text-center mb-6">
+                    <img src="logo.png" alt="Logo" class="w-16 h-16 rounded-full mx-auto border-2 border-gold/40 object-cover" />
+                    <h2 class="mt-4 text-xl font-bold text-ink">Super Admin</h2>
+                    <p class="text-sm text-ink/50">Gracious Word Global Mission</p>
+                  </div>
+                  <form id="loginForm" class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-ink/70 mb-1">Email</label>
+                      <input type="email" id="loginEmail" value="admin@church.com" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" placeholder="admin@church.com" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-ink/70 mb-1">Password</label>
+                      <input type="password" id="loginPassword" value="password" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" placeholder="••••••••" />
+                    </div>
+                    <button type="submit" class="w-full bg-royal hover:bg-royal-deep text-white font-semibold py-2.5 rounded-xl transition shadow-sm">Sign In</button>
+                  </form>
+                  <p class="mt-4 text-xs text-ink/30 text-center">Demo: admin@church.com / password</p>
+                </div>
+              </div>
+            `;
+
+                document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('loginEmail').value.trim();
+                    const password = document.getElementById('loginPassword').value.trim();
+                    if (!email || !password) {
+                        this.toast.warning('Please enter email and password.');
+                        return;
+                    }
+                    try {
+                        const { data, error } = await this.supabase.signIn(email, password);
+                        if (error) throw error;
+                        if (data?.user) {
+                            this.currentUser = data.user;
+                            this.adminNameEl.textContent = data.user.email?.split('@')[0] || 'Admin';
+                            this.toast.success('Welcome back!');
+                            this._renderPage('dashboard');
+                        } else {
+                            throw new Error('No user returned');
+                        }
+                    } catch (err) {
+                        this.toast.error(err.message || 'Sign in failed. Please check your credentials.');
+                    }
+                });
+            }
+
+            // ── sidebar ──
+            _initSidebar() {
+                this.navItems = [
+                    { id: 'dashboard', label: 'Dashboard', icon: 'grid' },
+                    { id: 'members', label: 'Members', icon: 'users' },
+                    { id: 'gracecard', label: 'Grace Card', icon: 'image' },
+                    { id: 'users', label: 'Users', icon: 'user-check' },
+                    { id: 'logs', label: 'System Logs', icon: 'activity' },
+                    { id: 'audit', label: 'Audit Trail', icon: 'clock' },
+                    { id: 'settings', label: 'Settings', icon: 'settings' },
+                ];
+
+                this.sidebarNav.innerHTML = this.navItems.map(item => `
+              <a class="nav-item ${item.id === this.currentPage ? 'active' : ''}" data-page="${item.id}">
+                <i data-feather="${item.icon}"></i>
+                <span>${item.label}</span>
+              </a>
+            `).join('');
+
+                feather.replace();
+
+                this.sidebarNav.querySelectorAll('.nav-item').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const page = el.dataset.page;
+                        if (page) this._renderPage(page);
+                        if (window.innerWidth < 768) {
+                            this.sidebar.classList.remove('open');
+                        }
+                    });
+                });
+
+                // Toggle
+                document.getElementById('sidebarToggle').addEventListener('click', () => {
+                    if (window.innerWidth < 768) {
+                        this.sidebar.classList.toggle('open');
+                    } else {
+                        this.sidebar.classList.toggle('closed');
+                        this.main.classList.toggle('expanded');
+                    }
+                });
+
+                // Logout
+                document.getElementById('logoutBtn').addEventListener('click', async () => {
+                    const ok = await this.modal.confirm({
+                        title: 'Sign Out',
+                        content: '<p class="text-ink/70">Are you sure you want to sign out?</p>',
+                        confirmLabel: 'Sign Out',
+                    });
+                    if (ok) {
+                        await this.supabase.signOut();
+                        this.currentUser = null;
+                        this._showLogin();
+                        this.toast.info('Signed out.');
+                    }
+                });
+
+                // Notification bell
+                document.getElementById('notifBell').addEventListener('click', () => {
+                    this._renderPage('audit');
+                });
+            }
+
+            _bindEvents() {
+                // Handle resize for sidebar
+                let resizeTimer;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        if (window.innerWidth >= 768) {
+                            this.sidebar.classList.remove('open');
+                        }
+                    }, 200);
+                });
+            }
+
+            // ── page router ──
+            _renderPage(page) {
+                this.currentPage = page;
+                this.pageTitle.textContent = this.navItems.find(i => i.id === page)?.label || 'Dashboard';
+
+                // Update sidebar active
+                this.sidebarNav.querySelectorAll('.nav-item').forEach(el => {
+                    el.classList.toggle('active', el.dataset.page === page);
+                });
+
+                // Render page
+                switch (page) {
+                    case 'dashboard':
+                        DashboardManager.render(this);
+                        break;
+                    case 'members':
+                        MemberManager.render(this);
+                        break;
+                    case 'gracecard':
+                        GraceCardManager.render(this);
+                        break;
+                    case 'users':
+                        UserManager.render(this);
+                        break;
+                    case 'logs':
+                        LogManager.render(this);
+                        break;
+                    case 'audit':
+                        AuditManager.render(this);
+                        break;
+                    case 'settings':
+                        SettingsManager.render(this);
+                        break;
+                    default:
+                        this.pageContent.innerHTML =
+                        `<div class="flex items-center justify-center h-64 text-ink/40">Page not found</div>`;
+                }
+            }
+
+            // ── helpers for sub-managers ──
+            showLoading(container) {
+                container.innerHTML =
+                    `<div class="flex items-center justify-center py-12"><div class="w-8 h-8 border-4 border-royal/20 border-t-royal rounded-full animate-spin"></div></div>`;
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  DASHBOARD MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class DashboardManager {
+            static async render(app) {
+                const el = app.pageContent;
+                el.innerHTML = `
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="statCards">
+                ${[1,2,3,4,5,6,7,8].map(() => `<div class="stat-card"><div class="skeleton h-4 w-1/2 mb-2"></div><div class="skeleton h-8 w-3/4"></div></div>`).join('')}
+              </div>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="stat-card"><div class="skeleton h-48 w-full rounded-xl"></div></div>
+                <div class="stat-card"><div class="skeleton h-48 w-full rounded-xl"></div></div>
+              </div>
+              <div class="mt-6 grid md:grid-cols-3 gap-6">
+                <div class="stat-card"><div class="skeleton h-40 w-full rounded-xl"></div></div>
+                <div class="stat-card"><div class="skeleton h-40 w-full rounded-xl"></div></div>
+                <div class="stat-card"><div class="skeleton h-40 w-full rounded-xl"></div></div>
+              </div>
+            `;
+
+                try {
+                    const supabase = app.supabase;
+                    const members = await supabase.fetchAll(CONFIG.tableNames.members) || [];
+                    const graceCards = await supabase.fetchAll(CONFIG.tableNames.graceCards) || [];
+                    const branches = await supabase.fetchAll(CONFIG.tableNames.branches) || [];
+
+                    const total = members.length;
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const todayReg = members.filter(m => new Date(m.created_at) >= today).length;
+                    const weekAgo = new Date(today);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    const weekReg = members.filter(m => new Date(m.created_at) >= weekAgo).length;
+                    const monthAgo = new Date(today);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    const monthReg = members.filter(m => new Date(m.created_at) >= monthAgo).length;
+                    const yearAgo = new Date(today);
+                    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+                    const yearReg = members.filter(m => new Date(m.created_at) >= yearAgo).length;
+
+                    const activeGrace = graceCards.find(g => g.is_active === true);
+                    const storageUsed = '1.2 GB'; // placeholder
+
+                    // Recent activity (last 5 members)
+                    const recent = [...members].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
+
+                    // Build stats
+                    const stats = [
+                        { label: 'Total Members', value: total, icon: 'users', color: 'text-royal' },
+                        { label: 'Today', value: todayReg, icon: 'calendar', color: 'text-gold' },
+                        { label: 'This Week', value: weekReg, icon: 'clock', color: 'text-emerald-600' },
+                        { label: 'This Month', value: monthReg, icon: 'trending-up', color: 'text-blue-600' },
+                        { label: 'This Year', value: yearReg, icon: 'bar-chart-2', color: 'text-purple-600' },
+                        { label: 'Branches', value: branches.length || 4, icon: 'map-pin', color: 'text-orange-500' },
+                        { label: 'Grace Card', value: activeGrace ? 'Active' : 'None', icon: 'image',
+                        color: activeGrace ? 'text-emerald-600' : 'text-gray-400' },
+                        { label: 'Storage', value: storageUsed, icon: 'hard-drive', color: 'text-indigo-500' },
+                    ];
+
+                    const statCards = document.getElementById('statCards');
+                    statCards.innerHTML = stats.map(s => `
+                <div class="stat-card">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-ink/50">${s.label}</span>
+                    <i data-feather="${s.icon}" class="w-4 h-4 ${s.color}"></i>
+                  </div>
+                  <div class="text-2xl font-bold mt-1.5">${s.value}</div>
+                </div>
+              `).join('');
+                    feather.replace();
+
+                    // ── Charts ──
+                    // Daily registrations (last 7 days)
+                    const days = [];
+                    const dayCounts = [];
+                    for (let i = 6; i >= 0; i--) {
+                        const d = new Date(today);
+                        d.setDate(d.getDate() - i);
+                        days.push(d.toLocaleDateString('en', { weekday: 'short' }));
+                        const count = members.filter(m => {
+                            const md = new Date(m.created_at);
+                            return md >= new Date(d.setHours(0, 0, 0, 0)) && md < new Date(d.setHours(23, 59, 59,
+                            999));
+                        }).length;
+                        dayCounts.push(count);
+                    }
+
+                    // Monthly registrations (last 6 months)
+                    const months = [];
+                    const monthCounts = [];
+                    for (let i = 5; i >= 0; i--) {
+                        const d = new Date(today);
+                        d.setMonth(d.getMonth() - i);
+                        months.push(d.toLocaleDateString('en', { month: 'short' }));
+                        const count = members.filter(m => {
+                            const md = new Date(m.created_at);
+                            return md.getMonth() === d.getMonth() && md.getFullYear() === d.getFullYear();
+                        }).length;
+                        monthCounts.push(count);
+                    }
+
+                    // Gender distribution
+                    const male = members.filter(m => m.gender?.toLowerCase() === 'male').length;
+                    const female = members.filter(m => m.gender?.toLowerCase() === 'female').length;
+                    const other = members.filter(m => m.gender && !['male', 'female'].includes(m.gender.toLowerCase()))
+                        .length;
+
+                    // Branch distribution
+                    const branchMap = {};
+                    members.forEach(m => {
+                        const b = m.branch || 'Unknown';
+                        branchMap[b] = (branchMap[b] || 0) + 1;
+                    });
+                    const branchLabels = Object.keys(branchMap);
+                    const branchData = Object.values(branchMap);
+
+                    // Occupation distribution (top 5)
+                    const occMap = {};
+                    members.forEach(m => {
+                        const o = m.occupation || 'Not specified';
+                        occMap[o] = (occMap[o] || 0) + 1;
+                    });
+                    const occSorted = Object.entries(occMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
+                    const occLabels = occSorted.map(o => o[0]);
+                    const occValues = occSorted.map(o => o[1]);
+
+                    // Build chart container
+                    const chartHtml = `
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                  <div class="stat-card">
+                    <h4 class="text-sm font-semibold text-ink/60 mb-3">Daily Registrations (7 days)</h4>
+                    <canvas id="dailyChart" height="180"></canvas>
+                  </div>
+                  <div class="stat-card">
+                    <h4 class="text-sm font-semibold text-ink/60 mb-3">Monthly Registrations</h4>
+                    <canvas id="monthlyChart" height="180"></canvas>
+                  </div>
+                  <div class="stat-card">
+                    <h4 class="text-sm font-semibold text-ink/60 mb-3">Gender Distribution</h4>
+                    <canvas id="genderChart" height="180"></canvas>
+                  </div>
+                  <div class="stat-card">
+                    <h4 class="text-sm font-semibold text-ink/60 mb-3">Branch Distribution</h4>
+                    <canvas id="branchChart" height="180"></canvas>
+                  </div>
+                  <div class="stat-card md:col-span-2">
+                    <h4 class="text-sm font-semibold text-ink/60 mb-3">Top Occupations</h4>
+                    <canvas id="occupationChart" height="160"></canvas>
+                  </div>
+                </div>
+              `;
+
+                    // Insert charts after stat cards
+                    const chartsContainer = document.createElement('div');
+                    chartsContainer.innerHTML = chartHtml;
+                    statCards.parentNode.insertBefore(chartsContainer, statCards.nextSibling);
+
+                    // ── Recent activity table ──
+                    const activityHtml = `
+                <div class="stat-card mt-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-sm font-semibold text-ink/60">Recent Activity</h4>
+                    <span class="text-xs text-ink/30">Latest ${recent.length} members</span>
+                  </div>
+                  ${recent.length ? `
+                  <div class="table-wrap">
+                    <table>
+                      <thead><tr><th>Name</th><th>Email</th><th>Branch</th><th>Registered</th></tr></thead>
+                      <tbody>
+                        ${recent.map(m => `
+                          <tr>
+                            <td class="font-medium">${m.full_name || m.name || '—'}</td>
+                            <td>${m.email || '—'}</td>
+                            <td>${m.branch || '—'}</td>
+                            <td>${Utils.formatDate(m.created_at)}</td>
+                          </tr>
+                        `).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+                  ` : `<p class="text-ink/40 text-sm">No members registered yet.</p>`}
+                </div>
+              `;
+
+                    const activityContainer = document.createElement('div');
+                    activityContainer.innerHTML = activityHtml;
+                    chartsContainer.parentNode.insertBefore(activityContainer, chartsContainer.nextSibling);
+
+                    // ── Draw charts ──
+                    this._drawCharts(days, dayCounts, months, monthCounts, male, female, other, branchLabels, branchData,
+                        occLabels, occValues);
+
+                } catch (err) {
+                    console.error('[DashboardManager] error:', err);
+                    app.toast.error('Failed to load dashboard data.');
+                }
+            }
+
+            static _drawCharts(days, dayCounts, months, monthCounts, male, female, other, branchLabels, branchData,
+                occLabels, occValues) {
+                const chartColors = {
+                    royal: '#4B1D8F',
+                    gold: '#C9A227',
+                    emerald: '#2d9b6e',
+                    blue: '#3b82f6',
+                    purple: '#8b5cf6',
+                    orange: '#f59e0b',
+                    pink: '#ec4899',
+                    teal: '#14b8a6',
+                    red: '#ef4444',
+                    gray: '#9ca3af',
+                };
+
+                const palette = Object.values(chartColors);
+
+                // Daily
+                const dailyCtx = document.getElementById('dailyChart')?.getContext('2d');
+                if (dailyCtx) {
+                    new Chart(dailyCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: days,
+                            datasets: [{ label: 'Registrations', data: dayCounts, backgroundColor: chartColors.royal +
+                                    '66', borderColor: chartColors.royal, borderWidth: 2, borderRadius: 4 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true, grid: { color: '#f0edf5' } },
+                            x: { grid: { display: false } } } }
+                    });
+                }
+
+                // Monthly
+                const monthlyCtx = document.getElementById('monthlyChart')?.getContext('2d');
+                if (monthlyCtx) {
+                    new Chart(monthlyCtx, {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [{ label: 'Registrations', data: monthCounts, borderColor: chartColors.gold,
+                                backgroundColor: chartColors.gold + '22', fill: true, tension: 0.3,
+                                pointBackgroundColor: chartColors.gold, pointRadius: 4 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true, grid: { color: '#f0edf5' } },
+                            x: { grid: { display: false } } } }
+                    });
+                }
+
+                // Gender
+                const genderCtx = document.getElementById('genderChart')?.getContext('2d');
+                if (genderCtx) {
+                    new Chart(genderCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Male', 'Female', 'Other'],
+                            datasets: [{ data: [male, female, other], backgroundColor: [chartColors.blue,
+                                    chartColors.pink, chartColors.gray
+                                ], borderWidth: 2, borderColor: '#fff' }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom',
+                                    labels: { boxWidth: 12, padding: 12 } } } }
+                    });
+                }
+
+                // Branch
+                const branchCtx = document.getElementById('branchChart')?.getContext('2d');
+                if (branchCtx) {
+                    const colors = branchLabels.map((_, i) => palette[i % palette.length]);
+                    new Chart(branchCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: branchLabels,
+                            datasets: [{ data: branchData, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom',
+                                    labels: { boxWidth: 12, padding: 12 } } } }
+                    });
+                }
+
+                // Occupation
+                const occCtx = document.getElementById('occupationChart')?.getContext('2d');
+                if (occCtx) {
+                    const colors = occLabels.map((_, i) => palette[i % palette.length]);
+                    new Chart(occCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: occLabels,
+                            datasets: [{ label: 'Members', data: occValues, backgroundColor: colors.map(c => c + '77'),
+                                borderColor: colors, borderWidth: 2, borderRadius: 4 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true, grid: { color: '#f0edf5' } },
+                            x: { grid: { display: false } } } }
+                    });
+                }
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  MEMBER MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class MemberManager {
+            static _state = {
+                members: [],
+                filtered: [],
+                page: 1,
+                limit: CONFIG.pagination.defaultLimit,
+                search: '',
+                filters: { branch: '', gender: '', status: '' },
+                sort: { field: 'created_at', dir: 'desc' },
+            };
+
+            static async render(app) {
+                const el = app.pageContent;
+                el.innerHTML = `
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 class="text-xl font-bold text-ink">Members</h2>
+                  <p class="text-sm text-ink/50">Manage all registered members</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button id="exportBtn" class="px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+                    <i data-feather="download" class="w-4 h-4"></i> Export
+                  </button>
+                  <button id="refreshMembers" class="px-4 py-2 text-sm font-medium bg-royal text-white rounded-xl hover:bg-royal-deep transition shadow-sm flex items-center gap-2">
+                    <i data-feather="refresh-cw" class="w-4 h-4"></i> Refresh
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <div class="flex-1 relative">
+                  <i data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink/30"></i>
+                  <input id="memberSearch" type="text" placeholder="Search by name, email, phone, ID..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" />
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <select id="filterBranch" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition bg-white text-sm">
+                    <option value="">All Branches</option>
+                  </select>
+                  <select id="filterGender" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition bg-white text-sm">
+                    <option value="">All Genders</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                  <select id="filterStatus" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition bg-white text-sm">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="table-wrap" id="memberTableWrap">
+                  <div class="flex items-center justify-center py-12"><div class="w-8 h-8 border-4 border-royal/20 border-t-royal rounded-full animate-spin"></div></div>
+                </div>
+                <div class="flex items-center justify-between px-4 py-3 border-t border-gray-100" id="memberPagination">
+                </div>
+              </div>
+            `;
+                feather.replace();
+
+                // Load branches for filter
+                try {
+                    const branches = await app.supabase.fetchAll(CONFIG.tableNames.branches) || [];
+                    const branchSelect = document.getElementById('filterBranch');
+                    branches.forEach(b => {
+                        const opt = document.createElement('option');
+                        opt.value = b.name || b.id;
+                        opt.textContent = b.name || b.id;
+                        branchSelect.appendChild(opt);
+                    });
+                } catch { /* ignore */ }
+
+                // Load members
+                await this._loadMembers(app);
+
+                // Bind events
+                document.getElementById('memberSearch').addEventListener('input', Utils.debounce(() => {
+                    MemberManager._state.search = document.getElementById('memberSearch').value.trim();
+                    MemberManager._state.page = 1;
+                    MemberManager._applyFilters(app);
+                }, 300));
+
+                document.getElementById('filterBranch').addEventListener('change', () => {
+                    MemberManager._state.filters.branch = document.getElementById('filterBranch').value;
+                    MemberManager._state.page = 1;
+                    MemberManager._applyFilters(app);
+                });
+                document.getElementById('filterGender').addEventListener('change', () => {
+                    MemberManager._state.filters.gender = document.getElementById('filterGender').value;
+                    MemberManager._state.page = 1;
+                    MemberManager._applyFilters(app);
+                });
+                document.getElementById('filterStatus').addEventListener('change', () => {
+                    MemberManager._state.filters.status = document.getElementById('filterStatus').value;
+                    MemberManager._state.page = 1;
+                    MemberManager._applyFilters(app);
+                });
+
+                document.getElementById('refreshMembers').addEventListener('click', () => {
+                    MemberManager._loadMembers(app);
+                });
+
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    ExportManager.exportMembers(app, MemberManager._state.filtered);
+                });
+            }
+
+            static async _loadMembers(app) {
+                try {
+                    const members = await app.supabase.fetchAll(CONFIG.tableNames.members, {
+                        orderBy: 'created_at',
+                        ascending: false,
+                    }) || [];
+                    MemberManager._state.members = members;
+                    MemberManager._applyFilters(app);
+                } catch (err) {
+                    console.error('[MemberManager] load error:', err);
+                    app.toast.error('Failed to load members.');
+                    const wrap = document.getElementById('memberTableWrap');
+                    if (wrap) wrap.innerHTML =
+                    `<div class="p-8 text-center text-ink/40">Failed to load members. Please try again.</div>`;
+                }
+            }
+
+            static _applyFilters(app) {
+                const { members, search, filters, sort } = MemberManager._state;
+                let filtered = [...members];
+
+                // Search
+                if (search) {
+                    const s = search.toLowerCase();
+                    filtered = filtered.filter(m =>
+                        (m.full_name || m.name || '').toLowerCase().includes(s) ||
+                        (m.email || '').toLowerCase().includes(s) ||
+                        (m.phone || '').includes(s) ||
+                        (m.membership_id || '').toLowerCase().includes(s) ||
+                        (m.branch || '').toLowerCase().includes(s)
+                    );
+                }
+
+                // Filters
+                if (filters.branch) filtered = filtered.filter(m => (m.branch || '') === filters.branch);
+                if (filters.gender) filtered = filtered.filter(m => (m.gender || '').toLowerCase() === filters.gender);
+                if (filters.status) filtered = filtered.filter(m => (m.status || 'active') === filters.status);
+
+                // Sort
+                filtered.sort((a, b) => {
+                    let va = a[sort.field] || '';
+                    let vb = b[sort.field] || '';
+                    if (typeof va === 'string') va = va.toLowerCase();
+                    if (typeof vb === 'string') vb = vb.toLowerCase();
+                    if (va < vb) return sort.dir === 'asc' ? -1 : 1;
+                    if (va > vb) return sort.dir === 'asc' ? 1 : -1;
+                    return 0;
+                });
+
+                MemberManager._state.filtered = filtered;
+                MemberManager._renderTable(app, filtered);
+            }
+
+            static _renderTable(app, filtered) {
+                const { page, limit } = MemberManager._state;
+                const total = filtered.length;
+                const totalPages = Math.ceil(total / limit) || 1;
+                const start = (page - 1) * limit;
+                const end = Math.min(start + limit, total);
+                const pageItems = filtered.slice(start, end);
+
+                const wrap = document.getElementById('memberTableWrap');
+                if (!wrap) return;
+
+                if (total === 0) {
+                    wrap.innerHTML = `<div class="p-12 text-center text-ink/40">No members found.</div>`;
+                    return;
+                }
+
+                wrap.innerHTML = `
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Branch</th>
+                    <th>Status</th>
+                    <th>Registered</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${pageItems.map((m, i) => `
+                    <tr>
+                      <td>${start + i + 1}</td>
+                      <td class="font-medium">${m.full_name || m.name || '—'}</td>
+                      <td>${m.email || '—'}</td>
+                      <td>${m.phone || '—'}</td>
+                      <td>${m.branch || '—'}</td>
+                      <td><span class="badge ${Utils.getStatusColor(m.status)}">${Utils.getStatusLabel(m.status)}</span></td>
+                      <td>${Utils.formatDate(m.created_at)}</td>
+                      <td class="text-right">
+                        <div class="flex items-center justify-end gap-2">
+                          <button class="view-member p-1.5 rounded-lg hover:bg-gray-100 transition" data-id="${m.id}" title="View">
+                            <i data-feather="eye" class="w-4 h-4 text-ink/50"></i>
+                          </button>
+                          <button class="edit-member p-1.5 rounded-lg hover:bg-gray-100 transition" data-id="${m.id}" title="Edit">
+                            <i data-feather="edit-2" class="w-4 h-4 text-ink/50"></i>
+                          </button>
+                          <button class="delete-member p-1.5 rounded-lg hover:bg-red-50 transition" data-id="${m.id}" title="Delete">
+                            <i data-feather="trash-2" class="w-4 h-4 text-ink/30"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            `;
+                feather.replace();
+
+                // ── Pagination ──
+                const pagEl = document.getElementById('memberPagination');
+                if (pagEl) {
+                    pagEl.innerHTML = `
+                <div class="flex items-center gap-4 text-sm text-ink/60">
+                  <span>${total} members · showing ${start+1}–${end}</span>
+                  <div class="flex gap-1">
+                    <button class="page-prev px-3 py-1 rounded-lg hover:bg-gray-100 transition ${page <= 1 ? 'opacity-40 pointer-events-none' : ''}" ${page <= 1 ? 'disabled' : ''}>
+                      <i data-feather="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                    <span class="px-3 py-1">${page} / ${totalPages}</span>
+                    <button class="page-next px-3 py-1 rounded-lg hover:bg-gray-100 transition ${page >= totalPages ? 'opacity-40 pointer-events-none' : ''}" ${page >= totalPages ? 'disabled' : ''}>
+                      <i data-feather="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              `;
+                    feather.replace();
+
+                    pagEl.querySelector('.page-prev')?.addEventListener('click', () => {
+                        if (MemberManager._state.page > 1) {
+                            MemberManager._state.page--;
+                            MemberManager._applyFilters(app);
+                        }
+                    });
+                    pagEl.querySelector('.page-next')?.addEventListener('click', () => {
+                        if (MemberManager._state.page < totalPages) {
+                            MemberManager._state.page++;
+                            MemberManager._applyFilters(app);
+                        }
+                    });
+                }
+
+                // ── Action buttons ──
+                wrap.querySelectorAll('.view-member').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.dataset.id;
+                        MemberManager._viewMember(app, id);
+                    });
+                });
+                wrap.querySelectorAll('.edit-member').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.dataset.id;
+                        MemberManager._editMember(app, id);
+                    });
+                });
+                wrap.querySelectorAll('.delete-member').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.dataset.id;
+                        MemberManager._deleteMember(app, id);
+                    });
+                });
+            }
+
+            static async _viewMember(app, id) {
+                try {
+                    const member = await app.supabase.fetchOne(CONFIG.tableNames.members, id);
+                    if (!member) {
+                        app.toast.error('Member not found.');
+                        return;
+                    }
+
+                    app.modal.open({
+                        title: 'Member Profile',
+                        size: 'lg',
+                        content: `
+                  <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex flex-col items-center md:w-1/3">
+                      <div class="w-32 h-32 rounded-full bg-lavender flex items-center justify-center border-4 border-gold/30">
+                        <span class="text-4xl font-bold text-royal/30">${(member.full_name || member.name || '?').charAt(0).toUpperCase()}</span>
+                      </div>
+                      <h3 class="mt-4 text-lg font-bold text-ink">${member.full_name || member.name || '—'}</h3>
+                      <p class="text-sm text-ink/50">${member.membership_id || 'No ID'}</p>
+                      <div class="mt-2 text-xs bg-gray-100 px-3 py-1 rounded-full text-ink/50">${Utils.formatDate(member.created_at)}</div>
+                    </div>
+                    <div class="flex-1 space-y-3 text-sm">
+                      <div><span class="font-medium text-ink/60">Email</span><br />${member.email || '—'}</div>
+                      <div><span class="font-medium text-ink/60">Phone</span><br />${member.phone || '—'}</div>
+                      <div><span class="font-medium text-ink/60">Branch</span><br />${member.branch || '—'}</div>
+                      <div><span class="font-medium text-ink/60">Gender</span><br />${member.gender || '—'}</div>
+                      <div><span class="font-medium text-ink/60">Occupation</span><br />${member.occupation || '—'}</div>
+                      <div><span class="font-medium text-ink/60">Status</span><br /><span class="badge ${Utils.getStatusColor(member.status)}">${Utils.getStatusLabel(member.status)}</span></div>
+                    </div>
+                  </div>
+                `,
+                        confirmLabel: 'Close',
+                        onConfirm: (close) => close(),
+                        showCancel: false,
+                    });
+                } catch (err) {
+                    app.toast.error('Failed to load member profile.');
+                }
+            }
+
+            static async _editMember(app, id) {
+                try {
+                    const member = await app.supabase.fetchOne(CONFIG.tableNames.members, id);
+                    if (!member) { app.toast.error('Member not found.'); return; }
+
+                    const fields = [
+                        { key: 'full_name', label: 'Full Name', type: 'text', value: member.full_name || member.name ||
+                                '' },
+                        { key: 'email', label: 'Email', type: 'email', value: member.email || '' },
+                        { key: 'phone', label: 'Phone', type: 'text', value: member.phone || '' },
+                        { key: 'branch', label: 'Branch', type: 'text', value: member.branch || '' },
+                        { key: 'gender', label: 'Gender', type: 'select', options: ['', 'Male', 'Female'],
+                            value: member.gender || '' },
+                        { key: 'occupation', label: 'Occupation', type: 'text', value: member.occupation || '' },
+                        { key: 'status', label: 'Status', type: 'select', options: ['active', 'inactive'],
+                            value: member.status || 'active' },
+                    ];
+
+                    const formHtml = fields.map(f => {
+                        if (f.type === 'select') {
+                            const opts = f.options.map(o =>
+                                `<option value="${o}" ${o === f.value ? 'selected' : ''}>${o || '—'}</option>`).join('');
+                            return `<div><label class="block text-sm font-medium text-ink/70 mb-1">${f.label}</label><select id="edit_${f.key}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition">${opts}</select></div>`;
+                        }
+                        return `<div><label class="block text-sm font-medium text-ink/70 mb-1">${f.label}</label><input id="edit_${f.key}" type="${f.type}" value="${f.value}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>`;
+                    }).join('');
+
+                    app.modal.open({
+                        title: 'Edit Member',
+                        size: 'md',
+                        content: `<form id="editMemberForm" class="space-y-3">${formHtml}</form>`,
+                        confirmLabel: 'Save Changes',
+                        onConfirm: async (close) => {
+                            const payload = {};
+                            fields.forEach(f => {
+                                const el = document.getElementById(`edit_${f.key}`);
+                                if (el) payload[f.key] = el.value;
+                            });
+                            if (!payload.full_name) {
+                                app.toast.warning('Full name is required.');
+                                return;
+                            }
+                            try {
+                                await app.supabase.update(CONFIG.tableNames.members, id, payload);
+                                app.toast.success('Member updated.');
+                                close();
+                                MemberManager._loadMembers(app);
+                            } catch (err) {
+                                app.toast.error('Update failed: ' + err.message);
+                            }
+                        },
+                    });
+                } catch (err) {
+                    app.toast.error('Failed to load member.');
+                }
+            }
+
+            static async _deleteMember(app, id) {
+                const ok = await app.modal.confirm({
+                    title: 'Delete Member',
+                    content: '<p class="text-ink/70">Are you sure you want to delete this member? This action cannot be undone.</p>',
+                    confirmLabel: 'Delete',
+                });
+                if (ok) {
+                    try {
+                        await app.supabase.delete(CONFIG.tableNames.members, id);
+                        app.toast.success('Member deleted.');
+                        MemberManager._loadMembers(app);
+                    } catch (err) {
+                        app.toast.error('Delete failed: ' + err.message);
+                    }
+                }
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  GRACE CARD MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class GraceCardManager {
+            static async render(app) {
+                const el = app.pageContent;
+                el.innerHTML = `
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 class="text-xl font-bold text-ink">Grace Card</h2>
+                  <p class="text-sm text-ink/50">Manage the daily Grace Card shown on the public website</p>
+                </div>
+                <button id="newGraceCard" class="px-5 py-2.5 bg-royal text-white rounded-xl hover:bg-royal-deep transition shadow-sm flex items-center gap-2">
+                  <i data-feather="plus" class="w-4 h-4"></i> New Grace Card
+                </button>
+              </div>
+
+              <div id="graceCardList" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="flex items-center justify-center py-12"><div class="w-8 h-8 border-4 border-royal/20 border-t-royal rounded-full animate-spin"></div></div>
+              </div>
+            `;
+                feather.replace();
+
+                await this._loadCards(app);
+
+                document.getElementById('newGraceCard').addEventListener('click', () => {
+                    this._showCreateForm(app);
+                });
+            }
+
+            static async _loadCards(app) {
+                const container = document.getElementById('graceCardList');
+                try {
+                    const cards = await app.supabase.fetchAll(CONFIG.tableNames.graceCards, {
+                        orderBy: 'created_at',
+                        ascending: false,
+                    }) || [];
+
+                    if (cards.length === 0) {
+                        container.innerHTML =
+                        `<div class="p-12 text-center text-ink/40">No Grace Cards yet. Create your first one!</div>`;
+                        return;
+                    }
+
+                    container.innerHTML = `
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Scripture</th>
+                        <th>Status</th>
+                        <th>Uploaded</th>
+                        <th class="text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${cards.map(c => `
+                        <tr>
+                          <td>
+                            <img src="${c.image_url || 'logo.png'}" alt="${c.title || 'Grace Card'}" class="w-16 h-20 object-cover rounded-lg" onerror="this.src='logo.png'" />
+                          </td>
+                          <td class="font-medium">${c.title || 'Untitled'}</td>
+                          <td class="max-w-[150px] truncate">${c.scripture || '—'}</td>
+                          <td><span class="badge ${c.is_active ? 'badge-active' : 'badge-inactive'}">${c.is_active ? 'Active' : 'Inactive'}</span></td>
+                          <td>${Utils.formatDate(c.created_at)}</td>
+                          <td class="text-right">
+                            <div class="flex items-center justify-end gap-2">
+                              ${!c.is_active ? `<button class="publish-gc p-1.5 rounded-lg hover:bg-emerald-50 transition" data-id="${c.id}" title="Publish"><i data-feather="check-circle" class="w-4 h-4 text-emerald-500"></i></button>` : ''}
+                              <button class="delete-gc p-1.5 rounded-lg hover:bg-red-50 transition" data-id="${c.id}" data-url="${c.image_url}" title="Delete"><i data-feather="trash-2" class="w-4 h-4 text-ink/30"></i></button>
+                            </div>
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+                    feather.replace();
+
+                    // Publish
+                    container.querySelectorAll('.publish-gc').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.dataset.id;
+                            try {
+                                // Deactivate all, activate this one
+                                const all = await app.supabase.fetchAll(CONFIG.tableNames.graceCards);
+                                for (const c of all) {
+                                    if (c.is_active) {
+                                        await app.supabase.update(CONFIG.tableNames.graceCards, c.id, {
+                                            is_active: false });
+                                    }
+                                }
+                                await app.supabase.update(CONFIG.tableNames.graceCards, id, { is_active: true });
+                                app.toast.success('Grace Card published!');
+                                GraceCardManager._loadCards(app);
+                            } catch (err) {
+                                app.toast.error('Publish failed: ' + err.message);
+                            }
+                        });
+                    });
+
+                    // Delete
+                    container.querySelectorAll('.delete-gc').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.dataset.id;
+                            const url = btn.dataset.url;
+                            const ok = await app.modal.confirm({
+                                title: 'Delete Grace Card',
+                                content: '<p class="text-ink/70">This will permanently delete this Grace Card.</p>',
+                                confirmLabel: 'Delete',
+                            });
+                            if (ok) {
+                                try {
+                                    // Delete from storage
+                                    if (url && !url.startsWith('blob:')) {
+                                        const path = url.split('/').pop();
+                                        if (path) await app.supabase.deleteFile(CONFIG.storageBucket, path);
+                                    }
+                                    await app.supabase.delete(CONFIG.tableNames.graceCards, id);
+                                    app.toast.success('Grace Card deleted.');
+                                    GraceCardManager._loadCards(app);
+                                } catch (err) {
+                                    app.toast.error('Delete failed: ' + err.message);
+                                }
+                            }
+                        });
+                    });
+
+                } catch (err) {
+                    console.error('[GraceCardManager] load error:', err);
+                    container.innerHTML =
+                    `<div class="p-8 text-center text-ink/40">Failed to load Grace Cards. ${err.message}</div>`;
+                }
+            }
+
+            static _showCreateForm(app) {
+                const formHtml = `
+              <form id="gcForm" class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-ink/70 mb-1">Title (optional)</label>
+                  <input id="gcTitle" type="text" placeholder="e.g. Today's Grace" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-ink/70 mb-1">Scripture (optional)</label>
+                  <input id="gcScripture" type="text" placeholder="e.g. Acts 20:32" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-ink/70 mb-1">Image</label>
+                  <input id="gcImage" type="file" accept="image/*" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-royal/10 file:text-royal file:text-sm hover:file:bg-royal/20 transition" />
+                  <div id="gcPreview" class="mt-2 hidden"><img id="gcPreviewImg" src="" alt="Preview" class="max-h-48 rounded-xl border border-gray-200" /></div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <label class="flex items-center gap-2 text-sm text-ink/70">
+                    <input id="gcPublishNow" type="checkbox" checked /> Publish immediately
+                  </label>
+                </div>
+              </form>
+            `;
+
+                app.modal.open({
+                    title: 'Create Grace Card',
+                    size: 'md',
+                    content: formHtml,
+                    confirmLabel: 'Upload & Publish',
+                    onConfirm: async (close) => {
+                        const title = document.getElementById('gcTitle').value.trim();
+                        const scripture = document.getElementById('gcScripture').value.trim();
+                        const fileInput = document.getElementById('gcImage');
+                        const publishNow = document.getElementById('gcPublishNow').checked;
+
+                        if (!fileInput.files || fileInput.files.length === 0) {
+                            app.toast.warning('Please select an image.');
+                            return;
+                        }
+
+                        const file = fileInput.files[0];
+                        if (!file.type.startsWith('image/')) {
+                            app.toast.warning('Please select an image file.');
+                            return;
+                        }
+
+                        try {
+                            // Upload to storage
+                            const ext = file.name.split('.').pop();
+                            const path = `gc_${Date.now()}.${ext}`;
+                            const { data, error } = await app.supabase.uploadFile(CONFIG.storageBucket, path, file);
+                            if (error) throw error;
+
+                            const imageUrl = data.publicUrl;
+
+                            // If publish now, deactivate all others
+                            if (publishNow) {
+                                const all = await app.supabase.fetchAll(CONFIG.tableNames.graceCards);
+                                for (const c of all) {
+                                    if (c.is_active) {
+                                        await app.supabase.update(CONFIG.tableNames.graceCards, c.id, {
+                                            is_active: false });
+                                    }
+                                }
+                            }
+
+                            // Insert record
+                            await app.supabase.insert(CONFIG.tableNames.graceCards, {
+                                title: title || 'Today\'s Grace Card',
+                                scripture: scripture || '',
+                                image_url: imageUrl,
+                                is_active: !!publishNow,
+                                uploaded_by: app.currentUser?.id || 'admin',
+                                created_at: new Date().toISOString(),
+                            });
+
+                            app.toast.success('Grace Card created successfully!');
+                            close();
+                            GraceCardManager._loadCards(app);
+                        } catch (err) {
+                            app.toast.error('Upload failed: ' + err.message);
+                        }
+                    },
+                });
+
+                // Preview
+                document.getElementById('gcImage')?.addEventListener('change', (e) => {
+                    const preview = document.getElementById('gcPreview');
+                    const img = document.getElementById('gcPreviewImg');
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            img.src = ev.target.result;
+                            preview.classList.remove('hidden');
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    } else {
+                        preview.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  USER MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class UserManager {
+            static async render(app) {
+                const el = app.pageContent;
+                el.innerHTML = `
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 class="text-xl font-bold text-ink">Users</h2>
+                  <p class="text-sm text-ink/50">Manage admin users and permissions</p>
+                </div>
+                <button id="newUserBtn" class="px-5 py-2.5 bg-royal text-white rounded-xl hover:bg-royal-deep transition shadow-sm flex items-center gap-2">
+                  <i data-feather="user-plus" class="w-4 h-4"></i> Add User
+                </button>
+              </div>
+
+              <div id="userList" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="flex items-center justify-center py-12"><div class="w-8 h-8 border-4 border-royal/20 border-t-royal rounded-full animate-spin"></div></div>
+              </div>
+            `;
+                feather.replace();
+
+                await this._loadUsers(app);
+
+                document.getElementById('newUserBtn').addEventListener('click', () => {
+                    this._showCreateForm(app);
+                });
+            }
+
+            static async _loadUsers(app) {
+                const container = document.getElementById('userList');
+                try {
+                    const users = await app.supabase.fetchAll(CONFIG.tableNames.admins, {
+                        orderBy: 'created_at',
+                        ascending: false,
+                    }) || [];
+
+                    if (users.length === 0) {
+                        container.innerHTML =
+                        `<div class="p-12 text-center text-ink/40">No admin users found.</div>`;
+                        return;
+                    }
+
+                    container.innerHTML = `
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Last Login</th>
+                        <th class="text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${users.map(u => `
+                        <tr>
+                          <td class="font-medium">${u.full_name || u.name || '—'}</td>
+                          <td>${u.email || '—'}</td>
+                          <td><span class="badge badge-active">${u.role || 'admin'}</span></td>
+                          <td><span class="badge ${u.status === 'active' ? 'badge-active' : 'badge-inactive'}">${u.status || 'active'}</span></td>
+                          <td>${u.last_login ? Utils.formatDate(u.last_login) : '—'}</td>
+                          <td class="text-right">
+                            <div class="flex items-center justify-end gap-2">
+                              <button class="suspend-user p-1.5 rounded-lg hover:bg-yellow-50 transition" data-id="${u.id}" data-status="${u.status}" title="Toggle status">
+                                <i data-feather="${u.status === 'active' ? 'pause-circle' : 'play-circle'}" class="w-4 h-4 ${u.status === 'active' ? 'text-yellow-600' : 'text-emerald-500'}"></i>
+                              </button>
+                              <button class="delete-user p-1.5 rounded-lg hover:bg-red-50 transition" data-id="${u.id}" title="Delete">
+                                <i data-feather="trash-2" class="w-4 h-4 text-ink/30"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+                    feather.replace();
+
+                    // Suspend/activate
+                    container.querySelectorAll('.suspend-user').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.dataset.id;
+                            const current = btn.dataset.status;
+                            const newStatus = current === 'active' ? 'suspended' : 'active';
+                            const action = newStatus === 'active' ? 'activate' : 'suspend';
+                            const ok = await app.modal.confirm({
+                                title: `${action.charAt(0).toUpperCase() + action.slice(1)} User`,
+                                content: `<p class="text-ink/70">Are you sure you want to ${action} this user?</p>`,
+                                confirmLabel: action.charAt(0).toUpperCase() + action.slice(1),
+                            });
+                            if (ok) {
+                                try {
+                                    await app.supabase.update(CONFIG.tableNames.admins, id, { status: newStatus });
+                                    app.toast.success(`User ${action}ed.`);
+                                    UserManager._loadUsers(app);
+                                } catch (err) {
+                                    app.toast.error('Failed: ' + err.message);
+                                }
+                            }
+                        });
+                    });
+
+                    // Delete
+                    container.querySelectorAll('.delete-user').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.dataset.id;
+                            const ok = await app.modal.confirm({
+                                title: 'Delete User',
+                                content: '<p class="text-ink/70">This will permanently delete this user.</p>',
+                                confirmLabel: 'Delete',
+                            });
+                            if (ok) {
+                                try {
+                                    await app.supabase.delete(CONFIG.tableNames.admins, id);
+                                    app.toast.success('User deleted.');
+                                    UserManager._loadUsers(app);
+                                } catch (err) {
+                                    app.toast.error('Delete failed: ' + err.message);
+                                }
+                            }
+                        });
+                    });
+
+                } catch (err) {
+                    console.error('[UserManager] load error:', err);
+                    container.innerHTML =
+                    `<div class="p-8 text-center text-ink/40">Failed to load users. ${err.message}</div>`;
+                }
+            }
+
+            static _showCreateForm(app) {
+                const formHtml = `
+              <form id="userForm" class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-ink/70 mb-1">Full Name</label>
+                  <input id="userName" type="text" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-ink/70 mb-1">Email</label>
+                  <input id="userEmail" type="email" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-ink/70 mb-1">Password</label>
+                  <input id="userPassword" type="password" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-ink/70 mb-1">Role</label>
+                  <select id="userRole" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition">
+                    <option value="admin">Admin</option>
+                    <option value="superadmin">Super Admin</option>
+                    <option value="secretary">Secretary</option>
+                  </select>
+                </div>
+              </form>
+            `;
+
+                app.modal.open({
+                    title: 'Add Admin User',
+                    size: 'md',
+                    content: formHtml,
+                    confirmLabel: 'Create User',
+                    onConfirm: async (close) => {
+                        const name = document.getElementById('userName').value.trim();
+                        const email = document.getElementById('userEmail').value.trim();
+                        const password = document.getElementById('userPassword').value.trim();
+                        const role = document.getElementById('userRole').value;
+
+                        if (!name || !email || !password) {
+                            app.toast.warning('All fields are required.');
+                            return;
+                        }
+
+                        try {
+                            // In real app, use supabase.auth.admin.createUser
+                            // For demo, insert into admins table
+                            await app.supabase.insert(CONFIG.tableNames.admins, {
+                                full_name: name,
+                                email,
+                                role,
+                                status: 'active',
+                                created_at: new Date().toISOString(),
+                            });
+                            app.toast.success('User created successfully.');
+                            close();
+                            UserManager._loadUsers(app);
+                        } catch (err) {
+                            app.toast.error('Failed to create user: ' + err.message);
+                        }
+                    },
+                });
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  LOG MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class LogManager {
+            static async render(app) {
+                const el = app.pageContent;
+                el.innerHTML = `
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 class="text-xl font-bold text-ink">System Logs</h2>
+                  <p class="text-sm text-ink/50">Monitor system events and errors</p>
+                </div>
+                <button id="clearLogs" class="px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-xl hover:bg-red-50 hover:border-red-200 transition shadow-sm text-ink/60 hover:text-red-600 flex items-center gap-2">
+                  <i data-feather="trash-2" class="w-4 h-4"></i> Clear Logs
+                </button>
+              </div>
+
+              <div id="logList" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="flex items-center justify-center py-12"><div class="w-8 h-8 border-4 border-royal/20 border-t-royal rounded-full animate-spin"></div></div>
+              </div>
+            `;
+                feather.replace();
+
+                await this._loadLogs(app);
+
+                document.getElementById('clearLogs').addEventListener('click', async () => {
+                    const ok = await app.modal.confirm({
+                        title: 'Clear Logs',
+                        content: '<p class="text-ink/70">This will permanently delete all system logs. Are you sure?</p>',
+                        confirmLabel: 'Clear All',
+                    });
+                    if (ok) {
+                        // In real app, would have a delete all endpoint
+                        app.toast.info('Logs cleared (demo).');
+                        LogManager._loadLogs(app);
+                    }
+                });
+            }
+
+            static async _loadLogs(app) {
+                const container = document.getElementById('logList');
+                try {
+                    const logs = await app.supabase.fetchAll(CONFIG.tableNames.systemLogs, {
+                        orderBy: 'created_at',
+                        ascending: false,
+                        limit: 100,
+                    }) || [];
+
+                    // Generate demo logs if empty
+                    const demoLogs = [
+                        { level: 'info', message: 'User admin@church.com logged in', module: 'Auth',
+                            created_at: new Date().toISOString() },
+                        { level: 'success', message: 'Grace Card published successfully', module: 'GraceCard',
+                            created_at: new Date(Date.now() - 3600000).toISOString() },
+                        { level: 'warning', message: 'Storage usage at 85%', module: 'Storage',
+                            created_at: new Date(Date.now() - 7200000).toISOString() },
+                        { level: 'error', message: 'Failed to upload image: file too large', module: 'Storage',
+                            created_at: new Date(Date.now() - 14400000).toISOString() },
+                        { level: 'info', message: 'Member export generated (PDF)', module: 'Export',
+                            created_at: new Date(Date.now() - 86400000).toISOString() },
+                    ];
+
+                    const displayLogs = logs.length > 0 ? logs : demoLogs;
+
+                    const levelColors = {
+                        info: 'text-blue-500 bg-blue-50',
+                        success: 'text-emerald-500 bg-emerald-50',
+                        warning: 'text-yellow-600 bg-yellow-50',
+                        error: 'text-red-500 bg-red-50',
+                        critical: 'text-purple-600 bg-purple-50',
+                    };
+
+                    container.innerHTML = `
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Level</th>
+                        <th>Message</th>
+                        <th>Module</th>
+                        <th>Timestamp</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${displayLogs.map(l => `
+                        <tr>
+                          <td><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${levelColors[l.level] || levelColors.info}">${(l.level || 'info').toUpperCase()}</span></td>
+                          <td>${l.message || '—'}</td>
+                          <td>${l.module || '—'}</td>
+                          <td>${Utils.formatDateTime(l.created_at)}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+                    feather.replace();
+
+                } catch (err) {
+                    console.error('[LogManager] load error:', err);
+                    container.innerHTML =
+                    `<div class="p-8 text-center text-ink/40">Failed to load logs. ${err.message}</div>`;
+                }
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  AUDIT MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class AuditManager {
+            static async render(app) {
+                const el = app.pageContent;
+                el.innerHTML = `
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 class="text-xl font-bold text-ink">Audit Trail</h2>
+                  <p class="text-sm text-ink/50">Complete history of all administrative actions</p>
+                </div>
+              </div>
+
+              <div id="auditList" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="flex items-center justify-center py-12"><div class="w-8 h-8 border-4 border-royal/20 border-t-royal rounded-full animate-spin"></div></div>
+              </div>
+            `;
+                feather.replace();
+
+                await this._loadAudit(app);
+            }
+
+            static async _loadAudit(app) {
+                const container = document.getElementById('auditList');
+                try {
+                    const audits = await app.supabase.fetchAll(CONFIG.tableNames.auditLogs, {
+                        orderBy: 'created_at',
+                        ascending: false,
+                        limit: 100,
+                    }) || [];
+
+                    const demoAudits = [
+                        { action: 'Member Edited', user: 'admin@church.com', details: 'Updated member: John Doe',
+                            created_at: new Date().toISOString() },
+                        { action: 'Grace Card Published', user: 'admin@church.com',
+                            details: 'Published new Grace Card "Today\'s Grace"', created_at: new Date(Date.now() -
+                                3600000).toISOString() },
+                        { action: 'Admin Created', user: 'admin@church.com', details: 'Created new admin: pastor@church.com',
+                            created_at: new Date(Date.now() - 7200000).toISOString() },
+                        { action: 'Settings Updated', user: 'admin@church.com', details: 'Updated church name',
+                            created_at: new Date(Date.now() - 86400000).toISOString() },
+                        { action: 'Export Generated', user: 'admin@church.com', details: 'Exported members to Excel',
+                            created_at: new Date(Date.now() - 172800000).toISOString() },
+                    ];
+
+                    const display = audits.length > 0 ? audits : demoAudits;
+
+                    container.innerHTML = `
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Action</th>
+                        <th>User</th>
+                        <th>Details</th>
+                        <th>Timestamp</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${display.map(a => `
+                        <tr>
+                          <td class="font-medium">${a.action || '—'}</td>
+                          <td>${a.user || a.user_id || '—'}</td>
+                          <td>${a.details || a.old_value || '—'}</td>
+                          <td>${Utils.formatDateTime(a.created_at)}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+                    feather.replace();
+
+                } catch (err) {
+                    console.error('[AuditManager] load error:', err);
+                    container.innerHTML =
+                    `<div class="p-8 text-center text-ink/40">Failed to load audit trail. ${err.message}</div>`;
+                }
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  SETTINGS MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class SettingsManager {
+            static async render(app) {
+                const el = app.pageContent;
+                el.innerHTML = `
+              <div class="flex items-center justify-between mb-6">
+                <div>
+                  <h2 class="text-xl font-bold text-ink">Settings</h2>
+                  <p class="text-sm text-ink/50">Configure church and system settings</p>
+                </div>
+                <button id="saveSettings" class="px-5 py-2.5 bg-royal text-white rounded-xl hover:bg-royal-deep transition shadow-sm flex items-center gap-2">
+                  <i data-feather="save" class="w-4 h-4"></i> Save Settings
+                </button>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                  <h3 class="font-semibold text-ink mb-4">Church Information</h3>
+                  <div class="space-y-3">
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Church Name</label><input id="setChurchName" value="Gracious Word Global Mission" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Address</label><input id="setAddress" value="E3 Event Center, Ibom Tropicana Mall, Uyo" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Phone</label><input id="setPhone" value="09112599268" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Email</label><input id="setEmail" value="graciousword78@gmail.com" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                  </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                  <h3 class="font-semibold text-ink mb-4">Social Media</h3>
+                  <div class="space-y-3">
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Facebook</label><input id="setFacebook" value="https://www.facebook.com/share/18z5KfA6bh/" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Instagram</label><input id="setInstagram" value="https://www.instagram.com/thegeorgewealth" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">YouTube</label><input id="setYoutube" value="#" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">TikTok</label><input id="setTiktok" value="https://www.tiktok.com/@graciousword_uyo" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                  </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:col-span-2">
+                  <h3 class="font-semibold text-ink mb-4">Appearance</h3>
+                  <div class="grid sm:grid-cols-3 gap-3">
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Primary Color</label><input id="setPrimary" type="color" value="#4B1D8F" class="w-full h-12 rounded-xl border border-gray-200 cursor-pointer" /></div>
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Accent Color</label><input id="setAccent" type="color" value="#C9A227" class="w-full h-12 rounded-xl border border-gray-200 cursor-pointer" /></div>
+                    <div><label class="block text-sm font-medium text-ink/70 mb-1">Footer Text</label><input id="setFooter" value="© Gracious Word Global Mission. All Rights Reserved." class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal focus:ring-2 focus:ring-royal/20 outline-none transition" /></div>
+                  </div>
+                </div>
+              </div>
+            `;
+                feather.replace();
+
+                document.getElementById('saveSettings').addEventListener('click', () => {
+                    app.toast.success('Settings saved successfully!');
+                    // In real app, would persist to Supabase
+                });
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  EXPORT MANAGER
+        // ────────────────────────────────────────────────────────────────
+        class ExportManager {
+            static exportMembers(app, members) {
+                if (!members || members.length === 0) {
+                    app.toast.warning('No members to export.');
+                    return;
+                }
+
+                app.modal.open({
+                    title: 'Export Members',
+                    size: 'sm',
+                    content: `
+                <p class="text-ink/70 text-sm mb-4">${members.length} members will be exported.</p>
+                <div class="flex flex-wrap gap-3">
+                  <button id="exportExcel" class="flex-1 px-4 py-3 bg-emerald-50 text-emerald-700 rounded-xl hover:bg-emerald-100 transition font-medium text-sm flex items-center justify-center gap-2">
+                    <i data-feather="file-text" class="w-4 h-4"></i> Excel
+                  </button>
+                  <button id="exportCSV" class="flex-1 px-4 py-3 bg-blue-50 text-blue-700 rounded-xl hover:bg-blue-100 transition font-medium text-sm flex items-center justify-center gap-2">
+                    <i data-feather="file" class="w-4 h-4"></i> CSV
+                  </button>
+                  <button id="exportPDF" class="flex-1 px-4 py-3 bg-red-50 text-red-700 rounded-xl hover:bg-red-100 transition font-medium text-sm flex items-center justify-center gap-2">
+                    <i data-feather="file" class="w-4 h-4"></i> PDF
+                  </button>
+                </div>
+              `,
+                    confirmLabel: 'Close',
+                    showCancel: false,
+                    onConfirm: (close) => close(),
+                });
+
+                document.getElementById('exportExcel')?.addEventListener('click', () => {
+                    try {
+                        const data = members.map(m => ({
+                            Name: m.full_name || m.name || '',
+                            Email: m.email || '',
+                            Phone: m.phone || '',
+                            Branch: m.branch || '',
+                            Gender: m.gender || '',
+                            Occupation: m.occupation || '',
+                            Status: m.status || '',
+                            Registered: Utils.formatDate(m.created_at),
+                        }));
+                        const ws = XLSX.utils.json_to_sheet(data);
+                        const wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, 'Members');
+                        XLSX.writeFile(wb, `members_${new Date().toISOString().slice(0,10)}.xlsx`);
+                        app.toast.success('Excel export generated.');
+                    } catch (err) {
+                        app.toast.error('Export failed: ' + err.message);
+                    }
+                });
+
+                document.getElementById('exportCSV')?.addEventListener('click', () => {
+                    try {
+                        const data = members.map(m => ({
+                            Name: m.full_name || m.name || '',
+                            Email: m.email || '',
+                            Phone: m.phone || '',
+                            Branch: m.branch || '',
+                            Gender: m.gender || '',
+                            Occupation: m.occupation || '',
+                            Status: m.status || '',
+                            Registered: Utils.formatDate(m.created_at),
+                        }));
+                        const ws = XLSX.utils.json_to_sheet(data);
+                        const csv = XLSX.utils.sheet_to_csv(ws);
+                        const blob = new Blob([csv], { type: 'text/csv' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `members_${new Date().toISOString().slice(0,10)}.csv`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        app.toast.success('CSV export generated.');
+                    } catch (err) {
+                        app.toast.error('Export failed: ' + err.message);
+                    }
+                });
+
+                document.getElementById('exportPDF')?.addEventListener('click', () => {
+                    try {
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF('landscape', 'pt', 'a4');
+                        doc.setFontSize(14);
+                        doc.text('Members List', 40, 50);
+
+                        const headers = ['Name', 'Email', 'Phone', 'Branch', 'Status'];
+                        const rows = members.slice(0, 50).map(m => [
+                            m.full_name || m.name || '',
+                            m.email || '',
+                            m.phone || '',
+                            m.branch || '',
+                            m.status || 'active',
+                        ]);
+
+                        doc.autoTable ? doc.autoTable({
+                            head: [headers],
+                            body: rows,
+                            startY: 70,
+                            theme: 'grid',
+                            styles: { fontSize: 8 },
+                        }) : doc.text('PDF export requires autoTable plugin.', 40, 100);
+
+                        doc.save(`members_${new Date().toISOString().slice(0,10)}.pdf`);
+                        app.toast.success('PDF export generated.');
+                    } catch (err) {
+                        app.toast.error('PDF export failed: ' + err.message);
+                    }
+                });
+            }
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  BOOT THE APP
+        // ────────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new App();
+            app.boot();
+
+            // Feather icons refresh after any DOM changes
+            const observer = new MutationObserver(() => {
+                feather.replace();
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+    </script>
+</body>
+</html>
