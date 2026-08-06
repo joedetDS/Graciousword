@@ -370,20 +370,38 @@
   const AUTHORIZING_OFFICER = 'Pst. Georgewealth';
   const MEMBER_CACHE_KEY = 'memberData';
 
+  // The member record currently loaded on the card (from local cache or Supabase),
+  // and — while the registration form is open — the membership_id we're editing
+  // (null means "this is a brand-new registration").
+  let currentMember = null;
+  let editingMembershipId = null;
+
   async function generateMembershipId() {
     const year = new Date().getFullYear();
+    const prefix = `GWGM-${year}-`;
     let nextSeq = 1;
     if (supabaseClient) {
       try {
-        const { count, error } = await supabaseClient
+        // Base the next number on the highest existing sequence for THIS YEAR's
+        // prefix, not on total row count — a raw count drifts as soon as any
+        // row is deleted, or a new year starts (count would keep climbing
+        // instead of resetting to 0001), and it never re-used an ID that was
+        // meant to be edited in place.
+        const { data, error } = await supabaseClient
           .from('members')
-          .select('*', { count: 'exact', head: true });
-        if (!error && typeof count === 'number') nextSeq = count + 1;
+          .select('membership_id')
+          .like('membership_id', `${prefix}%`)
+          .order('membership_id', { ascending: false })
+          .limit(1);
+        if (!error && data && data.length) {
+          const lastSeq = parseInt(String(data[0].membership_id).split('-').pop(), 10);
+          if (!isNaN(lastSeq)) nextSeq = lastSeq + 1;
+        }
       } catch (err) {
-        console.warn('Could not count members for ID sequence:', err.message);
+        console.warn('Could not determine next membership ID sequence:', err.message);
       }
     }
-    return `GWGM-${year}-${String(nextSeq).padStart(4, '0')}`;
+    return `${prefix}${String(nextSeq).padStart(4, '0')}`;
   }
 
   async function saveMemberToSupabase(memberData) {
@@ -398,15 +416,22 @@
       created_at: memberData.createdAt
     };
     try {
+      // upsert (not insert): if a row with this membership_id already exists,
+      // it's updated in place; otherwise a new row is created. This is what
+      // makes "Edit details" update the existing record instead of creating
+      // a new one. It requires a UNIQUE constraint on members.membership_id —
+      // add one in Supabase (Table Editor → members → membership_id → add
+      // "Unique" constraint) if you haven't already, or onConflict below
+      // silently falls back to inserting a duplicate row.
       const { data, error } = await supabaseClient
         .from('members')
-        .insert([row])
+        .upsert([row], { onConflict: 'membership_id' })
         .select()
         .single();
       if (error) throw error;
       return data;
     } catch (err) {
-      console.warn('Supabase insert failed; data kept in local cache only:', err.message || err);
+      console.warn('Supabase save failed; data kept in local cache only:', err.message || err);
       return null;
     }
   }
@@ -453,9 +478,15 @@
       registrationView.classList.remove('hidden');
       registrationView.classList.add('view-fade');
       window.location.hash = 'register';
-      generateMembershipId().then((id) => {
-        membershipIdField.textContent = id;
-      });
+      // Only mint a new ID for a brand-new registration. When editing an
+      // existing member, editingMembershipId is already set and the field is
+      // populated by enterEditMode() — regenerating here would silently swap
+      // in a new ID every time "Edit details" is pressed.
+      if (!editingMembershipId) {
+        generateMembershipId().then((id) => {
+          membershipIdField.textContent = id;
+        });
+      }
     }
     window.scrollTo(0, 0);
     feather.replace();
@@ -473,15 +504,36 @@
   const issueDateField = document.getElementById('issueDate');
 
   issueDateField.value = new Date().toISOString().split('T')[0];
-  generateMembershipId().then((id) => {
-    membershipIdField.textContent = id;
-  });
-
-  document.getElementById('viewExistingBtn').addEventListener('click', () => showView('card'));
-
-  
-
   let photoDataUrl = '';
+
+  // If this device already has a registered member, default the form to
+  // editing that record (same ID, fields prefilled) instead of always
+  // preparing a brand-new ID — otherwise submitting from here (e.g. landing
+  // on the form directly, not via the "Edit details" button) would insert a
+  // second row for the same person.
+  (function initializeRegistrationDefaults() {
+    const stored = localStorage.getItem(MEMBER_CACHE_KEY);
+    if (stored) {
+      try {
+        currentMember = JSON.parse(stored);
+        editingMembershipId = currentMember.membershipId || null;
+      } catch (err) {
+        currentMember = null;
+      }
+    }
+    if (editingMembershipId && currentMember) {
+      document.getElementById('fullName').value = currentMember.fullName || '';
+      document.getElementById('branch').value = currentMember.branch || '';
+      if (currentMember.issueDate) issueDateField.value = currentMember.issueDate;
+      membershipIdField.textContent = currentMember.membershipId || '—';
+      if (currentMember.photo) applyPhotoDataUrl(currentMember.photo);
+    } else {
+      generateMembershipId().then((id) => {
+        membershipIdField.textContent = id;
+      });
+    }
+  })();
+
   const PHOTO_MAX_BYTES = 300 * 1024;
   const PHOTO_TARGET_BYTES = 200 * 1024;
   const photoErrorEl = document.getElementById('photoError');
@@ -601,7 +653,10 @@
     submitBtn.classList.add('opacity-70', 'cursor-wait');
 
     try {
-      const membershipId = await generateMembershipId();
+      // Keep the existing ID (and original creation date) when editing;
+      // only mint a brand-new ID for a first-time registration.
+      const isEdit = !!editingMembershipId;
+      const membershipId = isEdit ? editingMembershipId : await generateMembershipId();
       membershipIdField.textContent = membershipId;
 
       const memberData = {
@@ -611,7 +666,7 @@
         issueDate,
         signatoryName,
         photo: photoDataUrl || '',
-        createdAt: new Date().toISOString()
+        createdAt: (isEdit && currentMember && currentMember.createdAt) || new Date().toISOString()
       };
 
       // Cache locally so the card works offline. Large photos can exceed quota —
@@ -669,6 +724,8 @@
   }
 
   function populateCard(data) {
+    currentMember = data;
+    editingMembershipId = data.membershipId || null;
     const setText = (id, value) => {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
@@ -707,13 +764,34 @@
       return;
     }
 
+    currentMember = null;
+    editingMembershipId = null;
     emptyState.classList.remove('hidden');
     cardArea.classList.add('hidden');
   }
 
+  function enterEditMode() {
+    if (currentMember) {
+      editingMembershipId = currentMember.membershipId || null;
+      document.getElementById('fullName').value = currentMember.fullName || '';
+      document.getElementById('branch').value = currentMember.branch || '';
+      if (currentMember.issueDate) issueDateField.value = currentMember.issueDate;
+      membershipIdField.textContent = currentMember.membershipId || '—';
+      if (currentMember.photo) {
+        applyPhotoDataUrl(currentMember.photo);
+      } else {
+        clearPhoto();
+      }
+    }
+    showView('register');
+  }
+
   document.getElementById('backBtn').addEventListener('click', () => showView('register'));
-  document.getElementById('editDetailsBtn').addEventListener('click', () => showView('register'));
-  document.getElementById('emptyStateRegisterBtn').addEventListener('click', () => showView('register'));
+  document.getElementById('editDetailsBtn').addEventListener('click', enterEditMode);
+  document.getElementById('emptyStateRegisterBtn').addEventListener('click', () => {
+    editingMembershipId = null;
+    showView('register');
+  });
   document.getElementById('printBtn').addEventListener('click', () => window.print());
 
   document.getElementById('downloadImgBtn').addEventListener('click', async (e) => {
