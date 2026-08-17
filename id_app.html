@@ -12,7 +12,6 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 
-
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Feather Icons -->
@@ -23,26 +22,27 @@
 <!-- Supabase JS client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Fonts -->
+<!-- Fonts: Work Sans (body) + Playfair Display (headings) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 
 <script>
   tailwind.config = {
     theme: {
       extend: {
         colors: {
+          /* Teal base #00FFCF, Lime accent #99FF00 — dark brand keeps contrast */
           brand: '#041619',
-          brand2: '#0B2E31',
-          accent: '#00767D',
-          accentsoft: '#3FC1C9',
-          paper: '#F2F9F9',
-          slate: '#4E6367'
+          brand2: '#0A2A2C',
+          accent: '#00FFCF',
+          accentsoft: '#99FF00',
+          paper: '#F0FFFB',
+          slate: '#3D5A5C'
         },
         fontFamily: {
-          display: ['Fraunces', 'serif'],
-          body: ['Inter', 'sans-serif'],
+          display: ['Playfair Display', 'serif'],
+          body: ['Work Sans', 'sans-serif'],
           mono: ['JetBrains Mono', 'monospace'],
           signature: ['Dancing Script', 'cursive']
         }
@@ -52,26 +52,66 @@
 </script>
 
 <style>
-  body { font-family: 'Inter', sans-serif; }
-  .font-display { font-family: 'Fraunces', serif; }
-  .field-focus:focus-within { box-shadow: 0 0 0 3px rgba(0,118,125,0.25); border-color: #00767D; }
+  body { font-family: 'Work Sans', sans-serif; }
+  .font-display { font-family: 'Playfair Display', serif; }
+  .field-focus:focus-within { box-shadow: 0 0 0 3px rgba(0,255,207,0.28); border-color: #00FFCF; }
   .photo-drop { transition: border-color .2s ease, background-color .2s ease; }
-  .photo-drop.dragover { border-color: #00767D; background-color: rgba(0,118,125,0.08); }
-  ::selection { background: #3FC1C9; color: #041619; }
+  .photo-drop.dragover { border-color: #00FFCF; background-color: rgba(0,255,207,0.10); }
+  ::selection { background: #99FF00; color: #041619; }
 
-  /* Fine guilloche security-paper pattern used behind the card face */
+  /* Soft animated background orbs (teal + lime mix, low opacity) */
+  .bg-orbs {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    overflow: hidden;
+    pointer-events: none;
+    background: #041619;
+  }
+  .bg-orbs::before,
+  .bg-orbs::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.22;
+    animation: orbFloat 18s ease-in-out infinite;
+  }
+  .bg-orbs::before {
+    width: min(55vw, 420px);
+    height: min(55vw, 420px);
+    top: 8%;
+    left: 6%;
+    background: radial-gradient(circle at 35% 35%, rgba(0,255,207,0.55), rgba(153,255,0,0.25) 55%, transparent 70%);
+    animation-duration: 22s;
+  }
+  .bg-orbs::after {
+    width: min(48vw, 360px);
+    height: min(48vw, 360px);
+    bottom: 10%;
+    right: 8%;
+    background: radial-gradient(circle at 60% 40%, rgba(153,255,0,0.50), rgba(0,255,207,0.28) 55%, transparent 70%);
+    animation-duration: 16s;
+    animation-direction: reverse;
+  }
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(18px, -22px) scale(1.06); }
+    66% { transform: translate(-14px, 16px) scale(0.96); }
+  }
+
   .guilloche {
     background-image:
-      repeating-linear-gradient(115deg, rgba(0,118,125,0.07) 0px, rgba(0,118,125,0.07) 1px, transparent 1px, transparent 14px),
-      repeating-linear-gradient(65deg, rgba(0,118,125,0.05) 0px, rgba(0,118,125,0.05) 1px, transparent 1px, transparent 14px);
+      repeating-linear-gradient(115deg, rgba(0,255,207,0.07) 0px, rgba(0,255,207,0.07) 1px, transparent 1px, transparent 14px),
+      repeating-linear-gradient(65deg, rgba(153,255,0,0.05) 0px, rgba(153,255,0,0.05) 1px, transparent 1px, transparent 14px);
   }
 
   .card-shell {
-    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 30px 60px -15px rgba(15,29,56,0.45), 0 10px 20px -8px rgba(15,29,56,0.3);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 30px 60px -15px rgba(4,22,25,0.55), 0 10px 20px -8px rgba(4,22,25,0.35);
   }
 
   .foil-rule {
-    background: linear-gradient(90deg, transparent, #00767D, #3FC1C9, #00767D, transparent);
+    background: linear-gradient(90deg, transparent, #00FFCF, #99FF00, #00FFCF, transparent);
     height: 2px;
   }
 
@@ -79,9 +119,8 @@
   .btn-hover:hover { transform: translateY(-1px); }
   .btn-hover:active { transform: translateY(0); }
 
-  .seal-ring text { fill: #3FC1C9; }
+  .seal-ring text { fill: #00FFCF; }
 
-  /* Print rules: isolate only the card */
   @media print {
     body * { visibility: hidden; }
     #printArea, #printArea * { visibility: visible; }
@@ -98,7 +137,7 @@
 </head>
 <body class="bg-brand min-h-screen text-slate-800">
 
-<div class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_15%_10%,rgba(0,118,125,0.10),transparent_38%),radial-gradient(circle_at_85%_85%,rgba(0,118,125,0.08),transparent_38%)]"></div>
+<div class="bg-orbs" aria-hidden="true"></div>
 
 <!-- ============================= REGISTRATION VIEW ============================= -->
 <div id="registrationView" class="view-fade">
@@ -112,9 +151,10 @@
 
     <main class="bg-paper rounded-2xl shadow-2xl p-5 sm:p-8 border border-white/10">
       <form id="registrationForm" novalidate>
+        <div class="flex flex-col sm:flex-row gap-6 sm:gap-8">
 
-                  <!-- Photo upload (max 300 KB; prefers ≤ 200 KB) -->
-          <div class="flex flex-col items-center gap-3">
+          <!-- Photo upload (max 300 KB; prefers ≤ 200 KB) -->
+          <div class="flex flex-col items-center gap-3 shrink-0">
             <label for="photoInput" class="sr-only">Upload profile photo</label>
             <div id="photoDrop" class="photo-drop w-32 h-32 sm:w-36 sm:h-36 rounded-xl border-2 border-dashed border-brand/20 bg-white flex items-center justify-center overflow-hidden cursor-pointer relative">
               <img id="photoPreview" src="" alt="" class="w-full h-full object-cover hidden" />
@@ -130,7 +170,7 @@
           </div>
 
           <!-- Text fields -->
-          <div class="grid gap-4 sm:gap-5 flex-1">
+          <div class="grid gap-4 sm:gap-5 flex-1 min-w-0">
             <div>
               <label for="fullName" class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Full name</label>
               <div class="field-focus rounded-lg border border-brand/15 bg-white transition">
@@ -149,11 +189,13 @@
                 <p class="text-[11px] text-slate/60 mt-1">Auto-assigned, not editable.</p>
               </div>
               <div>
-                <label for="issueDate" class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Issue date</label>
-                <div class="field-focus rounded-lg border border-brand/15 bg-white transition">
-                  <input required id="issueDate" name="issueDate" type="date"
-                    class="w-full bg-transparent px-3.5 py-2.5 rounded-lg outline-none text-brand text-sm" />
+                <label class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Issue date</label>
+                <div class="rounded-lg border border-brand/15 bg-brand/5 flex items-center gap-2 px-3.5 py-2.5">
+                  <i data-feather="lock" class="w-3.5 h-3.5 text-slate/50 shrink-0"></i>
+                  <span id="issueDateDisplay" class="text-brand text-sm">—</span>
                 </div>
+                <input type="hidden" id="issueDate" name="issueDate" />
+                <p class="text-[11px] text-slate/60 mt-1">Set to today’s date, not editable.</p>
               </div>
             </div>
 
@@ -166,6 +208,88 @@
                   <option>Uyo City HQ</option>
                   <option>Eket Branch</option>
                   <option>Aksu Branch</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="phone" class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Phone number</label>
+                <div class="field-focus rounded-lg border border-brand/15 bg-white transition flex">
+                  <select id="countryCode" name="countryCode" class="bg-brand/5 border-r border-brand/10 px-2 py-2.5 rounded-l-lg outline-none text-brand text-sm shrink-0" aria-label="Country code">
+                    <option value="+234" selected>+234</option>
+                    <option value="+1">+1</option>
+                    <option value="+44">+44</option>
+                    <option value="+233">+233</option>
+                    <option value="+27">+27</option>
+                    <option value="+254">+254</option>
+                    <option value="+91">+91</option>
+                    <option value="+971">+971</option>
+                  </select>
+                  <input required id="phone" name="phone" type="tel" inputmode="numeric" placeholder="8012345678"
+                    pattern="[0-9]{7,15}"
+                    class="w-full bg-transparent px-3 py-2.5 rounded-r-lg outline-none text-brand placeholder:text-slate/50" />
+                </div>
+                <p class="text-[11px] text-slate/60 mt-1">Digits only; country code selected separately.</p>
+              </div>
+              <div>
+                <label for="email" class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Email</label>
+                <div class="field-focus rounded-lg border border-brand/15 bg-white transition">
+                  <input required id="email" name="email" type="email" placeholder="name@example.com"
+                    pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+                    class="w-full bg-transparent px-3.5 py-2.5 rounded-lg outline-none text-brand placeholder:text-slate/50" />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="gender" class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Gender</label>
+                <div class="field-focus rounded-lg border border-brand/15 bg-white transition">
+                  <select required id="gender" name="gender" class="w-full bg-transparent px-3.5 py-2.5 rounded-lg outline-none text-brand">
+                    <option value="" disabled selected>Select gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label for="maritalStatus" class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Marital status</label>
+                <div class="field-focus rounded-lg border border-brand/15 bg-white transition">
+                  <select required id="maritalStatus" name="maritalStatus" class="w-full bg-transparent px-3.5 py-2.5 rounded-lg outline-none text-brand">
+                    <option value="" disabled selected>Select status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label for="address" class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Residential address</label>
+              <div class="field-focus rounded-lg border border-brand/15 bg-white transition">
+                <textarea required id="address" name="address" rows="2" placeholder="Street, city, state"
+                  class="w-full bg-transparent px-3.5 py-2.5 rounded-lg outline-none text-brand placeholder:text-slate/50 resize-y min-h-[2.75rem]"></textarea>
+              </div>
+            </div>
+
+            <div>
+              <label for="areaOfInterest" class="block text-xs font-semibold uppercase tracking-wide text-slate mb-1">Area of interest</label>
+              <div class="field-focus rounded-lg border border-brand/15 bg-white transition">
+                <select required id="areaOfInterest" name="areaOfInterest" class="w-full bg-transparent px-3.5 py-2.5 rounded-lg outline-none text-brand">
+                  <option value="" disabled selected>Select an area</option>
+                  <option>Usher</option>
+                  <option>Children</option>
+                  <option>Prayer</option>
+                  <option>Evangelism</option>
+                  <option>Christianaires</option>
+                  <option>Musicians</option>
+                  <option>Media</option>
+                  <option>Technical Unit</option>
+                  <option>Protocol</option>
+                  <option>Creativity</option>
+                  <option>Welfare</option>
                 </select>
               </div>
             </div>
@@ -185,14 +309,14 @@
 
         <div class="mt-7 flex flex-wrap justify-center items-center gap-3">
           <button type="submit" id="submitBtn"
-            class="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand2 text-white font-medium px-5 py-3 rounded-lg transition-all duration-200 hover:shadow-lg active:scale-[0.98]">
-            <i data-feather="credit-card" class="w-4 h-4"></i>
+            class="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand2 text-white font-medium px-5 py-3 rounded-lg transition-all duration-200 hover:shadow-lg active:scale-[0.98] border border-accent/30">
+            <i data-feather="credit-card" class="w-4 h-4 text-accent"></i>
             Generate my ID card
           </button>
 
           <a href="index.html"
              id="backHomeBtn"
-             class="inline-flex items-center justify-center gap-2 border border-brand/20 hover:border-accent text-white font-medium px-5 py-3 rounded-lg transition-all duration-200">
+             class="inline-flex items-center justify-center gap-2 border border-accent/40 hover:border-accentsoft hover:bg-accent/10 text-white font-medium px-5 py-3 rounded-lg transition-all duration-200">
              <i data-feather="home" class="w-4 h-4"></i>
              Back to Home
           </a>
@@ -265,12 +389,12 @@
                 <defs>
                   <path id="ringPath" d="M 100,100 m -78,0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" />
                 </defs>
-                <circle cx="100" cy="100" r="95" fill="none" stroke="#00767D" stroke-width="2"/>
-                <circle cx="100" cy="100" r="60" fill="none" stroke="#00767D" stroke-width="1.5"/>
-                <text font-size="11" font-family="Inter, sans-serif" letter-spacing="3">
+                <circle cx="100" cy="100" r="95" fill="none" stroke="#00FFCF" stroke-width="2"/>
+                <circle cx="100" cy="100" r="60" fill="none" stroke="#99FF00" stroke-width="1.5"/>
+                <text font-size="11" font-family="Work Sans, sans-serif" letter-spacing="3">
                   <textPath href="#ringPath" startOffset="0%">GRACIOUSWORD GLOBAL MISSIONS • AUTHENTIC MEMBER •</textPath>
                 </text>
-                <path d="M100 60 a1 1 0 0 1 0 60 M75 90 a25 25 0 0 0 50 0" fill="none" stroke="#00767D" stroke-width="3" stroke-linecap="round"/>
+                <path d="M100 60 a1 1 0 0 1 0 60 M75 90 a25 25 0 0 0 50 0" fill="none" stroke="#00FFCF" stroke-width="3" stroke-linecap="round"/>
               </svg>
 
               <div>
@@ -331,7 +455,6 @@
           <i data-feather="edit-3" class="w-4 h-4"></i>
           Edit details
         </button>
-
       </div>
 
       <p id="statusMsg" class="no-print text-center text-white/50 text-xs mt-4 h-4"></p>
@@ -351,6 +474,12 @@
   //   branch (text)
   //   issue_date (date)
   //   signatory_name (text)
+  //   phone (text)
+  //   email (text)
+  //   gender (text)
+  //   address (text)
+  //   marital_status (text)
+  //   area_of_interest (text)
   //   photo (text)          -- optional base64 data URL or storage path
   //   created_at (timestamptz, default now())
   // Enable Row Level Security and add policies appropriate for your app.
@@ -359,7 +488,7 @@
   const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
 
   const supabaseClient =
-    (window.supabase && SUPABASE_URL && !SUPABASE_URL.includes('YOUR_PROJECT_REF'))
+    (window.supabase && SUPABASE_URL && !SUPABASE_URL.includes('YOUR_PROJECT_REF') && !SUPABASE_URL.includes('__SUPABASE'))
       ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
       : null;
 
@@ -368,13 +497,28 @@
   }
 
   const AUTHORIZING_OFFICER = 'Pst. Georgewealth';
-  // Session-only (RAM). Not written to localStorage — each visit starts clean   // so a new person on the same device can register without seeing the last user.   let currentMemberData = null;
-
-  // The member record currently loaded on the card (from local cache or Supabase),
-  // and — while the registration form is open — the membership_id we're editing
-  // (null means "this is a brand-new registration").
+  let currentMemberData = null;
   let currentMember = null;
   let editingMembershipId = null;
+
+  function todayISO() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  function formatDateShort(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso + (String(iso).includes('T') ? '' : 'T00:00:00'));
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function setIssueDateLocked(isoDate) {
+    const iso = isoDate || todayISO();
+    const hidden = document.getElementById('issueDate');
+    const display = document.getElementById('issueDateDisplay');
+    if (hidden) hidden.value = iso;
+    if (display) display.textContent = formatDateShort(iso);
+  }
 
   async function generateMembershipId() {
     const year = new Date().getFullYear();
@@ -382,11 +526,6 @@
     let nextSeq = 1;
     if (supabaseClient) {
       try {
-        // Base the next number on the highest existing sequence for THIS YEAR's
-        // prefix, not on total row count — a raw count drifts as soon as any
-        // row is deleted, or a new year starts (count would keep climbing
-        // instead of resetting to 0001), and it never re-used an ID that was
-        // meant to be edited in place.
         const { data, error } = await supabaseClient
           .from('members')
           .select('membership_id')
@@ -412,17 +551,16 @@
       branch: memberData.branch,
       issue_date: memberData.issueDate,
       signatory_name: memberData.signatoryName,
+      phone: memberData.phone || null,
+      email: memberData.email || null,
+      gender: memberData.gender || null,
+      address: memberData.address || null,
+      marital_status: memberData.maritalStatus || null,
+      area_of_interest: memberData.areaOfInterest || null,
       photo: memberData.photo || null,
       created_at: memberData.createdAt
     };
     try {
-      // upsert (not insert): if a row with this membership_id already exists,
-      // it's updated in place; otherwise a new row is created. This is what
-      // makes "Edit details" update the existing record instead of creating
-      // a new one. It requires a UNIQUE constraint on members.membership_id —
-      // add one in Supabase (Table Editor → members → membership_id → add
-      // "Unique" constraint) if you haven't already, or onConflict below
-      // silently falls back to inserting a duplicate row.
       const { data, error } = await supabaseClient
         .from('members')
         .upsert([row], { onConflict: 'membership_id' })
@@ -453,6 +591,12 @@
         branch: row.branch,
         issueDate: row.issue_date,
         signatoryName: row.signatory_name,
+        phone: row.phone || '',
+        email: row.email || '',
+        gender: row.gender || '',
+        address: row.address || '',
+        maritalStatus: row.marital_status || '',
+        areaOfInterest: row.area_of_interest || '',
         photo: row.photo || '',
         createdAt: row.created_at
       };
@@ -479,16 +623,13 @@
       registrationView.classList.add('view-fade');
       window.location.hash = 'register';
 
-      // Edit details (same session): prefill and KEEP the same membership ID
       if (currentMemberData && currentMemberData.membershipId) {
         membershipIdField.textContent = currentMemberData.membershipId;
         const nameEl = document.getElementById('fullName');
         const branchEl = document.getElementById('branch');
         if (nameEl) nameEl.value = currentMemberData.fullName || '';
         if (branchEl) branchEl.value = currentMemberData.branch || '';
-        if (issueDateField && currentMemberData.issueDate) {
-          issueDateField.value = String(currentMemberData.issueDate).slice(0, 10);
-        }
+        setIssueDateLocked(currentMemberData.issueDate || todayISO());
         if (currentMemberData.photo) {
           photoDataUrl = currentMemberData.photo;
           if (photoPreview) {
@@ -497,13 +638,35 @@
           }
           if (photoPlaceholder) photoPlaceholder.classList.add('hidden');
         }
+        // Prefill extended fields when editing
+        const phoneEl = document.getElementById('phone');
+        const emailEl = document.getElementById('email');
+        const genderEl = document.getElementById('gender');
+        const addressEl = document.getElementById('address');
+        const maritalEl = document.getElementById('maritalStatus');
+        const interestEl = document.getElementById('areaOfInterest');
+        const ccEl = document.getElementById('countryCode');
+        if (phoneEl) {
+          const full = currentMemberData.phone || '';
+          const match = full.match(/^(\+\d{1,4})\s*(.*)$/);
+          if (match) {
+            if (ccEl) ccEl.value = match[1];
+            phoneEl.value = match[2].replace(/\D/g, '');
+          } else {
+            phoneEl.value = full.replace(/\D/g, '');
+          }
+        }
+        if (emailEl) emailEl.value = currentMemberData.email || '';
+        if (genderEl) genderEl.value = currentMemberData.gender || '';
+        if (addressEl) addressEl.value = currentMemberData.address || '';
+        if (maritalEl) maritalEl.value = currentMemberData.maritalStatus || '';
+        if (interestEl) interestEl.value = currentMemberData.areaOfInterest || '';
       } else {
-        // Fresh registration on this device — blank form + new ID
         const nameEl = document.getElementById('fullName');
         const branchEl = document.getElementById('branch');
         if (nameEl) nameEl.value = '';
         if (branchEl) branchEl.value = '';
-        if (issueDateField) issueDateField.value = new Date().toISOString().split('T')[0];
+        setIssueDateLocked(todayISO());
         photoDataUrl = '';
         if (photoPreview) {
           photoPreview.src = '';
@@ -511,6 +674,12 @@
         }
         if (photoPlaceholder) photoPlaceholder.classList.remove('hidden');
         if (typeof photoInput !== 'undefined' && photoInput) photoInput.value = '';
+        ['phone','email','gender','address','maritalStatus','areaOfInterest'].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        const ccEl = document.getElementById('countryCode');
+        if (ccEl) ccEl.value = '+234';
         generateMembershipId().then((id) => {
           membershipIdField.textContent = id;
         });
@@ -531,16 +700,10 @@
   const membershipIdField = document.getElementById('membershipId');
   const issueDateField = document.getElementById('issueDate');
 
-  issueDateField.value = new Date().toISOString().split('T')[0];
+  setIssueDateLocked(todayISO());
   let photoDataUrl = '';
 
-  // If this device already has a registered member, default the form to
-  // editing that record (same ID, fields prefilled) instead of always
-  // preparing a brand-new ID — otherwise submitting from here (e.g. landing
-  // on the form directly, not via the "Edit details" button) would insert a
-  // second row for the same person.
   (function initializeRegistrationDefaults() {
-    // Always start clean — no localStorage restore of a previous member
     generateMembershipId().then((id) => {
       membershipIdField.textContent = id;
     });
@@ -645,28 +808,47 @@
   );
   photoDrop.addEventListener('drop', (e) => handlePhotoFile(e.dataTransfer.files[0]));
 
+  const EMAIL_RE = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     formError.classList.add('hidden');
 
     const fullName = document.getElementById('fullName').value.trim();
     const branch = document.getElementById('branch').value;
-    const issueDate = issueDateField.value;
+    const issueDate = issueDateField.value || todayISO();
     const signatoryName = AUTHORIZING_OFFICER;
+    const countryCode = document.getElementById('countryCode').value;
+    const phoneDigits = document.getElementById('phone').value.trim().replace(/\D/g, '');
+    const email = document.getElementById('email').value.trim();
+    const gender = document.getElementById('gender').value;
+    const address = document.getElementById('address').value.trim();
+    const maritalStatus = document.getElementById('maritalStatus').value;
+    const areaOfInterest = document.getElementById('areaOfInterest').value;
 
-    if (!fullName || !branch || !issueDate) {
+    if (!fullName || !branch || !issueDate || !phoneDigits || !email || !gender || !address || !maritalStatus || !areaOfInterest) {
       formError.textContent = 'Please fill in every field before continuing.';
       formError.classList.remove('hidden');
       return;
     }
+    if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+      formError.textContent = 'Enter a valid phone number (7–15 digits).';
+      formError.classList.remove('hidden');
+      return;
+    }
+    if (!EMAIL_RE.test(email)) {
+      formError.textContent = 'Please enter a valid email address (e.g. name@example.com).';
+      formError.classList.remove('hidden');
+      return;
+    }
+
+    const phone = `${countryCode} ${phoneDigits}`;
 
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
     submitBtn.classList.add('opacity-70', 'cursor-wait');
 
     try {
-      // Keep the existing ID (and original creation date) when editing;
-      // only mint a brand-new ID for a first-time registration.
       const isEdit = !!editingMembershipId;
       const membershipId = isEdit ? editingMembershipId : await generateMembershipId();
       membershipIdField.textContent = membershipId;
@@ -677,17 +859,18 @@
         branch,
         issueDate,
         signatoryName,
+        phone,
+        email,
+        gender,
+        address,
+        maritalStatus,
+        areaOfInterest,
         photo: photoDataUrl || '',
         createdAt: (isEdit && currentMember && currentMember.createdAt) || new Date().toISOString()
       };
 
-      // if that happens, retry without the photo rather than blocking the card.
-            // Session only — for Edit details + download in this tab
       currentMemberData = memberData;
-
-      // Supabase is best-effort; failures are logged inside saveMemberToSupabase
       await saveMemberToSupabase(memberData);
-
       showView('card');
     } catch (err) {
       console.error(err);
@@ -712,9 +895,9 @@
 
   const DEFAULT_PHOTO = 'data:image/svg+xml;utf8,' + encodeURIComponent(`
     <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-      <rect width="200" height="200" fill="#0B2E31"/>
-      <circle cx="100" cy="78" r="34" fill="#00767D" opacity="0.35"/>
-      <ellipse cx="100" cy="160" rx="58" ry="42" fill="#00767D" opacity="0.35"/>
+      <rect width="200" height="200" fill="#0A2A2C"/>
+      <circle cx="100" cy="78" r="34" fill="#00FFCF" opacity="0.35"/>
+      <ellipse cx="100" cy="160" rx="58" ry="42" fill="#99FF00" opacity="0.30"/>
     </svg>
   `);
 
@@ -761,13 +944,28 @@
       editingMembershipId = currentMember.membershipId || null;
       document.getElementById('fullName').value = currentMember.fullName || '';
       document.getElementById('branch').value = currentMember.branch || '';
-      if (currentMember.issueDate) issueDateField.value = currentMember.issueDate;
+      setIssueDateLocked(currentMember.issueDate || todayISO());
       membershipIdField.textContent = currentMember.membershipId || '—';
       if (currentMember.photo) {
         applyPhotoDataUrl(currentMember.photo);
       } else {
         clearPhoto();
       }
+      const full = currentMember.phone || '';
+      const match = full.match(/^(\+\d{1,4})\s*(.*)$/);
+      const phoneEl = document.getElementById('phone');
+      const ccEl = document.getElementById('countryCode');
+      if (match) {
+        if (ccEl) ccEl.value = match[1];
+        if (phoneEl) phoneEl.value = match[2].replace(/\D/g, '');
+      } else if (phoneEl) {
+        phoneEl.value = full.replace(/\D/g, '');
+      }
+      document.getElementById('email').value = currentMember.email || '';
+      document.getElementById('gender').value = currentMember.gender || '';
+      document.getElementById('address').value = currentMember.address || '';
+      document.getElementById('maritalStatus').value = currentMember.maritalStatus || '';
+      document.getElementById('areaOfInterest').value = currentMember.areaOfInterest || '';
     }
     showView('register');
   }
@@ -811,7 +1009,7 @@
     btn.innerHTML = '<span class="text-xs">Preparing PDF…</span>';
     try {
       const card = document.getElementById('idCard');
-      const canvas = await html2canvas(card, { scale: 3, backgroundColor: '#F2F9F9', useCORS: true });
+      const canvas = await html2canvas(card, { scale: 3, backgroundColor: '#F0FFFB', useCORS: true });
       const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
 
@@ -839,10 +1037,7 @@
     }
   });
 
-  // ============================= Initial routing on load =============================
   document.addEventListener('DOMContentLoaded', () => {
-    // Always start on the registration form so a new person on this device
-    // never sees a previous member's card.
     showView('register');
   });
 </script>
