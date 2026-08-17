@@ -36,10 +36,20 @@
             deep: '#2E0854',
             light: '#6B3FB0',
           },
-          gold: {
-            DEFAULT: '#C9A227',
-            light: '#E9C874',
-            soft: '#F6E9C4',
+          teal: {
+            DEFAULT: '#00FFCF',
+            light: '#66FFE1',
+            deep: '#00C9A3',
+            soft: '#DFFFF6',
+          },
+          lime: {
+            DEFAULT: '#99FF00',
+            light: '#C0FF66',
+            deep: '#78CC00',
+            soft: '#F0FFDE',
+          },
+          crimson: {
+            DEFAULT: '#DD040D',
           },
           cream: '#FBF8F3',
           lavender: '#F4EEFB',
@@ -59,8 +69,11 @@
     --royal: #4B1D8F;
     --royal-deep: #2E0854;
     --royal-light: #6B3FB0;
-    --gold: #C9A227;
-    --gold-light: #E9C874;
+    --teal: #00FFCF;
+    --teal-light: #66FFE1;
+    --lime: #99FF00;
+    --lime-light: #C0FF66;
+    --crimson: #DD040D;
   }
 
   html { scroll-behavior: auto; }
@@ -90,11 +103,11 @@
     .arch-card { border-radius: 9999px 9999px 0.75rem 0.75rem / 2.2rem 2.2rem 0.75rem 0.75rem; }
   }
 
-  /* Thin radiant gold "rays" divider used beneath the hero and above the CTA —
+  /* Thin radiant "rays" divider used beneath the hero and above the CTA —
      a quiet nod to light breaking through stained glass. */
   .ray-divider {
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold-light) 50%, var(--gold) 80%, transparent);
+    background: linear-gradient(90deg, transparent, var(--teal) 20%, var(--lime) 50%, var(--teal) 80%, transparent);
     opacity: 0.9;
   }
 
@@ -122,7 +135,7 @@
 
   /* Visible keyboard focus for accessibility */
   a:focus-visible, button:focus-visible {
-    outline: 2px solid var(--gold-light);
+    outline: 2px solid var(--lime);
     outline-offset: 3px;
   }
 
@@ -135,21 +148,29 @@
     box-shadow: 0 20px 40px -12px rgba(75, 29, 143, 0.28);
   }
 
-  /* Gold underline flourish for section headings */
+  /* Underline flourish for section headings */
   .heading-flourish::after {
     content: "";
     display: block;
     width: 64px;
     height: 3px;
     margin: 0.85rem auto 0;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    background: linear-gradient(90deg, var(--teal), var(--lime));
     border-radius: 999px;
   }
   .heading-flourish.align-left::after { margin: 0.85rem 0 0; }
 
   /* Hero halo glow behind logo placeholder */
   .halo-glow {
-    box-shadow: 0 0 0 6px rgba(201, 162, 39, 0.18), 0 0 60px 10px rgba(201, 162, 39, 0.25);
+    box-shadow: 0 0 0 6px rgba(0, 255, 207, 0.18), 0 0 60px 10px rgba(153, 255, 0, 0.22);
+  }
+
+  /* Brand gradient text for the "Global Mission" part of the church name */
+  .brand-gradient {
+    background: linear-gradient(90deg, var(--teal), var(--lime));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   /* Mobile nav panel */
@@ -200,16 +221,16 @@
           alt="Gracious Word Global Mission Logo"
           class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]"
       />
-      <span class="text-white font-display font-semibold tracking-wide text-sm sm:text-base">Gracious Word Global Mission</span>
+      <span class="text-white font-display font-semibold tracking-wide text-sm sm:text-base">Gracious Word <span class="brand-gradient">Global Mission</span></span>
     </a>
 
     <!-- Desktop links -->
     <div class="hidden md:flex items-center gap-8 text-sm text-white/85 font-medium">
-      <a href="#welcome" class="hover:text-gold-light transition-colors">Home</a>
-      <a href="#vision" class="hover:text-gold-light transition-colors">Vision</a>
-      <a href="#ministries" class="hover:text-gold-light transition-colors">Ministries</a>
-      <a href="#branches" class="hover:text-gold-light transition-colors">Branches</a>
-      <a href="id_app.html" class="ml-2 bg-gold hover:bg-gold-light text-royal-deep font-semibold px-5 py-2 rounded-full transition-colors shadow-md">
+      <a href="#welcome" class="hover:text-lime transition-colors">Home</a>
+      <a href="#vision" class="hover:text-lime transition-colors">Vision</a>
+      <a href="#ministries" class="hover:text-lime transition-colors">Ministries</a>
+      <a href="#branches" class="hover:text-lime transition-colors">Branches</a>
+      <a href="id_app.html" class="ml-2 bg-teal hover:bg-lime text-royal-deep font-semibold px-5 py-2 rounded-full transition-colors shadow-md">
         Register
       </a>
     </div>
@@ -227,7 +248,7 @@
       <a href="#vision" class="mobile-link">Vision</a>
       <a href="#ministries" class="mobile-link">Ministries</a>
       <a href="#branches" class="mobile-link">Branches</a>
-      <a href="id_app.html" class="mobile-link text-gold-light">Register Now</a>
+      <a href="id_app.html" class="mobile-link text-lime">Register Now</a>
     </div>
   </div>
 </nav>
@@ -251,17 +272,17 @@
     <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
 
       <!-- Logo placeholder -->
-      <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-royal-light/40 border-2 border-gold/60 halo-glow flex items-center justify-center mx-auto overflow-hidden">
+      <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-royal-light/40 border-2 border-teal/60 halo-glow flex items-center justify-center mx-auto overflow-hidden">
         <img src="logo.png" alt="Gracious Word Global Mission Logo" class="w-20 h-30 sm:w-28 sm:h-28 object-contain" />
       </div>
 
       <!-- Hero copy -->
       <div class="reveal text-center md:text-left order-2 md:order-2">
         <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight tracking-tight">
-          GRACIOUS WORD<br class="hidden sm:block"/> GLOBAL MISSION
+          GRACIOUS WORD<br class="hidden sm:block"/> <span class="brand-gradient">GLOBAL MISSION</span>
         </h1>
 
-        <p class="mt-5 font-display italic text-gold-light text-lg sm:text-xl max-w-xl mx-auto md:mx-0">
+        <p class="mt-5 font-display italic text-lime text-lg sm:text-xl max-w-xl mx-auto md:mx-0">
           "&hellip;bringing God's&#8209;life to men."
         </p>
 
@@ -271,11 +292,11 @@
 
         <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
           <a href="id_app.html"
-             class="bg-gold hover:bg-gold-light text-royal-deep font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-gold/20 transition-all duration-300 hover:-translate-y-0.5 text-center">
+             class="bg-teal hover:bg-lime text-royal-deep font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 transition-all duration-300 hover:-translate-y-0.5 text-center">
             Join Our Family
           </a>
           <a href="#welcome"
-             class="border border-white/40 hover:border-gold-light hover:text-gold-light text-white font-semibold px-8 py-3.5 rounded-full transition-all duration-300 text-center">
+             class="border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full transition-all duration-300 text-center">
             Learn More
           </a>
         </div>
@@ -306,15 +327,15 @@
       disabled
     >
       <!-- Live countdown pill -->
-      <div class="absolute top-4 right-4 z-10 bg-royal-deep/85 backdrop-blur text-gold-light text-[11px] font-semibold tracking-wide px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
-        <span class="w-1.5 h-1.5 rounded-full bg-gold-light gc-live-dot"></span>
+      <div class="absolute top-4 right-4 z-10 bg-royal-deep/85 backdrop-blur text-lime text-[11px] font-semibold tracking-wide px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+        <span class="w-1.5 h-1.5 rounded-full bg-crimson gc-live-dot"></span>
         <span id="graceCardCountdownText">Loading&hellip;</span>
       </div>
 
       <!-- Image / skeleton -->
       <div class="w-full aspect-[4/5] bg-lavender flex items-center justify-center overflow-hidden">
         <img id="graceCardImage" src="" alt="" class="w-full h-full object-cover hidden" loading="lazy" decoding="async" />
-        <div id="graceCardSkeleton" class="w-full h-full animate-pulse bg-gradient-to-br from-royal/10 to-gold/10 flex items-center justify-center">
+        <div id="graceCardSkeleton" class="w-full h-full animate-pulse bg-gradient-to-br from-royal/10 to-teal/10 flex items-center justify-center">
           <i data-feather="image" class="text-royal/30 w-10 h-10"></i>
         </div>
       </div>
@@ -322,7 +343,7 @@
       <div class="p-6 pt-5">
         <h3 id="graceCardTitle" class="font-display font-semibold text-lg text-royal-deep">Loading Grace Card&hellip;</h3>
         <p id="graceCardScripture" class="mt-2 text-sm italic text-ink/60 leading-relaxed"></p>
-        <span class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-gold tracking-wide uppercase">
+        <span class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-teal tracking-wide uppercase">
           Tap to view full screen
           <i data-feather="maximize-2" class="w-3.5 h-3.5"></i>
         </span>
@@ -351,7 +372,7 @@
     <button
       id="graceCardClose"
       aria-label="Close Grace Card"
-      class="absolute top-5 right-5 sm:top-8 sm:right-8 w-11 h-11 rounded-full bg-white/10 hover:bg-gold hover:text-royal-deep text-white flex items-center justify-center transition-colors"
+      class="absolute top-5 right-5 sm:top-8 sm:right-8 w-11 h-11 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep text-white flex items-center justify-center transition-colors"
     >
       <i data-feather="x" class="w-6 h-6"></i>
     </button>
@@ -364,7 +385,7 @@
         class="max-h-[65vh] w-auto rounded-2xl shadow-2xl object-contain"
       />
       <h3 id="graceCardModalTitle" class="mt-6 font-display font-semibold text-xl sm:text-2xl text-white"></h3>
-      <p id="graceCardModalScripture" class="mt-3 italic text-gold-light text-sm sm:text-base leading-relaxed"></p>
+      <p id="graceCardModalScripture" class="mt-3 italic text-lime text-sm sm:text-base leading-relaxed"></p>
       <p id="graceCardModalDate" class="mt-4 text-xs text-white/50 tracking-wide uppercase"></p>
     </div>
   </div>
@@ -385,11 +406,11 @@
   <div class="max-w-5xl mx-auto mt-16 grid sm:grid-cols-2 gap-8 sm:gap-10">
     <!-- Card One -->
     <div class="reveal arch-card bg-white shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5">
-      <div class="w-28 h-28 mx-auto rounded-full bg-lavender border-4 border-gold/40 flex items-center justify-center overflow-hidden">
+      <div class="w-28 h-28 mx-auto rounded-full bg-lavender border-4 border-teal/40 flex items-center justify-center overflow-hidden">
         <span class="text-royal/50 text-xs font-medium text-center px-2">Pastor Photo</span>
       </div>
       <h3 class="mt-6 font-display font-semibold text-xl text-royal-deep">Pastor Georgewealth Udoh</h3>
-      <p class="text-gold text-sm font-medium tracking-wide mt-1">Lead Pastor</p>
+      <p class="text-teal text-sm font-medium tracking-wide mt-1">Lead Pastor</p>
       <p class="mt-4 italic text-ink/70 text-sm leading-relaxed">
         "Our calling is to help people know Christ, grow in grace and walk in God's purpose."
       </p>
@@ -397,11 +418,11 @@
 
     <!-- Card Two -->
     <div class="reveal arch-card bg-white shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5">
-      <div class="w-28 h-28 mx-auto rounded-full bg-lavender border-4 border-gold/40 flex items-center justify-center overflow-hidden">
+      <div class="w-28 h-28 mx-auto rounded-full bg-lavender border-4 border-teal/40 flex items-center justify-center overflow-hidden">
         <span class="text-royal/50 text-xs font-medium text-center px-2">Pastor Photo</span>
       </div>
       <h3 class="mt-6 font-display font-semibold text-xl text-royal-deep">Pastor Ronke Georgewealth Udoh</h3>
-      <p class="text-gold text-sm font-medium tracking-wide mt-1">Lead Pastor</p>
+      <p class="text-teal text-sm font-medium tracking-wide mt-1">Lead Pastor</p>
       <p class="mt-4 italic text-ink/70 text-sm leading-relaxed">
         "Every believer deserves a loving church family where faith, purpose and destiny are nurtured."
       </p>
@@ -453,43 +474,43 @@
   <div class="max-w-6xl mx-auto mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
     <!-- Icon cards -->
     <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-gold-soft flex items-center justify-center">
-        <i data-feather="feather" class="text-gold w-5 h-5"></i>
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
+        <i data-feather="feather" class="text-teal w-5 h-5"></i>
       </div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Gospel of Grace</h3>
     </div>
 
     <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-gold-soft flex items-center justify-center">
-        <i data-feather="book-open" class="text-gold w-5 h-5"></i>
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
+        <i data-feather="book-open" class="text-teal w-5 h-5"></i>
       </div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Biblical Teaching</h3>
     </div>
 
     <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-gold-soft flex items-center justify-center">
-        <i data-feather="heart" class="text-gold w-5 h-5"></i>
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
+        <i data-feather="heart" class="text-teal w-5 h-5"></i>
       </div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Loving Community</h3>
     </div>
 
     <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-gold-soft flex items-center justify-center">
-        <i data-feather="wind" class="text-gold w-5 h-5"></i>
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
+        <i data-feather="wind" class="text-teal w-5 h-5"></i>
       </div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Freedom of Worship</h3>
     </div>
 
     <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-gold-soft flex items-center justify-center">
-        <i data-feather="trending-up" class="text-gold w-5 h-5"></i>
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
+        <i data-feather="trending-up" class="text-teal w-5 h-5"></i>
       </div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Spiritual Growth</h3>
     </div>
 
     <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-gold-soft flex items-center justify-center">
-        <i data-feather="users" class="text-gold w-5 h-5"></i>
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
+        <i data-feather="users" class="text-teal w-5 h-5"></i>
       </div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Serving with Purpose</h3>
     </div>
@@ -518,7 +539,7 @@
       committed to His Word and committed to one another.
     </p>
     <a href="id_app.html"
-       class="inline-block mt-9 bg-gold hover:bg-gold-light text-royal-deep font-semibold px-10 py-4 rounded-full shadow-xl transition-all duration-300 hover:-translate-y-1 text-lg">
+       class="inline-block mt-9 bg-teal hover:bg-lime text-royal-deep font-semibold px-10 py-4 rounded-full shadow-xl transition-all duration-300 hover:-translate-y-1 text-lg">
       Register Now
     </a>
   </div>
@@ -538,7 +559,7 @@
         <i data-feather="map-pin" class="text-royal w-5 h-5"></i>
       </div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Uyo City Headquarters</h3>
-      <p class="text-gold text-xs font-semibold uppercase tracking-wider mt-1">Headquarters</p>
+      <p class="text-teal text-xs font-semibold uppercase tracking-wider mt-1">Headquarters</p>
       <p class="mt-3 text-ink/60 text-sm">E3 Event Center, Ibom Tropicana Mall, Uyo (Temporary)</p>
       <a
         href="https://www.google.com/maps/search/?api=1&query=E3+Event+Center,+Ibom+Tropicana+Mall,+Uyo"
@@ -615,7 +636,7 @@
     <p class="font-display italic text-xl sm:text-2xl text-white leading-relaxed">
       "Now I'm turning you over to God, our marvelous God whose gracious Word&hellip; give you everything you could possibly need in this community of holy friends."
     </p>
-    <p class="mt-5 text-gold-light font-medium tracking-wide">Acts 20:32 [MSG]</p>
+    <p class="mt-5 text-lime font-medium tracking-wide">Acts 20:32 [MSG]</p>
   </div>
 </section>
 
@@ -631,32 +652,32 @@
           alt="Gracious Word Global Mission Logo"
           class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]"
         />
-        <span class="text-white font-display font-semibold">Gracious Word Global Mission</span>
+        <span class="text-white font-display font-semibold">Gracious Word <span class="brand-gradient">Global Mission</span></span>
       </div>
       <p class="mt-4 text-sm italic text-white/60">"&hellip;bringing the God&#8209;time to men."</p>
     </div>
 
     <!-- Quick links -->
     <div>
-      <h4 class="text-gold-light font-display font-semibold mb-4">Quick Links</h4>
+      <h4 class="text-lime font-display font-semibold mb-4">Quick Links</h4>
       <ul class="space-y-2 text-sm">
-        <li><a href="#hero" class="hover:text-gold-light transition-colors">Home</a></li>
-        <li><a href="id_app.html" class="hover:text-gold-light transition-colors">Register</a></li>
-        <li><a href="#vision" class="hover:text-gold-light transition-colors">Vision</a></li>
-        <li><a href="#ministries" class="hover:text-gold-light transition-colors">Ministries</a></li>
-        <li><a href="#branches" class="hover:text-gold-light transition-colors">Branches</a></li>
+        <li><a href="#hero" class="hover:text-lime transition-colors">Home</a></li>
+        <li><a href="id_app.html" class="hover:text-lime transition-colors">Register</a></li>
+        <li><a href="#vision" class="hover:text-lime transition-colors">Vision</a></li>
+        <li><a href="#ministries" class="hover:text-lime transition-colors">Ministries</a></li>
+        <li><a href="#branches" class="hover:text-lime transition-colors">Branches</a></li>
       </ul>
     </div>
 
     <!-- Contact -->
     <div>
-      <h4 class="text-gold-light font-display font-semibold mb-4">Contact</h4>
+      <h4 class="text-lime font-display font-semibold mb-4">Contact</h4>
       <ul class="space-y-2 text-sm">
         <li class="flex items-center gap-2">
           <i data-feather="mail" class="w-4 h-4"></i>
           <a
             href="mailto:graciousword78@gmail.com"
-            class="hover:text-gold transition-colors"
+            class="hover:text-teal transition-colors"
           >
             graciousword78@gmail.com
           </a>
@@ -668,12 +689,12 @@
 
     <!-- Social -->
     <div>
-      <h4 class="text-gold-light font-display font-semibold mb-4">Follow Us</h4>
+      <h4 class="text-lime font-display font-semibold mb-4">Follow Us</h4>
       <div class="flex gap-3">
-        <a href="https://www.facebook.com/share/18z5KfA6bh/?mibextid=wwXIfr" aria-label="Facebook" class="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="facebook" class="w-4 h-4"></i></a>
-        <a href="https://www.instagram.com/thegeorgewealth?igsh=MTQwdDhyeDFzMTg1aw%3D%3D&utm_source=qr" aria-label="Instagram" class="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="instagram" class="w-4 h-4"></i></a>
-        <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="youtube" class="w-4 h-4"></i></a>
-        <a href="https://www.tiktok.com/@graciousword_uyo?_r=1&_t=ZS-98PVv4vvikq" aria-label="TikTok" class="w-9 h-9 rounded-full bg-white/10 hover:bg-gold hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="music" class="w-4 h-4"></i></a>
+        <a href="https://www.facebook.com/share/18z5KfA6bh/?mibextid=wwXIfr" aria-label="Facebook" class="w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="facebook" class="w-4 h-4"></i></a>
+        <a href="https://www.instagram.com/thegeorgewealth?igsh=MTQwdDhyeDFzMTg1aw%3D%3D&utm_source=qr" aria-label="Instagram" class="w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="instagram" class="w-4 h-4"></i></a>
+        <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="youtube" class="w-4 h-4"></i></a>
+        <a href="https://www.tiktok.com/@graciousword_uyo?_r=1&_t=ZS-98PVv4vvikq" aria-label="TikTok" class="w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="music" class="w-4 h-4"></i></a>
       </div>
     </div>
 
@@ -764,8 +785,8 @@
     const card = document.createElement('div');
     card.className = 'reveal lift-hover bg-white/10 hover:bg-white/15 rounded-2xl p-6 text-center border border-white/10';
     card.innerHTML = `
-      <div class="w-11 h-11 mx-auto rounded-full bg-gold/20 flex items-center justify-center">
-        <i data-feather="${m.icon}" class="text-gold-light w-5 h-5"></i>
+      <div class="w-11 h-11 mx-auto rounded-full bg-teal/20 flex items-center justify-center">
+        <i data-feather="${m.icon}" class="text-lime w-5 h-5"></i>
       </div>
       <p class="mt-4 text-white font-medium text-sm">${m.name}</p>
     `;
