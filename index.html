@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>GWGM &mdash; The official website of Gracious Word Global Mission</title>
+<meta name="theme-color" content="#041619" />
+<title>GWGM — The Official Website of Gracious Word Global Mission</title>
+<meta name="description" content="Gracious Word Global Mission — living Christ, loving people, making disciples. Sermons, events, giving, branches and more." />
 
 <link rel="icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -11,46 +13,23 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 
-<!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Google Fonts: Playfair Display (display/serif) + Work Sans (body/sans) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-<!-- Feather Icons -->
 <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-
-<!-- Supabase JS v2 (powers the Today's Grace Card widget) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  // Extend Tailwind's default theme with our brand tokens
   tailwind.config = {
+    darkMode: 'class',
     theme: {
       extend: {
         colors: {
-          royal: {
-            DEFAULT: '#041619',
-            deep: '#041619',
-            light: '#041619',
-          },
-          teal: {
-            DEFAULT: '#00FFCF',
-            light: '#66FFE1',
-            deep: '#00C9A3',
-            soft: '#DFFFF6',
-          },
-          lime: {
-            DEFAULT: '#99FF00',
-            light: '#C0FF66',
-            deep: '#78CC00',
-            soft: '#F0FFDE',
-          },
-          crimson: {
-            DEFAULT: '#DD040D',
-          },
+          royal: { DEFAULT: '#041619', deep: '#041619', light: '#0A2A2F' },
+          teal:  { DEFAULT: '#00FFCF', light: '#66FFE1', deep: '#00C9A3', soft: '#DFFFF6' },
+          lime:  { DEFAULT: '#99FF00', light: '#C0FF66', deep: '#78CC00', soft: '#F0FFDE' },
+          crimson: { DEFAULT: '#DD040D' },
           cream: '#FBF8F3',
           lavender: '#F4EEFB',
           ink: '#241B33',
@@ -65,275 +44,335 @@
 </script>
 
 <style>
-  :root {
-    --royal: #041619;
-    --royal-deep: #041619;
-    --royal-light: #041619;
-    --teal: #00FFCF;
-    --teal-light: #66FFE1;
-    --lime: #99FF00;
-    --lime-light: #C0FF66;
-    --crimson: #DD040D;
+  :root{
+    --royal:#041619; --teal:#00FFCF; --teal-light:#66FFE1;
+    --lime:#99FF00; --lime-light:#C0FF66; --crimson:#DD040D;
   }
 
-  html { scroll-behavior: auto; }
-  @media (min-width: 768px) {
-    html { scroll-behavior: smooth; }
+  html { scroll-padding-top: 5.5rem; }
+  @media (min-width:768px){ html{ scroll-behavior:smooth; } }
+
+  body{
+    font-family:'Work Sans',sans-serif; color:#241B33; background-color:#FBF8F3;
+    -webkit-font-smoothing:antialiased;
   }
+  h1,h2,h3,.font-display{ font-family:'Playfair Display',serif; }
 
-  body {
-    font-family: 'Work Sans', sans-serif;
-    color: #241B33;
-    background-color: #FBF8F3;
-  }
-
-  h1, h2, h3, .font-display { font-family: 'Playfair Display', serif; }
-
-  /* ---------- Signature element: Gothic "arch window" card shape ----------
-     Church windows are pointed arches. We reuse a soft, rounded arch-top
-     (rather than a plain rectangle or uniform rounded-corner card) across
-     the pastor cards, doctrine cards, ministry cards and branch cards, so
-     the whole page reads as a series of "windows" into the church's life. */
-  .arch-card {
+  /* ---------- Signature "arch window" card ---------- */
+  .arch-card{
     border-radius: 9999px 9999px 1rem 1rem / 3.2rem 3.2rem 1rem 1rem;
-    position: relative;
-    overflow: hidden;
+    position:relative; overflow:hidden;
   }
-  @media (max-width: 480px) {
-    .arch-card { border-radius: 9999px 9999px 0.75rem 0.75rem / 2.2rem 2.2rem 0.75rem 0.75rem; }
-  }
-
-  /* Thin radiant "rays" divider used beneath the hero and above the CTA —
-     a quiet nod to light breaking through stained glass. */
-  .ray-divider {
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--teal) 20%, var(--lime) 50%, var(--teal) 80%, transparent);
-    opacity: 0.9;
+  @media (max-width:480px){
+    .arch-card{ border-radius: 9999px 9999px .75rem .75rem / 2.2rem 2.2rem .75rem .75rem; }
   }
 
-  /* Scroll fade-in */
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
+  .ray-divider{
+    height:2px;
+    background:linear-gradient(90deg,transparent,var(--teal) 20%,var(--lime) 50%,var(--teal) 80%,transparent);
+    opacity:.9;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
-    html { scroll-behavior: auto; }
+  /* ---------- Scroll reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .8s ease, transform .8s ease; }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+    html{ scroll-behavior:auto; }
   }
 
-  /* Sticky nav shadow-on-scroll state */
-  #navbar.scrolled {
-    box-shadow: 0 6px 24px -8px rgba(4, 22, 25, 0.35);
-    background-color: rgba(4, 22, 25, 0.97);
+  /* ---------- Nav ---------- */
+  #navbar{ background-color: rgba(4,22,25,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  #navbar.scrolled{ box-shadow:0 6px 24px -8px rgba(4,22,25,.45); background-color: rgba(4,22,25,.97); }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--lime); outline-offset:3px; border-radius:6px;
   }
 
-  /* Visible keyboard focus for accessibility */
-  a:focus-visible, button:focus-visible {
-    outline: 2px solid var(--lime);
-    outline-offset: 3px;
+  /* ---------- Global hover polish ---------- */
+  .lift-hover{ transition: transform .35s ease, box-shadow .35s ease, border-color .3s ease; }
+  .lift-hover:hover{ transform:translateY(-8px); box-shadow:0 20px 40px -12px rgba(4,22,25,.28); }
+
+  .btn-hover{ transition: transform .2s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease; }
+  .btn-hover:hover{ transform:translateY(-2px); }
+  .btn-hover:active{ transform:translateY(0); }
+
+  .heading-flourish::after{
+    content:""; display:block; width:64px; height:3px; margin:.85rem auto 0;
+    background:linear-gradient(90deg,var(--teal),var(--lime)); border-radius:999px;
+  }
+  .heading-flourish.align-left::after{ margin:.85rem 0 0; }
+
+  .halo-glow{ box-shadow:0 0 0 6px rgba(0,255,207,.18), 0 0 60px 10px rgba(153,255,0,.22); }
+
+  .brand-gradient{
+    background:linear-gradient(90deg,var(--teal),var(--lime));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
   }
 
-  /* Card lift on hover */
-  .lift-hover {
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  /* ---------- Mobile nav ---------- */
+  #mobileMenu{ transition:max-height .4s ease; overflow:hidden; }
+
+  /* ---------- Grace card modal ---------- */
+  body.grace-modal-open > *:not(#graceCardModal){ filter:blur(10px) brightness(.6); transition:filter .35s ease; }
+  body.grace-modal-open{ overflow:hidden; }
+  #graceCardModal{ opacity:0; transition:opacity .35s ease; }
+  #graceCardModal.is-open{ opacity:1; }
+  #graceCardModal .modal-content{ transform:scale(.94); transition:transform .35s ease; }
+  #graceCardModal.is-open .modal-content{ transform:scale(1); }
+
+  @keyframes gc-pulse-dot{ 0%,100%{opacity:1} 50%{opacity:.35} }
+  .gc-live-dot{ animation:gc-pulse-dot 1.6s ease-in-out infinite; }
+
+  /* ---------- Dark mode safety net ---------- */
+  html.dark body{ color:#E3F4F1; }
+  html.dark .text-ink, html.dark [class*="text-ink/"]{ color:#CFE7E3 !important; }
+  html.dark .bg-royal\/10{ background-color:rgba(255,255,255,.08) !important; }
+  html.dark .bg-teal-soft{ background-color:rgba(0,255,207,.08) !important; }
+  html.dark input, html.dark select, html.dark textarea{
+    background-color:#10191c; color:#E3F4F1; border-color:rgba(255,255,255,.15);
   }
-  .lift-hover:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -12px rgba(4, 22, 25, 0.28);
+  html.dark ::placeholder{ color:rgba(227,244,241,.4); }
+
+  body, .bg-cream, .bg-lavender, .bg-white, .bg-royal-deep{ transition: background-color .3s ease, color .3s ease; }
+
+  /* ---------- Scroll progress ---------- */
+  #scrollProgress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg,var(--teal),var(--lime));
+    z-index:60; transition:width .1s ease-out;
   }
 
-  /* Underline flourish for section headings */
-  .heading-flourish::after {
-    content: "";
-    display: block;
-    width: 64px;
-    height: 3px;
-    margin: 0.85rem auto 0;
-    background: linear-gradient(90deg, var(--teal), var(--lime));
-    border-radius: 999px;
+  /* ---------- Back to top ---------- */
+  #backToTop{
+    position:fixed; bottom:5.75rem; right:1.25rem; z-index:45;
+    width:46px; height:46px; border-radius:9999px;
+    background:var(--royal); color:var(--teal);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 24px -6px rgba(4,22,25,.5);
+    opacity:0; pointer-events:none; transform:translateY(12px);
+    transition:opacity .3s ease, transform .3s ease, background-color .25s ease, color .25s ease;
   }
-  .heading-flourish.align-left::after { margin: 0.85rem 0 0; }
+  #backToTop.visible{ opacity:1; pointer-events:auto; transform:translateY(0); }
+  #backToTop:hover{ background:var(--teal); color:var(--royal); }
 
-  /* Hero halo glow behind logo placeholder */
-  .halo-glow {
-    box-shadow: 0 0 0 6px rgba(0, 255, 207, 0.18), 0 0 60px 10px rgba(153, 255, 0, 0.22);
+  /* ---------- Floating contact ---------- */
+  #floatingContact{ position:fixed; bottom:1.25rem; right:1.25rem; z-index:46; }
+  #contactPanel{
+    position:absolute; bottom:64px; right:0; width:250px; background:#fff; border-radius:1rem;
+    box-shadow:0 20px 45px -12px rgba(4,22,25,.4); padding:1rem;
+    transform:scale(.9) translateY(8px); opacity:0; pointer-events:none;
+    transition:transform .25s ease, opacity .25s ease;
   }
+  html.dark #contactPanel{ background:#10191c; }
+  #contactPanel.open{ transform:scale(1) translateY(0); opacity:1; pointer-events:auto; }
 
-  /* Brand gradient text for the "Global Mission" part of the church name */
-  .brand-gradient {
-    background: linear-gradient(90deg, var(--teal), var(--lime));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+  /* ---------- Cookie banner ---------- */
+  #cookieBanner{ position:fixed; left:0; right:0; bottom:0; z-index:70; transform:translateY(100%); transition:transform .4s ease; }
+  #cookieBanner.visible{ transform:translateY(0); }
 
-  /* Mobile nav panel */
-  #mobileMenu { transition: max-height 0.4s ease; overflow: hidden; }
+  /* ---------- FAQ ---------- */
+  .faq-answer{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .faq-item.open .faq-answer{ max-height:420px; }
+  .faq-item.open .faq-chevron{ transform:rotate(180deg); }
+  .faq-chevron{ transition:transform .3s ease; }
 
-  /* ---------- Today's Grace Card ---------- */
-  /* When the fullscreen Grace Card is open, every other top-level section
-     behind it gets blurred + dimmed (belt-and-braces alongside the modal's
-     own backdrop-blur, so it still works in browsers without backdrop-filter). */
-  body.grace-modal-open > *:not(#graceCardModal) {
-    filter: blur(10px) brightness(0.6);
-    transition: filter 0.35s ease;
+  /* ---------- Search overlay ---------- */
+  #searchOverlay{
+    position:fixed; inset:0; z-index:80; background:rgba(4,22,25,.94);
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
   }
-  body.grace-modal-open { overflow: hidden; }
+  #searchOverlay.open{ opacity:1; pointer-events:auto; }
+  .search-result-item:hover, .search-result-item:focus-visible{ background:rgba(0,255,207,.12); }
 
-  #graceCardModal {
-    opacity: 0;
-    transition: opacity 0.35s ease;
+  /* ---------- Skip link ---------- */
+  .skip-link{
+    position:absolute; left:-999px; top:0; background:var(--royal); color:#fff;
+    padding:.75rem 1.25rem; border-radius:0 0 .75rem 0; z-index:100; font-weight:600;
   }
-  #graceCardModal.is-open {
-    opacity: 1;
-  }
-  #graceCardModal .modal-content {
-    transform: scale(0.94);
-    transition: transform 0.35s ease;
-  }
-  #graceCardModal.is-open .modal-content {
-    transform: scale(1);
-  }
+  .skip-link:focus{ left:0; }
 
-  /* Subtle pulse on the countdown pill so it reads as "live" */
-  @keyframes gc-pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
+  /* ---------- Loader ---------- */
+  #pageLoader{
+    position:fixed; inset:0; z-index:200; background:var(--royal);
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1rem;
+    transition:opacity .5s ease, visibility .5s ease;
   }
-  .gc-live-dot { animation: gc-pulse-dot 1.6s ease-in-out infinite; }
+  #pageLoader.done{ opacity:0; visibility:hidden; }
+  .loader-ring{
+    width:46px; height:46px; border-radius:50%;
+    border:3px solid rgba(0,255,207,.2); border-top-color:var(--teal);
+    animation:loader-spin .8s linear infinite;
+  }
+  @keyframes loader-spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- Countdown units ---------- */
+  .countdown-unit{ background:rgba(4,22,25,.06); border-radius:.75rem; padding:.6rem .4rem; min-width:58px; text-align:center; }
+  html.dark .countdown-unit{ background:rgba(255,255,255,.08); }
+
+  /* ---------- Toast ---------- */
+  #toastHost{ position:fixed; z-index:150; bottom:1.5rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:.5rem; align-items:center; pointer-events:none; }
+  .toast{
+    background:#041619; color:#EAFBF7; padding:.7rem 1.1rem; border-radius:999px;
+    font-size:.85rem; box-shadow:0 12px 30px -8px rgba(0,0,0,.5);
+    opacity:0; transform:translateY(10px); transition:opacity .25s ease, transform .25s ease;
+  }
+  .toast.show{ opacity:1; transform:translateY(0); }
+  .toast.err{ background:#7f1016; }
+
+  /* ---------- 404 ---------- */
+  #page404{ position:fixed; inset:0; z-index:190; background:var(--royal); overflow-y:auto; }
+
+  /* ---------- Print ---------- */
+  @media print{
+    #navbar,#mobileMenu,#scrollProgress,#backToTop,#floatingContact,#cookieBanner,
+    #searchOverlay,#pageLoader,#toastHost,.no-print,#graceCardModal,#allSermonsModal,
+    #eventRegModal,#confirmModal,#page404{ display:none !important; }
+    body{ background:#fff !important; color:#000 !important; }
+    a[href]::after{ content:" (" attr(href) ")"; font-size:.75em; color:#555; }
+    .arch-card, section, article{ break-inside:avoid; }
+    .reveal{ opacity:1 !important; transform:none !important; }
+    #navbar{ position:static !important; }
+    img{ max-width:100% !important; }
+  }
 </style>
 </head>
 
-<body class="bg-cream text-ink antialiased">
+<body class="bg-cream dark:bg-[#0B1416] text-ink antialiased">
 
-<!-- ============================= NAVIGATION ============================= -->
-<nav id="navbar" class="fixed top-0 left-0 w-full z-50 bg-royal-deep/95 transition-all duration-300">
+<a href="#hero" class="skip-link">Skip to content</a>
+
+<div id="pageLoader" aria-hidden="true">
+  <div class="loader-ring"></div>
+  <p class="text-teal/70 text-xs tracking-[0.3em] uppercase">Gracious Word</p>
+</div>
+
+<div id="scrollProgress"></div>
+<div id="toastHost" aria-live="polite"></div>
+
+<!-- ============================== NAV ============================== -->
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 md:h-20">
-    <a href="#hero" class="flex items-center gap-3">
-      <img
-          src="logo.png"
-          alt="Gracious Word Global Mission Logo"
-          class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]"
-      />
-      <span class="text-white font-display font-semibold tracking-wide text-sm sm:text-base">Gracious Word <span class="brand-gradient">Global Mission</span></span>
+    <a href="#hero" class="flex items-center gap-3 shrink-0">
+      <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission Logo"
+           class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]" />
+      <span class="text-white font-display font-semibold tracking-wide text-sm sm:text-base">
+        Gracious Word <span class="brand-gradient">Global Mission</span>
+      </span>
     </a>
 
-    <!-- Desktop links -->
-    <div class="hidden md:flex items-center gap-8 text-sm text-white/85 font-medium">
+    <div class="hidden md:flex items-center gap-6 text-sm text-white/85 font-medium">
       <a href="#welcome" class="hover:text-lime transition-colors">Home</a>
-      <a href="#vision" class="hover:text-lime transition-colors">Vision</a>
-      <a href="#ministries" class="hover:text-lime transition-colors">Ministries</a>
+      <a href="#sermons" class="hover:text-lime transition-colors">Sermons</a>
+      <a href="#events" class="hover:text-lime transition-colors">Events</a>
+      <a href="#giving" class="hover:text-lime transition-colors">Giving</a>
       <a href="#branches" class="hover:text-lime transition-colors">Branches</a>
-      <a href="id_app.html" class="ml-2 bg-teal hover:bg-lime text-royal-deep font-semibold px-5 py-2 rounded-full transition-colors shadow-md">
+      <button id="searchBtn" aria-label="Search the site" class="btn-hover text-white/80 hover:text-lime">
+        <i data-feather="search" class="w-4 h-4"></i>
+      </button>
+      <button id="darkModeToggle" aria-label="Toggle dark mode" class="btn-hover text-white/80 hover:text-lime">
+        <i data-feather="moon" class="w-4 h-4"></i>
+      </button>
+      <a href="id_app.html" class="btn-hover ml-1 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2 rounded-full shadow-md">
         Register
       </a>
     </div>
 
-    <!-- Mobile toggle -->
-    <button id="menuBtn" aria-label="Toggle menu" aria-expanded="false" class="md:hidden text-white">
-      <i data-feather="menu" class="w-7 h-7"></i>
-    </button>
+    <div class="flex items-center gap-4 md:hidden">
+      <button id="searchBtnMobile" aria-label="Search the site" class="btn-hover text-white"><i data-feather="search" class="w-6 h-6"></i></button>
+      <button id="darkModeToggleMobile" aria-label="Toggle dark mode" class="btn-hover text-white"><i data-feather="moon" class="w-6 h-6"></i></button>
+      <button id="menuBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu" class="btn-hover text-white">
+        <i data-feather="menu" class="w-7 h-7"></i>
+      </button>
+    </div>
   </div>
 
-  <!-- Mobile menu -->
   <div id="mobileMenu" class="md:hidden max-h-0 bg-royal-deep/98 px-5">
     <div class="flex flex-col gap-4 py-5 text-white/90 font-medium">
-      <a href="#welcome" class="mobile-link">Home</a>
-      <a href="#vision" class="mobile-link">Vision</a>
-      <a href="#ministries" class="mobile-link">Ministries</a>
-      <a href="#branches" class="mobile-link">Branches</a>
-      <a href="id_app.html" class="mobile-link text-lime">Register Now</a>
+      <a href="#welcome" class="mobile-link hover:text-lime transition-colors">Home</a>
+      <a href="#sermons" class="mobile-link hover:text-lime transition-colors">Sermons</a>
+      <a href="#events" class="mobile-link hover:text-lime transition-colors">Events</a>
+      <a href="#giving" class="mobile-link hover:text-lime transition-colors">Giving</a>
+      <a href="#branches" class="mobile-link hover:text-lime transition-colors">Branches</a>
+      <a href="#faq" class="mobile-link hover:text-lime transition-colors">FAQ</a>
+      <a href="id_app.html" class="mobile-link text-lime font-semibold">Register Now →</a>
     </div>
   </div>
 </nav>
 
-<!-- ============================= HERO SECTION ============================= -->
+<!-- ============================== SEARCH ============================== -->
+<div id="searchOverlay" role="dialog" aria-modal="true" aria-label="Site search">
+  <div class="max-w-2xl mx-auto pt-24 sm:pt-32 px-5">
+    <div class="flex items-center gap-3 bg-white/10 border border-white/15 rounded-full px-5 py-3">
+      <i data-feather="search" class="text-white/60 w-5 h-5"></i>
+      <input id="searchInput" type="text" placeholder="Search sermons, events, ministries…"
+        class="bg-transparent flex-1 outline-none text-white placeholder:text-white/40" autocomplete="off" />
+      <button id="searchCloseBtn" aria-label="Close search" class="btn-hover text-white/60 hover:text-lime">
+        <i data-feather="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <p class="mt-3 text-white/35 text-xs px-2">Tip: press <kbd class="px-1.5 py-0.5 rounded bg-white/10">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 rounded bg-white/10">/</kbd> anywhere</p>
+    <div id="searchResults" class="mt-4 space-y-1 max-h-[55vh] overflow-y-auto"></div>
+  </div>
+</div>
+
+<!-- ============================== HERO ============================== -->
 <header id="hero" class="relative min-h-screen flex items-center pt-24 pb-16">
-  <!-- Background image + overlay -->
   <div class="absolute inset-0 -z-10">
-    <img
-      src="land_image.jpg"
-      alt="Worship gathering background"
-      class="w-full h-full object-cover"
-      loading="eager"
-      decoding="async"
-      fetchpriority="high"
-    />
+    <img src="land_image.jpg" data-site-key="land_image_url" alt="Worship gathering background"
+         class="w-full h-full object-cover" loading="eager" decoding="async" fetchpriority="high" />
     <div class="absolute inset-0 bg-gradient-to-b from-royal-deep/90 via-royal-deep/80 to-royal-deep/95"></div>
   </div>
 
   <div class="max-w-7xl mx-auto px-5 sm:px-8 w-full">
     <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
-
-      <!-- Logo placeholder -->
-      <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-royal-light/40 border-2 border-teal/60 halo-glow flex items-center justify-center mx-auto overflow-hidden">
-        <img src="logo.png" alt="Gracious Word Global Mission Logo" class="w-20 h-30 sm:w-28 sm:h-28 object-contain" />
+      <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-royal-light/40 border-2 border-teal/60 halo-glow flex items-center justify-center mx-auto overflow-hidden shrink-0">
+        <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission Logo" class="w-20 h-20 sm:w-28 sm:h-28 object-contain" />
       </div>
 
-      <!-- Hero copy -->
       <div class="reveal text-center md:text-left order-2 md:order-2">
         <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight tracking-tight">
-          GRACIOUS WORD<br class="hidden sm:block"/> <span class="brand-gradient">GLOBAL MISSION</span>
+          GRACIOUS WORD<br class="hidden sm:block" /> <span class="brand-gradient">GLOBAL MISSION</span>
         </h1>
-
-        <p class="mt-5 font-display italic text-lime text-lg sm:text-xl max-w-xl mx-auto md:mx-0">
-          "&hellip;bringing God's&#8209;life to men."
-        </p>
-
-        <p class="mt-3 text-white/85 text-base sm:text-lg tracking-wide max-w-xl mx-auto md:mx-0">
-          Living Christ. Loving People. Making Disciples.
-        </p>
+        <p class="mt-5 font-display italic text-lime text-lg sm:text-xl max-w-xl mx-auto md:mx-0">"…bringing God's‑life to men."</p>
+        <p class="mt-3 text-white/85 text-base sm:text-lg tracking-wide max-w-xl mx-auto md:mx-0">Living Christ. Loving People. Making Disciples.</p>
 
         <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-          <a href="id_app.html"
-             class="bg-teal hover:bg-lime text-royal-deep font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 transition-all duration-300 hover:-translate-y-0.5 text-center">
-            Join Our Family
-          </a>
-          <a href="#welcome"
-             class="border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full transition-all duration-300 text-center">
-            Learn More
-          </a>
+          <a href="id_app.html" class="btn-hover bg-teal hover:bg-lime text-royal-deep font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 text-center">Join Our Family</a>
+          <a href="#welcome" class="btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full text-center">Learn More</a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ray divider at base of hero -->
   <div class="absolute bottom-0 left-0 w-full ray-divider"></div>
 </header>
 
-<!-- ============================= TODAY'S GRACE CARD ============================= -->
-<section id="grace-card" class="py-16 sm:py-24 px-5 sm:px-8 bg-lavender">
+<!-- ============================== GRACE CARD ============================== -->
+<section id="grace-card" class="py-16 sm:py-24 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
   <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-2xl sm:text-3xl text-royal-deep heading-flourish">Today's Grace Card</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">
-      A fresh word of grace, updated daily. Tap the card for a closer look.
-    </p>
+    <h2 class="font-display font-bold text-2xl sm:text-3xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Today's Grace Card</h2>
+    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">A fresh word of grace, updated daily. Tap the card for a closer look.</p>
   </div>
 
-  <div class="max-w-sm mx-auto mt-10">
-    <button
-      id="graceCardTrigger"
-      type="button"
-      aria-haspopup="dialog"
-      aria-controls="graceCardModal"
-      class="reveal group w-full text-left arch-card bg-white shadow-xl lift-hover border border-royal/5 overflow-hidden relative disabled:opacity-60 disabled:cursor-not-allowed"
-      disabled
-    >
-      <!-- Live countdown pill -->
+  <div class="max-w-sm mx-auto mt-8 flex items-center justify-center gap-2" role="tablist" aria-label="Grace Card type">
+    <button type="button" id="graceCardTabMain" role="tab" aria-selected="true"
+      class="grace-tab btn-hover px-5 py-2 rounded-full text-sm font-semibold bg-teal text-[#041619]">Main Card</button>
+    <button type="button" id="graceCardTabKids" role="tab" aria-selected="false"
+      class="grace-tab btn-hover px-5 py-2 rounded-full text-sm font-semibold bg-white/40 text-royal-deep dark:bg-white/10 dark:text-[#EAFBF7] border border-royal/10 dark:border-white/15">Kids Card</button>
+  </div>
+
+  <div class="max-w-sm mx-auto mt-6">
+    <button id="graceCardTrigger" type="button" aria-haspopup="dialog" aria-controls="graceCardModal"
+      class="reveal group w-full text-left arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover border border-royal/5 dark:border-white/10 disabled:opacity-60 disabled:cursor-not-allowed"
+      disabled>
       <div class="absolute top-4 right-4 z-10 bg-royal-deep/85 backdrop-blur text-lime text-[11px] font-semibold tracking-wide px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
         <span class="w-1.5 h-1.5 rounded-full bg-crimson gc-live-dot"></span>
-        <span id="graceCardCountdownText">Loading&hellip;</span>
+        <span id="graceCardCountdownText">Loading…</span>
       </div>
 
-      <!-- Image / skeleton -->
-      <div class="w-full aspect-[4/5] bg-lavender flex items-center justify-center overflow-hidden">
+      <div class="w-full aspect-[4/5] bg-lavender dark:bg-[#071012] flex items-center justify-center overflow-hidden">
         <img id="graceCardImage" src="" alt="" class="w-full h-full object-cover hidden" loading="lazy" decoding="async" />
         <div id="graceCardSkeleton" class="w-full h-full animate-pulse bg-gradient-to-br from-royal/10 to-teal/10 flex items-center justify-center">
           <i data-feather="image" class="text-royal/30 w-10 h-10"></i>
@@ -341,49 +380,30 @@
       </div>
 
       <div class="p-6 pt-5">
-        <h3 id="graceCardTitle" class="font-display font-semibold text-lg text-royal-deep">Loading Grace Card&hellip;</h3>
+        <h3 id="graceCardTitle" class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Loading Grace Card…</h3>
         <p id="graceCardScripture" class="mt-2 text-sm italic text-ink/60 leading-relaxed"></p>
         <span class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-teal tracking-wide uppercase">
-          Tap to view full screen
-          <i data-feather="maximize-2" class="w-3.5 h-3.5"></i>
+          Tap to view full screen <i data-feather="maximize-2" class="w-3.5 h-3.5"></i>
         </span>
       </div>
     </button>
 
-    <!-- Shown only if no active card / on error -->
     <p id="graceCardEmptyState" class="hidden mt-4 text-center text-sm text-ink/50 italic">
       No Grace Card has been published yet. Please check back soon.
     </p>
   </div>
 </section>
 
-<!-- ============================= GRACE CARD FULLSCREEN MODAL ============================= -->
-<div
-  id="graceCardModal"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="graceCardModalTitle"
-  class="fixed inset-0 z-[100] hidden"
->
-  <!-- Backdrop: click to close, blurs whatever renders behind it -->
+<!-- Grace card fullscreen modal -->
+<div id="graceCardModal" role="dialog" aria-modal="true" aria-labelledby="graceCardModalTitle" class="fixed inset-0 z-[100] hidden">
   <div id="graceCardBackdrop" class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
-
   <div class="modal-content relative z-10 h-full w-full flex flex-col items-center justify-center p-5 sm:p-10">
-    <button
-      id="graceCardClose"
-      aria-label="Close Grace Card"
-      class="absolute top-5 right-5 sm:top-8 sm:right-8 w-11 h-11 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep text-white flex items-center justify-center transition-colors"
-    >
+    <button id="graceCardClose" aria-label="Close Grace Card"
+      class="btn-hover absolute top-5 right-5 sm:top-8 sm:right-8 w-11 h-11 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep text-white flex items-center justify-center">
       <i data-feather="x" class="w-6 h-6"></i>
     </button>
-
     <div class="max-w-lg w-full max-h-full flex flex-col items-center text-center overflow-y-auto">
-      <img
-        id="graceCardModalImage"
-        src=""
-        alt=""
-        class="max-h-[65vh] w-auto rounded-2xl shadow-2xl object-contain"
-      />
+      <img id="graceCardModalImage" src="" alt="" class="max-h-[65vh] w-auto rounded-2xl shadow-2xl object-contain" />
       <h3 id="graceCardModalTitle" class="mt-6 font-display font-semibold text-xl sm:text-2xl text-white"></h3>
       <p id="graceCardModalScripture" class="mt-3 italic text-lime text-sm sm:text-base leading-relaxed"></p>
       <p id="graceCardModalDate" class="mt-4 text-xs text-white/50 tracking-wide uppercase"></p>
@@ -391,10 +411,10 @@
   </div>
 </div>
 
-<!-- ============================= WELCOME SECTION ============================= -->
-<section id="welcome" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream">
+<!-- ============================== WELCOME ============================== -->
+<section id="welcome" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
   <div class="max-w-4xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep heading-flourish">Welcome Home</h2>
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Welcome Home</h2>
     <p class="mt-8 text-base sm:text-lg leading-relaxed text-ink/80">
       Welcome to Gracious Word Global Mission, a Christ-centred church committed to raising disciples,
       teaching the Gospel of Grace, and helping people discover and fulfil God's purpose for their lives.
@@ -402,134 +422,221 @@
     </p>
   </div>
 
-  <!-- LEAD PASTORS -->
-  <div class="max-w-5xl mx-auto mt-16 grid sm:grid-cols-2 gap-8 sm:gap-10">
-    <!-- Card One -->
-    <div class="reveal arch-card bg-white shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5">
-      <div class="w-28 h-28 mx-auto rounded-full bg-lavender border-4 border-teal/40 flex items-center justify-center overflow-hidden">
-        <span class="text-royal/50 text-xs font-medium text-center px-2">Pastor Photo</span>
-      </div>
-      <h3 class="mt-6 font-display font-semibold text-xl text-royal-deep">Pastor Georgewealth Udoh</h3>
-      <p class="text-teal text-sm font-medium tracking-wide mt-1">Lead Pastor</p>
-      <p class="mt-4 italic text-ink/70 text-sm leading-relaxed">
-        "Our calling is to help people know Christ, grow in grace and walk in God's purpose."
-      </p>
-    </div>
-
-    <!-- Card Two -->
-    <div class="reveal arch-card bg-white shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5">
-      <div class="w-28 h-28 mx-auto rounded-full bg-lavender border-4 border-teal/40 flex items-center justify-center overflow-hidden">
-        <span class="text-royal/50 text-xs font-medium text-center px-2">Pastor Photo</span>
-      </div>
-      <h3 class="mt-6 font-display font-semibold text-xl text-royal-deep">Pastor Ronke Georgewealth Udoh</h3>
-      <p class="text-teal text-sm font-medium tracking-wide mt-1">Lead Pastor</p>
-      <p class="mt-4 italic text-ink/70 text-sm leading-relaxed">
-        "Every believer deserves a loving church family where faith, purpose and destiny are nurtured."
-      </p>
-    </div>
-  </div>
+  <div id="pastorsGrid" class="max-w-5xl mx-auto mt-16 grid sm:grid-cols-2 gap-8 sm:gap-10"></div>
 </section>
 
-<!-- ============================= VISION / MISSION / PURPOSE ============================= -->
-<section id="vision" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender">
+<!-- ============================== VISION ============================== -->
+<section id="vision" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
   <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-
-    <div class="reveal arch-card bg-white shadow-lg lift-hover p-8 pt-10 text-center">
-      <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center">
-        <i data-feather="eye" class="text-royal w-6 h-6"></i>
-      </div>
-      <h3 class="mt-5 font-display font-bold text-xl text-royal-deep">Our Vision</h3>
-      <p class="mt-4 text-ink/75 leading-relaxed italic">"&hellip;bringing God's&#8209;life to men."</p>
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+      <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="eye" class="text-royal dark:text-teal w-6 h-6"></i></div>
+      <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Vision</h3>
+      <p class="mt-4 text-ink/75 leading-relaxed italic">"…bringing God's‑life to men."</p>
     </div>
-
-    <div class="reveal arch-card bg-white shadow-lg lift-hover p-8 pt-10 text-center">
-      <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center">
-        <i data-feather="compass" class="text-royal w-6 h-6"></i>
-      </div>
-      <h3 class="mt-5 font-display font-bold text-xl text-royal-deep">Our Mission</h3>
-      <p class="mt-4 text-ink/75 leading-relaxed">
-        "&hellip;to live Christ, love and teach people of all nations, languages and cultures the message of God's love to mankind."
-      </p>
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+      <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="compass" class="text-royal dark:text-teal w-6 h-6"></i></div>
+      <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Mission</h3>
+      <p class="mt-4 text-ink/75 leading-relaxed">"…to live Christ, love and teach people of all nations, languages and cultures the message of God's love to mankind."</p>
     </div>
-
-    <div class="reveal arch-card bg-white shadow-lg lift-hover p-8 pt-10 text-center">
-      <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center">
-        <i data-feather="target" class="text-royal w-6 h-6"></i>
-      </div>
-      <h3 class="mt-5 font-display font-bold text-xl text-royal-deep">Our Purpose</h3>
-      <p class="mt-4 text-ink/75 leading-relaxed">
-        We believe that commitment to the Great Commandment and the Great Commission will grow a great church.
-      </p>
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+      <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="target" class="text-royal dark:text-teal w-6 h-6"></i></div>
+      <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Purpose</h3>
+      <p class="mt-4 text-ink/75 leading-relaxed">We believe that commitment to the Great Commandment and the Great Commission will grow a great church.</p>
     </div>
-
   </div>
 </section>
 
-<!-- ============================= WHY JOIN US ============================= -->
-<section class="py-20 sm:py-28 px-5 sm:px-8 bg-cream">
+<!-- ============================== WHY JOIN ============================== -->
+<section class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
   <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep heading-flourish">Why Join Us</h2>
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Why Join Us</h2>
   </div>
-
   <div class="max-w-6xl mx-auto mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-    <!-- Icon cards -->
-    <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
-        <i data-feather="feather" class="text-teal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Gospel of Grace</h3>
+    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="feather" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Gospel of Grace</h3>
     </div>
-
-    <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
-        <i data-feather="book-open" class="text-teal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Biblical Teaching</h3>
+    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="book-open" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Biblical Teaching</h3>
     </div>
-
-    <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
-        <i data-feather="heart" class="text-teal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Loving Community</h3>
+    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="heart" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Loving Community</h3>
     </div>
-
-    <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
-        <i data-feather="wind" class="text-teal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Freedom of Worship</h3>
+    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="wind" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Freedom of Worship</h3>
     </div>
-
-    <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
-        <i data-feather="trending-up" class="text-teal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Spiritual Growth</h3>
+    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="trending-up" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Spiritual Growth</h3>
     </div>
-
-    <div class="reveal lift-hover bg-white rounded-2xl shadow-md p-7 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center">
-        <i data-feather="users" class="text-teal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Serving with Purpose</h3>
+    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="users" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Serving with Purpose</h3>
     </div>
   </div>
 </section>
 
-<!-- ============================= OUR MINISTRIES ============================= -->
+<!-- ============================== MINISTRIES ============================== -->
 <section id="ministries" class="py-20 sm:py-28 px-5 sm:px-8 bg-royal-deep">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-white heading-flourish">Our Ministries</h2>
     <p class="mt-4 text-white/70">There is a place to serve for every gift.</p>
   </div>
+  <div id="ministriesGrid" class="max-w-6xl mx-auto mt-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6"></div>
+</section>
 
-  <div id="ministriesGrid" class="max-w-6xl mx-auto mt-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
-    <!-- Filled by JS to keep markup DRY: name + feather icon pairs -->
+<!-- ============================== SERMONS ============================== -->
+<section id="sermons" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+  <div class="max-w-3xl mx-auto text-center reveal">
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Sermons &amp; Media Library</h2>
+    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">Catch up on the latest word, or explore everything we've shared.</p>
+  </div>
+
+  <div class="max-w-3xl mx-auto mt-12">
+    <div id="latestSermonSkeleton" class="arch-card bg-white dark:bg-[#10191c] shadow-lg p-8 animate-pulse">
+      <div class="h-5 w-1/2 bg-royal/10 rounded mb-4"></div>
+      <div class="h-40 w-full bg-royal/10 rounded-xl"></div>
+    </div>
+
+    <article id="latestSermonCard" class="hidden reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover border border-royal/5 dark:border-white/10">
+      <div class="aspect-video bg-black">
+        <div id="latestSermonPlayer" class="w-full h-full"></div>
+      </div>
+      <div class="p-6 sm:p-8">
+        <span class="text-xs font-semibold uppercase tracking-wider text-teal">Latest Sermon</span>
+        <h3 id="latestSermonTitle" class="mt-2 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">—</h3>
+        <p id="latestSermonMeta" class="mt-1 text-xs text-ink/50">—</p>
+        <p id="latestSermonUpdated" class="mt-1 text-xs text-ink/40">—</p>
+      </div>
+    </article>
+
+    <p id="sermonsEmptyState" class="hidden text-center text-sm text-ink/50 italic">No sermons have been published yet. Please check back soon.</p>
+
+    <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <button id="viewAllSermonsBtn" class="btn-hover inline-flex items-center gap-2 border border-royal/20 dark:border-white/20 hover:border-teal hover:text-teal text-royal-deep dark:text-[#EAFBF7] font-semibold px-6 py-3 rounded-full">
+        <i data-feather="film" class="w-4 h-4"></i> View all sermons
+      </button>
+      <a id="telegramJoinBtn" href="#" target="_blank" rel="noopener noreferrer"
+        class="btn-hover inline-flex items-center gap-2 bg-[#229ED9] hover:bg-[#1b87ba] text-white font-semibold px-6 py-3 rounded-full">
+        <i data-feather="send" class="w-4 h-4"></i> Join our Telegram sermon group
+      </a>
+    </div>
   </div>
 </section>
 
-<!-- ============================= CALL TO ACTION ============================= -->
+<!-- All sermons modal -->
+<div id="allSermonsModal" class="fixed inset-0 z-[100] hidden">
+  <div id="allSermonsBackdrop" class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
+  <div class="relative z-10 h-full w-full flex items-start justify-center p-4 sm:p-8 overflow-y-auto">
+    <div class="modal-content bg-cream dark:bg-[#0B1416] rounded-2xl max-w-3xl w-full mt-10 mb-10 p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-display font-bold text-xl sm:text-2xl text-royal-deep dark:text-[#EAFBF7]">All Sermons</h3>
+        <button id="allSermonsCloseBtn" aria-label="Close" class="btn-hover w-10 h-10 rounded-full bg-royal/10 hover:bg-teal flex items-center justify-center">
+          <i data-feather="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="allSermonsList" class="space-y-4"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== EVENTS ============================== -->
+<section id="events" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
+  <div class="max-w-3xl mx-auto text-center reveal">
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Events &amp; Programs</h2>
+    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">From youth meetings to conferences — here's what's coming up.</p>
+  </div>
+
+  <div id="eventCountdownWrap" class="hidden max-w-xl mx-auto mt-10 text-center reveal">
+    <p class="text-sm font-medium text-ink/70">Counting down to</p>
+    <p id="eventCountdownTitle" class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7] mt-1">—</p>
+    <div class="flex items-center justify-center gap-3 mt-4">
+      <div class="countdown-unit"><span id="cdDays" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Days</span></div>
+      <div class="countdown-unit"><span id="cdHours" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Hrs</span></div>
+      <div class="countdown-unit"><span id="cdMins" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Min</span></div>
+      <div class="countdown-unit"><span id="cdSecs" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Sec</span></div>
+    </div>
+  </div>
+
+  <div id="eventsList" class="max-w-4xl mx-auto mt-14 grid sm:grid-cols-2 gap-6"></div>
+  <p id="eventsEmptyState" class="hidden text-center text-sm text-ink/50 italic mt-10">No upcoming events right now — check back soon.</p>
+</section>
+
+<!-- Event registration modal -->
+<div id="eventRegModal" class="fixed inset-0 z-[100] hidden">
+  <div id="eventRegBackdrop" class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
+  <div class="relative z-10 h-full w-full flex items-center justify-center p-5">
+    <div class="modal-content bg-white dark:bg-[#10191c] rounded-2xl max-w-md w-full p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-5">
+        <h3 id="eventRegTitle" class="font-display font-bold text-lg text-royal-deep dark:text-[#EAFBF7]">Register for event</h3>
+        <button id="eventRegCloseBtn" aria-label="Close" class="btn-hover w-9 h-9 rounded-full bg-royal/10 hover:bg-teal flex items-center justify-center">
+          <i data-feather="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <form id="eventRegForm" class="space-y-3" novalidate>
+        <input type="hidden" id="eventRegEventId" />
+        <input required type="text" id="eventRegName" placeholder="Full name" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
+        <input required type="email" id="eventRegEmail" placeholder="Email address" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
+        <input type="tel" id="eventRegPhone" placeholder="Phone number (optional)" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
+        <label class="flex items-start gap-2 text-xs text-ink/70 dark:text-[#CFE7E3]">
+          <input type="checkbox" id="eventRegReminder" class="mt-0.5" />
+          Remind me while this page is open (browser notification)
+        </label>
+        <p id="eventRegError" class="hidden text-sm text-red-600"></p>
+        <button type="submit" class="btn-hover w-full bg-teal hover:bg-lime text-[#041619] font-semibold py-2.5 rounded-lg">Confirm registration</button>
+      </form>
+      <div id="eventRegSuccess" class="hidden text-center py-4">
+        <i data-feather="check-circle" class="w-10 h-10 text-teal mx-auto"></i>
+        <p class="mt-3 font-medium text-royal-deep dark:text-[#EAFBF7]">You're registered! See you there.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== GIVING ============================== -->
+<section id="giving" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+  <div class="max-w-3xl mx-auto text-center reveal">
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Online Giving</h2>
+    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">"Bring the whole tithe into the storehouse." Give your tithes and offerings securely, wherever you are.</p>
+  </div>
+
+  <div class="max-w-md mx-auto mt-12 reveal arch-card bg-white dark:bg-[#10191c] shadow-xl p-8 pt-10 border border-royal/5 dark:border-white/10">
+    <h3 class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7] text-center mb-6">Bank Transfer Details</h3>
+    <div class="space-y-4">
+      <div class="flex items-center justify-between gap-3 bg-lavender dark:bg-[#071012] rounded-lg px-4 py-3">
+        <div>
+          <p class="text-[10px] uppercase tracking-wide text-ink/50">Account Name</p>
+          <p id="givingAccountName" class="font-medium text-royal-deep dark:text-[#EAFBF7]">Gracious Word Global Mission</p>
+        </div>
+        <button type="button" class="copy-btn btn-hover shrink-0 text-xs font-semibold text-teal border border-teal/40 rounded-full px-3 py-1.5 hover:bg-teal hover:text-[#041619]" data-copy-target="givingAccountName">Copy</button>
+      </div>
+      <div class="flex items-center justify-between gap-3 bg-lavender dark:bg-[#071012] rounded-lg px-4 py-3">
+        <div>
+          <p class="text-[10px] uppercase tracking-wide text-ink/50">Account Number</p>
+          <p id="givingAccountNumber" class="font-mono font-medium text-royal-deep dark:text-[#EAFBF7]">—</p>
+        </div>
+        <button type="button" class="copy-btn btn-hover shrink-0 text-xs font-semibold text-teal border border-teal/40 rounded-full px-3 py-1.5 hover:bg-teal hover:text-[#041619]" data-copy-target="givingAccountNumber">Copy</button>
+      </div>
+      <div class="flex items-center justify-between gap-3 bg-lavender dark:bg-[#071012] rounded-lg px-4 py-3">
+        <div>
+          <p class="text-[10px] uppercase tracking-wide text-ink/50">Bank</p>
+          <p id="givingBankName" class="font-medium text-royal-deep dark:text-[#EAFBF7]">—</p>
+        </div>
+        <button type="button" class="copy-btn btn-hover shrink-0 text-xs font-semibold text-teal border border-teal/40 rounded-full px-3 py-1.5 hover:bg-teal hover:text-[#041619]" data-copy-target="givingBankName">Copy</button>
+      </div>
+    </div>
+
+    <a id="givingPaymentLink" href="#" target="_blank" rel="noopener noreferrer"
+      class="hidden mt-6 w-full btn-hover items-center justify-center gap-2 bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full">
+      <i data-feather="credit-card" class="w-4 h-4"></i> Give online now
+    </a>
+  </div>
+</section>
+
+<!-- ============================== CTA ============================== -->
 <section class="relative py-20 sm:py-28 px-5 sm:px-8 bg-gradient-to-br from-royal via-royal-light to-royal-deep text-center overflow-hidden">
   <div class="absolute inset-0 ray-divider top-0 bottom-auto"></div>
   <div class="max-w-3xl mx-auto reveal">
@@ -538,126 +645,130 @@
       There is a place for you at Gracious Word Global Mission. Join a family committed to Christ,
       committed to His Word and committed to one another.
     </p>
-    <a href="id_app.html"
-       class="inline-block mt-9 bg-teal hover:bg-lime text-royal-deep font-semibold px-10 py-4 rounded-full shadow-xl transition-all duration-300 hover:-translate-y-1 text-lg">
-      Register Now
-    </a>
+    <a href="id_app.html" class="btn-hover inline-block mt-9 bg-teal hover:bg-lime text-royal-deep font-semibold px-10 py-4 rounded-full shadow-xl text-lg">Register Now</a>
   </div>
   <div class="absolute inset-x-0 bottom-0 ray-divider"></div>
 </section>
 
-<!-- ============================= CHURCH BRANCHES ============================= -->
-<section id="branches" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream">
+<!-- ============================== BRANCHES ============================== -->
+<section id="branches" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
   <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep heading-flourish">Our Church Branches</h2>
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Our Church Branches</h2>
   </div>
 
   <div class="max-w-6xl mx-auto mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-
-    <div class="reveal arch-card bg-white shadow-md lift-hover p-7 pt-9 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center">
-        <i data-feather="map-pin" class="text-royal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Uyo City Headquarters</h3>
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Uyo City Headquarters</h3>
       <p class="text-teal text-xs font-semibold uppercase tracking-wider mt-1">Headquarters</p>
       <p class="mt-3 text-ink/60 text-sm">E3 Event Center, Ibom Tropicana Mall, Uyo (Temporary)</p>
-      <a
-        href="https://www.google.com/maps/search/?api=1&query=E3+Event+Center,+Ibom+Tropicana+Mall,+Uyo"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <button class="mt-5 text-sm font-medium text-royal border border-royal/30 hover:bg-royal hover:text-white transition-colors rounded-full px-5 py-2">
-          View on Map
-        </button>
-      </a>
+      <a href="https://www.google.com/maps/search/?api=1&query=E3+Event+Center,+Ibom+Tropicana+Mall,+Uyo" target="_blank" rel="noopener noreferrer"
+         class="btn-hover inline-block mt-5 text-sm font-medium text-royal dark:text-[#EAFBF7] border border-royal/30 dark:border-white/25 hover:bg-royal hover:text-white rounded-full px-5 py-2">View on Map</a>
     </div>
 
-    <div class="reveal arch-card bg-white shadow-md lift-hover p-7 pt-9 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center">
-        <i data-feather="map-pin" class="text-royal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Port Harcourt Branch</h3>
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Port Harcourt Branch</h3>
       <p class="mt-3 text-ink/60 text-sm">(In Construction)</p>
-      <button class="mt-5 text-sm font-medium text-royal border border-royal/30 hover:bg-royal hover:text-white transition-colors rounded-full px-5 py-2">
-        View on Map
-      </button>
+      <span class="inline-block mt-5 text-sm font-medium text-ink/35 border border-royal/10 dark:border-white/10 rounded-full px-5 py-2">Coming soon</span>
     </div>
 
-    <div class="reveal arch-card bg-white shadow-md lift-hover p-7 pt-9 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center">
-        <i data-feather="map-pin" class="text-royal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">Eket Branch</h3>
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Eket Branch</h3>
       <p class="mt-3 text-ink/60 text-sm">168 Eket Oron Road, Okopedi by cool room, Eket Akwa Ibom State</p>
-      <a
-        href="https://www.google.com/maps/search/?api=1&query=168+Eket+Oron+Road,+Okopedi+by+Cool+Room,+Eket,+Akwa+Ibom+State"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <button class="mt-5 text-sm font-medium text-royal border border-royal/30 hover:bg-royal hover:text-white transition-colors rounded-full px-5 py-2">
-          View on Map
-        </button>
-      </a>
+      <a href="https://www.google.com/maps/search/?api=1&query=168+Eket+Oron+Road,+Okopedi+by+Cool+Room,+Eket,+Akwa+Ibom+State" target="_blank" rel="noopener noreferrer"
+         class="btn-hover inline-block mt-5 text-sm font-medium text-royal dark:text-[#EAFBF7] border border-royal/30 dark:border-white/25 hover:bg-royal hover:text-white rounded-full px-5 py-2">View on Map</a>
     </div>
 
-    <div class="reveal arch-card bg-white shadow-md lift-hover p-7 pt-9 text-center border border-royal/5">
-      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center">
-        <i data-feather="map-pin" class="text-royal w-5 h-5"></i>
-      </div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep">AKSU Branch</h3>
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">AKSU Branch</h3>
       <p class="mt-3 text-ink/60 text-sm">Behind Ikot Akpaden Main Market, Ikot Akpaden, Mkpat Enin LGA, Akwa Ibom State</p>
-      <a
-        href="https://www.google.com/maps/search/?api=1&query=Behind+Ikot+Akpaden+Main+Market,+Ikot+Akpaden,+Mkpat+Enin+LGA,+Akwa+Ibom+State"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <button class="mt-5 text-sm font-medium text-royal border border-royal/30 hover:bg-royal hover:text-white transition-colors rounded-full px-5 py-2">
-          View on Map
-        </button>
-      </a>
+      <a href="https://www.google.com/maps/search/?api=1&query=Behind+Ikot+Akpaden+Main+Market,+Ikot+Akpaden,+Mkpat+Enin+LGA,+Akwa+Ibom+State" target="_blank" rel="noopener noreferrer"
+         class="btn-hover inline-block mt-5 text-sm font-medium text-royal dark:text-[#EAFBF7] border border-royal/30 dark:border-white/25 hover:bg-royal hover:text-white rounded-full px-5 py-2">View on Map</a>
     </div>
-
   </div>
 </section>
 
-<!-- ============================= SCRIPTURE SECTION ============================= -->
+<!-- ============================== FAQ ============================== -->
+<section id="faq" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
+  <div class="max-w-3xl mx-auto text-center reveal">
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Frequently Asked Questions</h2>
+  </div>
+
+  <div class="max-w-2xl mx-auto mt-12 space-y-3">
+    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+      <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
+        What time are your Sunday services? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
+      </button>
+      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Sunday services hold weekly at each branch — check the Events section above or contact your nearest branch for the exact time.</p></div>
+    </div>
+    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+      <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
+        How do I become a member? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
+      </button>
+      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Tap "Join Our Family" or "Register Now" anywhere on this site to fill out our membership form and receive your digital membership ID.</p></div>
+    </div>
+    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+      <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
+        Can I give online from outside Nigeria? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
+      </button>
+      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Yes — use the "Give online now" link in the Online Giving section, which accepts international cards.</p></div>
+    </div>
+    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+      <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
+        Where can I watch past sermons? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
+      </button>
+      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Visit the Sermons &amp; Media Library section and tap "View all sermons", or join our Telegram group for every message ever shared.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== NEWSLETTER ============================== -->
+<section id="newsletter" class="py-16 sm:py-20 px-5 sm:px-8 bg-royal-deep">
+  <div class="max-w-xl mx-auto text-center reveal">
+    <h2 class="font-display font-bold text-2xl sm:text-3xl text-white">Stay in the loop</h2>
+    <p class="mt-3 text-white/70 text-sm">Get sermon drops, event reminders, and Grace Card updates in your inbox.</p>
+
+    <form id="newsletterForm" class="mt-6 flex flex-col sm:flex-row gap-3" novalidate>
+      <label for="newsletterEmail" class="sr-only">Email address</label>
+      <input required type="email" id="newsletterEmail" placeholder="you@example.com"
+        class="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/15 text-white placeholder:text-white/40 outline-none focus:border-teal" />
+      <button type="submit" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full">Subscribe</button>
+    </form>
+    <p id="newsletterError" class="hidden mt-3 text-sm text-red-300"></p>
+    <div id="newsletterSuccess" class="hidden mt-4 flex items-center justify-center gap-2 text-teal font-medium">
+      <i data-feather="check-circle" class="w-5 h-5"></i> You're subscribed — welcome aboard!
+    </div>
+  </div>
+</section>
+
+<!-- ============================== SCRIPTURE ============================== -->
 <section class="relative py-28 sm:py-36 px-5 sm:px-8 text-center">
   <div class="absolute inset-0 -z-10">
-    <img
-      src="footer.jpg"
-      alt="footer image"
-      class="w-full h-full object-cover"
-      loading="lazy"
-      decoding="async"
-    />
+    <img src="footer.jpg" data-site-key="footer_image_url" alt="Congregation" class="w-full h-full object-cover" loading="lazy" decoding="async" />
     <div class="absolute inset-0 bg-royal-deep/85"></div>
   </div>
   <div class="max-w-2xl mx-auto reveal">
     <p class="font-display italic text-xl sm:text-2xl text-white leading-relaxed">
-      "Now I'm turning you over to God, our marvelous God whose gracious Word&hellip; give you everything you could possibly need in this community of holy friends."
+      "Now I'm turning you over to God, our marvelous God whose gracious Word… give you everything you could possibly need in this community of holy friends."
     </p>
     <p class="mt-5 text-lime font-medium tracking-wide">Acts 20:32 [MSG]</p>
   </div>
 </section>
 
-<!-- ============================= FOOTER ============================= -->
+<!-- ============================== FOOTER ============================== -->
 <footer class="bg-royal-deep text-white/80 pt-16 pb-8 px-5 sm:px-8">
   <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-
-    <!-- Logo + vision -->
     <div>
       <div class="flex items-center gap-3">
-        <img
-          src="logo.png"
-          alt="Gracious Word Global Mission Logo"
-          class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]"
-        />
+        <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission Logo" class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]" />
         <span class="text-white font-display font-semibold">Gracious Word <span class="brand-gradient">Global Mission</span></span>
       </div>
-      <p class="mt-4 text-sm italic text-white/60">"&hellip;bringing God's&#8209;life to men."</p>
+      <p class="mt-4 text-sm italic text-white/60">"…bringing God's‑life to men."</p>
     </div>
 
-    <!-- Quick links -->
     <div>
       <h4 class="text-lime font-display font-semibold mb-4">Quick Links</h4>
       <ul class="space-y-2 text-sm">
@@ -666,341 +777,971 @@
         <li><a href="#vision" class="hover:text-lime transition-colors">Vision</a></li>
         <li><a href="#ministries" class="hover:text-lime transition-colors">Ministries</a></li>
         <li><a href="#branches" class="hover:text-lime transition-colors">Branches</a></li>
+        <li><a href="admin.html" class="hover:text-lime transition-colors">Admin</a></li>
       </ul>
     </div>
 
-    <!-- Contact -->
     <div>
       <h4 class="text-lime font-display font-semibold mb-4">Contact</h4>
       <ul class="space-y-2 text-sm">
-        <li class="flex items-center gap-2">
-          <i data-feather="mail" class="w-4 h-4"></i>
-          <a
-            href="mailto:graciousword78@gmail.com"
-            class="hover:text-teal transition-colors"
-          >
-            graciousword78@gmail.com
-          </a>
-        </li>
+        <li class="flex items-center gap-2"><i data-feather="mail" class="w-4 h-4"></i>
+          <a href="mailto:graciousword78@gmail.com" class="hover:text-teal transition-colors">graciousword78@gmail.com</a></li>
         <li class="flex items-center gap-2"><i data-feather="phone" class="w-4 h-4"></i> 09112599268</li>
         <li class="flex items-center gap-2"><i data-feather="phone" class="w-4 h-4"></i> 07039020047</li>
       </ul>
     </div>
 
-    <!-- Social -->
     <div>
       <h4 class="text-lime font-display font-semibold mb-4">Follow Us</h4>
-      <div class="flex gap-3">
-        <a href="https://www.facebook.com/share/18z5KfA6bh/?mibextid=wwXIfr" aria-label="Facebook" class="w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="facebook" class="w-4 h-4"></i></a>
-        <a href="https://www.instagram.com/thegeorgewealth?igsh=MTQwdDhyeDFzMTg1aw%3D%3D&utm_source=qr" aria-label="Instagram" class="w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="instagram" class="w-4 h-4"></i></a>
-        <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="youtube" class="w-4 h-4"></i></a>
-        <a href="https://www.tiktok.com/@graciousword_uyo?_r=1&_t=ZS-98PVv4vvikq" aria-label="TikTok" class="w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal-deep flex items-center justify-center transition-colors"><i data-feather="music" class="w-4 h-4"></i></a>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://www.facebook.com/share/18z5KfA6bh/?mibextid=wwXIfr" aria-label="Facebook" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="facebook" class="w-4 h-4"></i></a>
+        <a href="https://www.instagram.com/thegeorgewealth?igsh=MTQwdDhyeDFzMTg1aw%3D%3D&utm_source=qr" aria-label="Instagram" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="instagram" class="w-4 h-4"></i></a>
+        <a href="#" aria-label="YouTube" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="youtube" class="w-4 h-4"></i></a>
+        <a href="https://www.tiktok.com/@graciousword_uyo?_r=1&_t=ZS-98PVv4vvikq" aria-label="TikTok" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="music" class="w-4 h-4"></i></a>
+        <a id="footerTelegramLink" href="#" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="send" class="w-4 h-4"></i></a>
       </div>
     </div>
-
   </div>
 
   <div class="ray-divider max-w-6xl mx-auto mt-12"></div>
-
-  <p class="text-center text-xs text-white/50 mt-6" id="copyrightText">
-    <!-- Year populated dynamically by JS -->
-  </p>
+  <p class="text-center text-xs text-white/50 mt-6" id="copyrightText"></p>
 </footer>
 
-<!-- ============================= JAVASCRIPT ============================= -->
+<button id="backToTop" aria-label="Back to top"><i data-feather="arrow-up" class="w-5 h-5"></i></button>
+
+<div id="floatingContact">
+  <div id="contactPanel">
+    <p class="font-display font-semibold text-royal-deep dark:text-[#EAFBF7] mb-3 text-sm">Get in touch</p>
+    <div class="space-y-2 text-sm">
+      <a href="mailto:graciousword78@gmail.com" class="flex items-center gap-2 text-ink/80 dark:text-[#CFE7E3] hover:text-teal transition-colors"><i data-feather="mail" class="w-4 h-4"></i> Email us</a>
+      <a href="tel:+2349112599268" class="flex items-center gap-2 text-ink/80 dark:text-[#CFE7E3] hover:text-teal transition-colors"><i data-feather="phone" class="w-4 h-4"></i> Call us</a>
+      <a id="contactTelegramLink" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-ink/80 dark:text-[#CFE7E3] hover:text-teal transition-colors"><i data-feather="send" class="w-4 h-4"></i> Telegram</a>
+    </div>
+  </div>
+  <button id="contactToggleBtn" aria-label="Contact us" class="btn-hover w-14 h-14 rounded-full bg-teal hover:bg-lime text-[#041619] flex items-center justify-center shadow-xl">
+    <i data-feather="message-circle" class="w-6 h-6"></i>
+  </button>
+</div>
+
+<div id="cookieBanner" class="bg-royal-deep text-white/90 px-5 py-4 sm:px-8 flex flex-col sm:flex-row items-center gap-3 justify-between">
+  <p class="text-sm text-center sm:text-left">We use minimal cookies to remember your preferences (like dark mode). No tracking, no third-party ads.</p>
+  <button id="cookieAcceptBtn" class="btn-hover shrink-0 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2 rounded-full text-sm">Got it</button>
+</div>
+
+<div id="confirmModal" class="fixed inset-0 z-[110] hidden">
+  <div class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
+  <div class="relative z-10 h-full w-full flex items-center justify-center p-5">
+    <div class="bg-white dark:bg-[#10191c] rounded-2xl max-w-sm w-full p-6 text-center">
+      <p id="confirmModalMessage" class="text-royal-deep dark:text-[#EAFBF7] font-medium">Are you sure?</p>
+      <div class="mt-5 flex gap-3">
+        <button id="confirmModalCancel" class="btn-hover flex-1 border border-royal/20 dark:border-white/20 rounded-full py-2 font-medium text-royal-deep dark:text-[#EAFBF7]">Cancel</button>
+        <button id="confirmModalConfirm" class="btn-hover flex-1 bg-red-600 hover:bg-red-700 text-white rounded-full py-2 font-medium">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== 404 VIEW ============================== -->
+<div id="page404" class="hidden">
+  <div class="min-h-full flex items-center justify-center px-6 py-20 relative">
+    <div class="absolute inset-0 ray-divider top-0 bottom-auto"></div>
+    <div class="max-w-lg text-center">
+      <p class="font-display text-[5rem] sm:text-[7rem] leading-none brand-gradient font-extrabold">404</p>
+      <h1 class="mt-2 font-display font-bold text-2xl sm:text-3xl text-white">This page has wandered off</h1>
+      <p class="mt-4 text-white/70 text-sm sm:text-base leading-relaxed">
+        The link may be broken, or the page may have been moved. But you are not lost —
+        here are a few doors back home.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-7 py-3 rounded-full">Back to homepage</a>
+        <button id="notFoundSearchBtn" class="btn-hover border border-white/30 hover:border-lime hover:text-lime text-white font-semibold px-7 py-3 rounded-full">Search the site</button>
+      </div>
+      <div class="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/50">
+        <a href="/#sermons" class="hover:text-lime transition-colors">Sermons</a>
+        <a href="/#events" class="hover:text-lime transition-colors">Events</a>
+        <a href="/#giving" class="hover:text-lime transition-colors">Giving</a>
+        <a href="/#branches" class="hover:text-lime transition-colors">Branches</a>
+        <a href="/#faq" class="hover:text-lime transition-colors">FAQ</a>
+      </div>
+      <div class="mt-12 ray-divider"></div>
+      <p class="mt-6 text-xs text-white/40">Gracious Word Global Mission · "…bringing God's‑life to men."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== SCRIPT ============================== -->
 <script>
-  // Initialize Feather icons
-  feather.replace();
+/* =========================================================================
+   0. CONFIG
+   ========================================================================= */
+const GWGM_CONFIG = {
+  supabaseUrl: 'YOUR_SUPABASE_URL',
+  supabaseKey: 'YOUR_SUPABASE_ANON_KEY',
+  telegramGroupUrl: 'https://t.me/YOUR_TELEGRAM_GROUP',
+};
 
-  // --- Dynamic copyright year (never hardcoded) ---
-  document.getElementById('copyrightText').textContent =
-    `© ${new Date().getFullYear()} Gracious Word Global Mission. All Rights Reserved.`;
+let gwgmClient = null;
+try {
+  if (!GWGM_CONFIG.supabaseUrl.includes('YOUR_') && window.supabase) {
+    gwgmClient = window.supabase.createClient(GWGM_CONFIG.supabaseUrl, GWGM_CONFIG.supabaseKey);
+  }
+} catch (err) {
+  console.error('[GWGM] Supabase client could not be created:', err);
+}
 
-  // --- Mobile menu toggle ---
-  const menuBtn = document.getElementById('menuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-  let menuOpen = false;
+/* =========================================================================
+   1. UTILITIES
+   ========================================================================= */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
 
-  menuBtn.addEventListener('click', () => {
-    menuOpen = !menuOpen;
-    mobileMenu.style.maxHeight = menuOpen ? mobileMenu.scrollHeight + 'px' : '0px';
-    menuBtn.setAttribute('aria-expanded', menuOpen);
-    menuBtn.innerHTML = menuOpen ? '<i data-feather="x" class="w-7 h-7"></i>' : '<i data-feather="menu" class="w-7 h-7"></i>';
-    feather.replace();
+function safeUrl(url) {
+  if (!url) return '';
+  const s = String(url).trim();
+  if (/^(javascript|data|vbscript):/i.test(s)) return '';
+  return s;
+}
+
+function formatDate(value, opts) {
+  if (!value) return '';
+  const d = new Date(value);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString(undefined, opts || { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function toast(message, isError) {
+  const host = document.getElementById('toastHost');
+  const el = document.createElement('div');
+  el.className = 'toast' + (isError ? ' err' : '');
+  el.textContent = message;
+  host.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 3200);
+}
+
+let featherTimer = null;
+function refreshIcons() {
+  clearTimeout(featherTimer);
+  featherTimer = setTimeout(() => { try { feather.replace(); } catch (e) {} }, 0);
+}
+
+/* =========================================================================
+   2. REVEAL OBSERVER
+   ========================================================================= */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      revealObserver.unobserve(entry.target);
+    }
   });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-  // Close mobile menu after tapping a link
-  document.querySelectorAll('.mobile-link').forEach(link => {
-    link.addEventListener('click', () => {
-      menuOpen = false;
-      mobileMenu.style.maxHeight = '0px';
-      menuBtn.innerHTML = '<i data-feather="menu" class="w-7 h-7"></i>';
-      feather.replace();
-    });
+function observeReveal(el) { if (el && el.classList.contains('reveal')) revealObserver.observe(el); }
+function observeAllReveals(root) {
+  (root || document).querySelectorAll('.reveal:not(.is-visible)').forEach(observeReveal);
+}
+
+/* =========================================================================
+   3. DARK MODE
+   ========================================================================= */
+function applyDarkMode(isDark) {
+  document.documentElement.classList.toggle('dark', isDark);
+  document.querySelectorAll('#darkModeToggle i, #darkModeToggleMobile i').forEach(icon => {
+    icon.setAttribute('data-feather', isDark ? 'sun' : 'moon');
   });
+  refreshIcons();
+}
+const storedDarkPref = localStorage.getItem('gwgm_dark_mode');
+const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyDarkMode(storedDarkPref !== null ? storedDarkPref === 'true' : systemPrefersDark);
 
-  // --- Sticky nav shadow/background on scroll ---
-  const navbar = document.getElementById('navbar');
-  let scrollTicking = false;
-  window.addEventListener('scroll', () => {
-    if (scrollTicking) return;
-    scrollTicking = true;
-    requestAnimationFrame(() => {
-      navbar.classList.toggle('scrolled', window.scrollY > 40);
-      scrollTicking = false;
-    });
-  }, { passive: true });
+function toggleDarkMode() {
+  const isDark = !document.documentElement.classList.contains('dark');
+  applyDarkMode(isDark);
+  localStorage.setItem('gwgm_dark_mode', String(isDark));
+}
+document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+document.getElementById('darkModeToggleMobile').addEventListener('click', toggleDarkMode);
 
-  // --- Scroll-triggered fade-in reveal ---
-  const revealEls = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  revealEls.forEach(el => observer.observe(el));
+/* =========================================================================
+   4. NAV / MOBILE MENU
+   ========================================================================= */
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+let menuOpen = false;
 
-  // --- Ministries data rendered programmatically (name + Feather icon) ---
-  const ministries = [
-    { name: 'Music', icon: 'music' },
-    { name: 'Protocol', icon: 'shield' },
-    { name: 'Security', icon: 'lock' },
-    { name: 'Hospitality', icon: 'coffee' },
-    { name: 'Dance & Drama', icon: 'star' },
-    { name: 'Administration', icon: 'clipboard' },
-    { name: 'Missions', icon: 'globe' },
-    { name: 'Publicity', icon: 'volume-2' },
-    { name: 'Media', icon: 'camera' },
-    { name: 'Technical', icon: 'settings' },
-    { name: 'Children', icon: 'smile' },
-    { name: 'Youth', icon: 'zap' },
-    { name: 'Women', icon: 'heart' },
+function setMenu(open) {
+  menuOpen = open;
+  mobileMenu.style.maxHeight = open ? mobileMenu.scrollHeight + 'px' : '0px';
+  menuBtn.setAttribute('aria-expanded', String(open));
+  menuBtn.innerHTML = open ? '<i data-feather="x" class="w-7 h-7"></i>' : '<i data-feather="menu" class="w-7 h-7"></i>';
+  refreshIcons();
+}
+menuBtn.addEventListener('click', () => setMenu(!menuOpen));
+document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => setMenu(false)));
+window.addEventListener('resize', () => { if (menuOpen) setMenu(false); });
+
+/* =========================================================================
+   5. SCROLL: navbar shadow + progress + back-to-top
+   ========================================================================= */
+const navbar = document.getElementById('navbar');
+const backToTopBtn = document.getElementById('backToTop');
+const progressBar = document.getElementById('scrollProgress');
+let ticking = false;
+
+window.addEventListener('scroll', () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    const y = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (docHeight > 0 ? (y / docHeight) * 100 : 0) + '%';
+    navbar.classList.toggle('scrolled', y > 40);
+    backToTopBtn.classList.toggle('visible', y > 500);
+    ticking = false;
+  });
+}, { passive: true });
+
+backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* =========================================================================
+   6. PAGE LOADER
+   ========================================================================= */
+window.addEventListener('load', () => document.getElementById('pageLoader').classList.add('done'));
+setTimeout(() => document.getElementById('pageLoader').classList.add('done'), 2500);
+
+/* =========================================================================
+   7. SITE SEARCH
+   ========================================================================= */
+const STATIC_SEARCH_INDEX = [
+  { title: 'Home / Welcome', anchor: '#welcome', keywords: 'home welcome about church family' },
+  { title: "Today's Grace Card", anchor: '#grace-card', keywords: 'grace card daily word kids' },
+  { title: 'Our Vision, Mission & Purpose', anchor: '#vision', keywords: 'vision mission purpose' },
+  { title: 'Sermons & Media Library', anchor: '#sermons', keywords: 'sermon message preach video media library telegram' },
+  { title: 'Events & Programs', anchor: '#events', keywords: 'event calendar program youth conference countdown register' },
+  { title: 'Online Giving', anchor: '#giving', keywords: 'giving tithe offering donate bank transfer seed' },
+  { title: 'Our Ministries', anchor: '#ministries', keywords: 'ministry music protocol security hospitality media youth women children' },
+  { title: 'Our Church Branches', anchor: '#branches', keywords: 'branch location uyo eket port harcourt aksu map' },
+  { title: 'Frequently Asked Questions', anchor: '#faq', keywords: 'faq question help answer' },
+  { title: 'Newsletter Signup', anchor: '#newsletter', keywords: 'newsletter subscribe email updates' },
+  { title: 'Why Join Us', anchor: '#welcome', keywords: 'why join benefits community' },
+  { title: 'Become Part of Our Family', anchor: '#welcome', keywords: 'register join membership' },
+];
+
+const searchOverlay = document.getElementById('searchOverlay');
+const searchInput = document.getElementById('searchInput');
+const searchResultsEl = document.getElementById('searchResults');
+
+function openSearch() {
+  searchOverlay.classList.add('open');
+  setTimeout(() => searchInput.focus(), 80);
+}
+function closeSearch() {
+  searchOverlay.classList.remove('open');
+  searchInput.value = '';
+  searchResultsEl.innerHTML = '';
+}
+document.getElementById('searchBtn').addEventListener('click', openSearch);
+document.getElementById('searchBtnMobile').addEventListener('click', openSearch);
+document.getElementById('searchCloseBtn').addEventListener('click', closeSearch);
+searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
+
+function runSearch(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) { searchResultsEl.innerHTML = ''; return; }
+
+  const dynamic = [
+    ...(window.__gwgmSermons || []).map(s => ({ title: `Sermon: ${s.title}`, anchor: '#sermons', keywords: 'sermon message' })),
+    ...(window.__gwgmEvents || []).map(ev => ({ title: `Event: ${ev.title}`, anchor: '#events', keywords: 'event program' })),
+    ...(window.__gwgmPastors || []).map(p => ({ title: `${p.name} — ${p.role || 'Pastor'}`, anchor: '#welcome', keywords: 'pastor leader' })),
   ];
 
-  const grid = document.getElementById('ministriesGrid');
-  ministries.forEach(m => {
-    const card = document.createElement('div');
-    card.className = 'reveal lift-hover bg-white/10 hover:bg-white/15 rounded-2xl p-6 text-center border border-white/10';
-    card.innerHTML = `
-      <div class="w-11 h-11 mx-auto rounded-full bg-teal/20 flex items-center justify-center">
-        <i data-feather="${m.icon}" class="text-lime w-5 h-5"></i>
-      </div>
-      <p class="mt-4 text-white font-medium text-sm">${m.name}</p>
-    `;
-    grid.appendChild(card);
-    observer.observe(card);
-  });
-  feather.replace();
+  const combined = [...STATIC_SEARCH_INDEX, ...dynamic];
+  const matches = combined.filter(item =>
+    item.title.toLowerCase().includes(q) || (item.keywords || '').toLowerCase().includes(q)
+  ).slice(0, 12);
 
-  /* =========================================================================
-     GRACE CARD WIDGET
-     -------------------------------------------------------------------------
-     Reads the currently active card from the `grace_cards` table (populated
-     by the Super Admin dashboard) and renders it on the homepage. No more
-     manually editing this file every morning — publish a new card in the
-     dashboard and it shows up here automatically.
+  searchResultsEl.innerHTML = matches.length
+    ? matches.map(m => `<a href="${m.anchor}" class="search-result-item block px-4 py-3 rounded-lg text-white/90 transition-colors">${escapeHtml(m.title)}</a>`).join('')
+    : '<p class="text-white/40 px-4 py-3 text-sm">No matches found. Try "sermon", "giving" or "branch".</p>';
+}
+searchInput.addEventListener('input', (e) => runSearch(e.target.value));
+searchResultsEl.addEventListener('click', (e) => { if (e.target.closest('a')) closeSearch(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && searchOverlay.classList.contains('open')) closeSearch();
+  if ((e.metaKey || e.ctrlKey) && e.key === '/') { e.preventDefault(); openSearch(); }
+});
 
-     Table shape expected (see grace_cards):
-       id, title, scripture, image_url, publish_date, expiry_date,
-       is_active, uploaded_by, uploaded_at, created_at
+/* =========================================================================
+   8. GRACE CARD
    ========================================================================= */
-  class GraceCardManager {
-    constructor(config) {
-      // --- TODO: replace with your project's Supabase URL + anon key
-      // (the same project id_app.html / the Super Admin dashboard use) ---
-      this.supabaseUrl = config.supabaseUrl;
-      this.supabaseKey = config.supabaseKey;
-      this.client = null;
+class GraceCardManager {
+  constructor(client) {
+    this.client = client;
+    this.cards = { main: null, kids: null };
+    this.activeType = 'main';
+    this.countdownTimer = null;
+    this.modalOpen = false;
 
-      this.card = null;              // currently active grace card record
-      this.countdownTimer = null;    // setInterval handle
-      this.modalOpen = false;
-
-      // Cache DOM references once
-      this.els = {
-        trigger: document.getElementById('graceCardTrigger'),
-        image: document.getElementById('graceCardImage'),
-        skeleton: document.getElementById('graceCardSkeleton'),
-        title: document.getElementById('graceCardTitle'),
-        scripture: document.getElementById('graceCardScripture'),
-        countdownText: document.getElementById('graceCardCountdownText'),
-        emptyState: document.getElementById('graceCardEmptyState'),
-
-        modal: document.getElementById('graceCardModal'),
-        backdrop: document.getElementById('graceCardBackdrop'),
-        closeBtn: document.getElementById('graceCardClose'),
-        modalImage: document.getElementById('graceCardModalImage'),
-        modalTitle: document.getElementById('graceCardModalTitle'),
-        modalScripture: document.getElementById('graceCardModalScripture'),
-        modalDate: document.getElementById('graceCardModalDate'),
-      };
-    }
-
-    /** Bootstraps the widget: connects to Supabase, loads the card, wires events. */
-    async init() {
-      this.bindEvents();
-
-      try {
-        if (!this.supabaseUrl || !this.supabaseKey || this.supabaseUrl.includes('YOUR_')) {
-          throw new Error('Supabase credentials are not configured for the Grace Card widget.');
-        }
-        this.client = window.supabase.createClient(this.supabaseUrl, this.supabaseKey);
-        await this.fetchActiveCard();
-      } catch (err) {
-        // Never let a Grace Card failure break the rest of the page.
-        console.error('[GraceCardManager] init failed:', err);
-        this.showEmptyState();
-      }
-    }
-
-    /** Queries Supabase for the single currently-active grace card. */
-    async fetchActiveCard() {
-      const { data, error } = await this.client
-        .from('grace_cards')
-        .select('id, title, scripture, image_url, publish_date, expiry_date, uploaded_at, created_at')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (error) throw error;
-      if (!data) {
-        this.showEmptyState();
-        return;
-      }
-
-      this.card = data;
-      this.render();
-      this.startCountdown();
-    }
-
-    /** Populates the homepage card with the active Grace Card's data. */
-    render() {
-      const { image_url, title, scripture } = this.card;
-
-      this.els.image.src = image_url;
-      this.els.image.alt = title || "Today's Grace Card";
-      this.els.image.onload = () => {
-        this.els.image.classList.remove('hidden');
-        this.els.skeleton.classList.add('hidden');
-      };
-
-      this.els.title.textContent = title || "Today's Grace Card";
-      this.els.scripture.textContent = scripture || '';
-      this.els.scripture.classList.toggle('hidden', !scripture);
-
-      this.els.trigger.disabled = false;
-      this.els.emptyState.classList.add('hidden');
-    }
-
-    /** Falls back gracefully when there's no active card or Supabase is unreachable. */
-    showEmptyState() {
-      this.els.trigger.classList.add('hidden');
-      this.els.emptyState.classList.remove('hidden');
-    }
-
-    /**
-     * Drives the live countdown pill on the card.
-     * Counts down to `expiry_date` when the admin has set one; otherwise
-     * counts down to midnight (local time), since cards are refreshed daily.
-     */
-    startCountdown() {
-      const target = this.card.expiry_date
-        ? new Date(this.card.expiry_date)
-        : this.getEndOfToday();
-
-      const label = this.card.expiry_date ? 'Card ends in' : 'New card in';
-
-      const tick = () => {
-        const diff = target.getTime() - Date.now();
-        if (diff <= 0) {
-          this.els.countdownText.textContent = 'Refreshing…';
-          clearInterval(this.countdownTimer);
-          // Re-check Supabase in case a new card just went live.
-          this.fetchActiveCard().catch(err => console.error('[GraceCardManager] refresh failed:', err));
-          return;
-        }
-        this.els.countdownText.textContent = `${label} ${this.formatDuration(diff)}`;
-      };
-
-      tick();
-      clearInterval(this.countdownTimer);
-      this.countdownTimer = setInterval(tick, 1000);
-    }
-
-    /** Midnight, local time, of the current day. */
-    getEndOfToday() {
-      const end = new Date();
-      end.setHours(23, 59, 59, 999);
-      return end;
-    }
-
-    /** Formats milliseconds as HH:MM:SS. */
-    formatDuration(ms) {
-      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-      const s = String(totalSeconds % 60).padStart(2, '0');
-      return `${h}:${m}:${s}`;
-    }
-
-    /** Wires up open/close interactions for the fullscreen modal. */
-    bindEvents() {
-      this.els.trigger.addEventListener('click', () => this.openModal());
-      this.els.closeBtn.addEventListener('click', () => this.closeModal());
-      this.els.backdrop.addEventListener('click', () => this.closeModal());
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && this.modalOpen) this.closeModal();
-      });
-    }
-
-    /** Opens the fullscreen Grace Card view and blurs the rest of the page. */
-    openModal() {
-      if (!this.card) return;
-
-      this.els.modalImage.src = this.card.image_url;
-      this.els.modalImage.alt = this.card.title || "Today's Grace Card";
-      this.els.modalTitle.textContent = this.card.title || "Today's Grace Card";
-      this.els.modalScripture.textContent = this.card.scripture || '';
-      this.els.modalScripture.classList.toggle('hidden', !this.card.scripture);
-
-      const uploaded = this.card.uploaded_at || this.card.created_at;
-      this.els.modalDate.textContent = uploaded
-        ? `Published ${new Date(uploaded).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}`
-        : '';
-
-      this.els.modal.classList.remove('hidden');
-      document.body.classList.add('grace-modal-open');
-      // Next frame, so the opacity/scale transition actually animates in.
-      requestAnimationFrame(() => this.els.modal.classList.add('is-open'));
-
-      this.modalOpen = true;
-      this.els.closeBtn.focus();
-    }
-
-    /** Closes the fullscreen view and un-blurs the page. */
-    closeModal() {
-      this.els.modal.classList.remove('is-open');
-      document.body.classList.remove('grace-modal-open');
-      this.modalOpen = false;
-
-      // Wait for the fade-out transition before fully hiding + returning focus.
-      setTimeout(() => {
-        if (!this.modalOpen) this.els.modal.classList.add('hidden');
-      }, 350);
-      this.els.trigger.focus();
-    }
+    this.els = {
+      tabMain: document.getElementById('graceCardTabMain'),
+      tabKids: document.getElementById('graceCardTabKids'),
+      trigger: document.getElementById('graceCardTrigger'),
+      image: document.getElementById('graceCardImage'),
+      skeleton: document.getElementById('graceCardSkeleton'),
+      title: document.getElementById('graceCardTitle'),
+      scripture: document.getElementById('graceCardScripture'),
+      countdownText: document.getElementById('graceCardCountdownText'),
+      emptyState: document.getElementById('graceCardEmptyState'),
+      modal: document.getElementById('graceCardModal'),
+      backdrop: document.getElementById('graceCardBackdrop'),
+      closeBtn: document.getElementById('graceCardClose'),
+      modalImage: document.getElementById('graceCardModalImage'),
+      modalTitle: document.getElementById('graceCardModalTitle'),
+      modalScripture: document.getElementById('graceCardModalScripture'),
+      modalDate: document.getElementById('graceCardModalDate'),
+    };
   }
 
-  // --- Boot the Grace Card widget ---
-  // TODO: swap in your Supabase project URL + public anon key.
-  new GraceCardManager({
-    supabaseUrl: 'YOUR_SUPABASE_URL',
-    supabaseKey: 'YOUR_SUPABASE_ANON_KEY',
-  }).init();
+  async init() {
+    this.bindEvents();
+    if (!this.client) { this.showEmptyState(); return; }
+    try { await this.fetchCards(); }
+    catch (err) { console.error('[GraceCard]', err); this.showEmptyState(); }
+  }
+
+  async fetchCards() {
+    const { data, error } = await this.client
+      .from('grace_cards')
+      .select('id, card_type, title, scripture, image_url, publish_date, expiry_date, uploaded_at, created_at')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const now = Date.now();
+    const valid = (data || []).filter(c => {
+      if (c.publish_date && new Date(c.publish_date).getTime() > now) return false;
+      if (c.expiry_date && new Date(c.expiry_date).getTime() < now) return false;
+      return true;
+    });
+
+    this.cards.main = valid.find(c => c.card_type === 'main') || null;
+    this.cards.kids = valid.find(c => c.card_type === 'kids') || null;
+
+    this.els.tabKids.classList.toggle('hidden', !this.cards.kids);
+    if (!this.cards.kids && this.activeType === 'kids') this.activeType = 'main';
+
+    this.render(this.activeType);
+  }
+
+  switchTab(type) {
+    this.activeType = type;
+    const on = ['bg-teal', 'text-[#041619]'];
+    const off = ['bg-white/40', 'dark:bg-white/10', 'text-royal-deep', 'dark:text-[#EAFBF7]', 'border', 'border-royal/10', 'dark:border-white/15'];
+
+    this.els.tabMain.setAttribute('aria-selected', String(type === 'main'));
+    this.els.tabKids.setAttribute('aria-selected', String(type === 'kids'));
+
+    [this.els.tabMain, this.els.tabKids].forEach((tab, i) => {
+      const isOn = (i === 0) === (type === 'main');
+      on.forEach(c => tab.classList.toggle(c, isOn));
+      off.forEach(c => tab.classList.toggle(c, !isOn));
+    });
+
+    this.render(type);
+  }
+
+  render(type) {
+    const card = this.cards[type];
+    if (!card) { this.showEmptyState(); return; }
+
+    this.els.image.classList.add('hidden');
+    this.els.skeleton.classList.remove('hidden');
+
+    const url = safeUrl(card.image_url);
+    if (!url) { this.showEmptyState(); return; }
+
+    this.els.image.src = url;
+    this.els.image.alt = card.title || "Today's Grace Card";
+    this.els.image.onload = () => {
+      this.els.image.classList.remove('hidden');
+      this.els.skeleton.classList.add('hidden');
+    };
+    this.els.image.onerror = () => {
+      this.els.skeleton.classList.add('hidden');
+      this.els.image.classList.add('hidden');
+    };
+
+    this.els.title.textContent = card.title || "Today's Grace Card";
+    this.els.scripture.textContent = card.scripture || '';
+    this.els.scripture.classList.toggle('hidden', !card.scripture);
+
+    this.els.trigger.disabled = false;
+    this.els.trigger.classList.remove('hidden');
+    this.els.emptyState.classList.add('hidden');
+    this.startCountdown(card);
+  }
+
+  showEmptyState() {
+    this.els.trigger.classList.add('hidden');
+    this.els.emptyState.classList.remove('hidden');
+    clearInterval(this.countdownTimer);
+  }
+
+  startCountdown(card) {
+    const target = card.expiry_date ? new Date(card.expiry_date) : this.endOfToday();
+    const label = card.expiry_date ? 'Card ends in' : 'New card in';
+
+    const tick = () => {
+      const diff = target.getTime() - Date.now();
+      if (diff <= 0) {
+        this.els.countdownText.textContent = 'Refreshing…';
+        clearInterval(this.countdownTimer);
+        this.fetchCards().catch(() => {});
+        return;
+      }
+      this.els.countdownText.textContent = `${label} ${this.formatDuration(diff)}`;
+    };
+
+    tick();
+    clearInterval(this.countdownTimer);
+    this.countdownTimer = setInterval(tick, 1000);
+  }
+
+  endOfToday() { const d = new Date(); d.setHours(23, 59, 59, 999); return d; }
+
+  formatDuration(ms) {
+    const t = Math.max(0, Math.floor(ms / 1000));
+    const h = String(Math.floor(t / 3600)).padStart(2, '0');
+    const m = String(Math.floor((t % 3600) / 60)).padStart(2, '0');
+    const s = String(t % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+
+  bindEvents() {
+    this.els.tabMain.addEventListener('click', () => this.switchTab('main'));
+    this.els.tabKids.addEventListener('click', () => this.switchTab('kids'));
+    this.els.trigger.addEventListener('click', () => this.openModal());
+    this.els.closeBtn.addEventListener('click', () => this.closeModal());
+    this.els.backdrop.addEventListener('click', () => this.closeModal());
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.modalOpen) this.closeModal(); });
+  }
+
+  openModal() {
+    const card = this.cards[this.activeType];
+    if (!card) return;
+
+    this.els.modalImage.src = safeUrl(card.image_url);
+    this.els.modalImage.alt = card.title || "Today's Grace Card";
+    this.els.modalTitle.textContent = card.title || "Today's Grace Card";
+    this.els.modalScripture.textContent = card.scripture || '';
+    this.els.modalScripture.classList.toggle('hidden', !card.scripture);
+
+    const uploaded = card.uploaded_at || card.created_at;
+    this.els.modalDate.textContent = uploaded ? `Published ${formatDate(uploaded)}` : '';
+
+    this.els.modal.classList.remove('hidden');
+    document.body.classList.add('grace-modal-open');
+    requestAnimationFrame(() => this.els.modal.classList.add('is-open'));
+
+    this.modalOpen = true;
+    this.els.closeBtn.focus();
+  }
+
+  closeModal() {
+    this.els.modal.classList.remove('is-open');
+    document.body.classList.remove('grace-modal-open');
+    this.modalOpen = false;
+    setTimeout(() => { if (!this.modalOpen) this.els.modal.classList.add('hidden'); }, 350);
+    this.els.trigger.focus();
+  }
+}
+
+const graceCardManager = new GraceCardManager(gwgmClient);
+graceCardManager.init();
+
+/* =========================================================================
+   9. SITE CONTENT (images, giving details, telegram)
+   ========================================================================= */
+async function loadSiteContent() {
+  if (!gwgmClient) return;
+  try {
+    const { data, error } = await gwgmClient.from('site_content').select('key, value');
+    if (error) throw error;
+
+    const map = Object.fromEntries((data || []).map(r => [r.key, r.value]));
+
+    document.querySelectorAll('[data-site-key]').forEach(img => {
+      const key = img.getAttribute('data-site-key');
+      if (map[key]) img.src = safeUrl(map[key]);
+    });
+
+    if (map.giving_account_name) document.getElementById('givingAccountName').textContent = map.giving_account_name;
+    if (map.giving_account_number) document.getElementById('givingAccountNumber').textContent = map.giving_account_number;
+    if (map.giving_bank_name) document.getElementById('givingBankName').textContent = map.giving_bank_name;
+
+    if (map.giving_payment_link) {
+      const link = document.getElementById('givingPaymentLink');
+      link.href = safeUrl(map.giving_payment_link);
+      link.classList.remove('hidden');
+      link.classList.add('inline-flex');
+    }
+
+    const tg = map.telegram_group_url || GWGM_CONFIG.telegramGroupUrl;
+    ['telegramJoinBtn', 'contactTelegramLink', 'footerTelegramLink'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.href = safeUrl(tg);
+    });
+  } catch (err) {
+    console.error('[GWGM] site content load failed:', err);
+    ['telegramJoinBtn', 'contactTelegramLink', 'footerTelegramLink'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.href = GWGM_CONFIG.telegramGroupUrl;
+    });
+  }
+}
+loadSiteContent();
+
+/* =========================================================================
+   10. PASTORS
+   ========================================================================= */
+async function loadPastors() {
+  const grid = document.getElementById('pastorsGrid');
+  const fallback = [
+    { name: 'Pastor Georgewealth Udoh', role: 'Lead Pastor', quote: "Our calling is to help people know Christ, grow in grace and walk in God's purpose.", photo_url: '' },
+    { name: 'Pastor Ronke Georgewealth Udoh', role: 'Lead Pastor', quote: 'Every believer deserves a loving church family where faith, purpose and destiny are nurtured.', photo_url: '' },
+  ];
+
+  let pastors = fallback;
+  if (gwgmClient) {
+    try {
+      const { data, error } = await gwgmClient.from('pastors').select('id, name, role, quote, photo_url, sort_order, updated_at').order('sort_order', { ascending: true });
+      if (!error && data && data.length) pastors = data;
+    } catch (err) { console.error('[GWGM] pastors load failed:', err); }
+  }
+  window.__gwgmPastors = pastors;
+
+  grid.innerHTML = pastors.map(p => `
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-28 h-28 mx-auto rounded-full bg-lavender dark:bg-[#071012] border-4 border-teal/40 flex items-center justify-center overflow-hidden">
+        ${p.photo_url
+          ? `<img src="${escapeHtml(safeUrl(p.photo_url))}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover" loading="lazy" />`
+          : `<span class="text-royal/40 dark:text-white/30 text-xs font-medium text-center px-2">Photo coming soon</span>`}
+      </div>
+      <h3 class="mt-6 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(p.name)}</h3>
+      <p class="text-teal text-sm font-medium tracking-wide mt-1">${escapeHtml(p.role || 'Pastor')}</p>
+      ${p.quote ? `<p class="mt-4 italic text-ink/70 dark:text-[#CFE7E3] text-sm leading-relaxed">"${escapeHtml(p.quote)}"</p>` : ''}
+      ${p.updated_at ? `<p class="mt-4 text-[11px] text-ink/40 dark:text-white/35">Last updated ${formatDate(p.updated_at)}</p>` : ''}
+    </div>
+  `).join('');
+
+  observeAllReveals(grid);
+  refreshIcons();
+}
+loadPastors();
+
+/* =========================================================================
+   11. MINISTRIES
+   ========================================================================= */
+const ministries = [
+  { name: 'Music', icon: 'music' }, { name: 'Protocol', icon: 'shield' },
+  { name: 'Security', icon: 'lock' }, { name: 'Hospitality', icon: 'coffee' },
+  { name: 'Dance & Drama', icon: 'star' }, { name: 'Administration', icon: 'clipboard' },
+  { name: 'Missions', icon: 'globe' }, { name: 'Publicity', icon: 'volume-2' },
+  { name: 'Media', icon: 'camera' }, { name: 'Technical', icon: 'settings' },
+  { name: 'Children', icon: 'smile' }, { name: 'Youth', icon: 'zap' },
+  { name: 'Women', icon: 'heart' }, { name: 'Prayer', icon: 'sunrise' },
+];
+
+const ministriesGrid = document.getElementById('ministriesGrid');
+ministries.forEach(m => {
+  const card = document.createElement('div');
+  card.className = 'reveal lift-hover bg-white/10 hover:bg-white/15 rounded-2xl p-6 text-center border border-white/10 transition-colors';
+  card.innerHTML = `
+    <div class="w-11 h-11 mx-auto rounded-full bg-teal/20 flex items-center justify-center">
+      <i data-feather="${m.icon}" class="text-lime w-5 h-5"></i>
+    </div>
+    <p class="mt-4 text-white font-medium text-sm">${escapeHtml(m.name)}</p>
+  `;
+  ministriesGrid.appendChild(card);
+  observeReveal(card);
+});
+refreshIcons();
+
+/* =========================================================================
+   12. SERMONS
+   ========================================================================= */
+function embedPlayerHtml(url) {
+  const safe = safeUrl(url);
+  if (!safe) return '<div class="w-full h-full flex items-center justify-center text-white/40 text-sm">Video unavailable</div>';
+
+  const yt = safe.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/);
+  if (yt) return `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${yt[1]}" title="Sermon video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+
+  const vimeo = safe.match(/vimeo\.com\/(\d+)/);
+  if (vimeo) return `<iframe class="w-full h-full" src="https://player.vimeo.com/video/${vimeo[1]}" title="Sermon video" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+
+  return `<video class="w-full h-full" src="${escapeHtml(safe)}" controls preload="none"></video>`;
+}
+
+async function loadSermons() {
+  const skeleton = document.getElementById('latestSermonSkeleton');
+  const card = document.getElementById('latestSermonCard');
+  const empty = document.getElementById('sermonsEmptyState');
+
+  if (!gwgmClient) { skeleton.classList.add('hidden'); empty.classList.remove('hidden'); return; }
+
+  try {
+    const { data, error } = await gwgmClient
+      .from('sermons')
+      .select('id, title, video_url, description, preacher, sermon_date, thumbnail_url, created_at, updated_at')
+      .order('sermon_date', { ascending: false });
+    if (error) throw error;
+
+    skeleton.classList.add('hidden');
+    if (!data || !data.length) { empty.classList.remove('hidden'); return; }
+
+    window.__gwgmSermons = data;
+
+    const latest = data[0];
+    document.getElementById('latestSermonTitle').textContent = latest.title;
+    document.getElementById('latestSermonMeta').textContent =
+      [latest.preacher, formatDate(latest.sermon_date || latest.created_at)].filter(Boolean).join(' · ');
+    document.getElementById('latestSermonUpdated').textContent =
+      `Last updated ${formatDate(latest.updated_at || latest.created_at)}`;
+    document.getElementById('latestSermonPlayer').innerHTML = embedPlayerHtml(latest.video_url);
+
+    card.classList.remove('hidden');
+    observeReveal(card);
+
+    document.getElementById('allSermonsList').innerHTML = data.map(s => `
+      <div class="border border-royal/10 dark:border-white/10 rounded-xl p-4">
+        <p class="font-display font-semibold text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(s.title)}</p>
+        <p class="text-xs text-ink/50 dark:text-white/40 mt-1">
+          ${escapeHtml([s.preacher, formatDate(s.sermon_date || s.created_at)].filter(Boolean).join(' · '))}
+        </p>
+        <p class="text-[11px] text-ink/40 dark:text-white/30 mt-0.5">Last updated ${formatDate(s.updated_at || s.created_at)}</p>
+        <div class="aspect-video bg-black rounded-lg overflow-hidden mt-3">${embedPlayerHtml(s.video_url)}</div>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error('[GWGM] sermons load failed:', err);
+    skeleton.classList.add('hidden');
+    empty.classList.remove('hidden');
+  }
+}
+loadSermons();
+
+const allSermonsModal = document.getElementById('allSermonsModal');
+document.getElementById('viewAllSermonsBtn').addEventListener('click', () => allSermonsModal.classList.remove('hidden'));
+document.getElementById('allSermonsCloseBtn').addEventListener('click', () => allSermonsModal.classList.add('hidden'));
+document.getElementById('allSermonsBackdrop').addEventListener('click', () => allSermonsModal.classList.add('hidden'));
+
+/* =========================================================================
+   13. EVENTS
+   ========================================================================= */
+let cdTimer = null;
+let upcomingEvents = [];
+
+async function loadEvents() {
+  const listEl = document.getElementById('eventsList');
+  const emptyEl = document.getElementById('eventsEmptyState');
+
+  if (!gwgmClient) { emptyEl.classList.remove('hidden'); return; }
+
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const { data, error } = await gwgmClient
+      .from('events')
+      .select('id, title, description, event_date, event_time, location, allow_registration, is_featured, image_url, updated_at')
+      .gte('event_date', today)
+      .order('event_date', { ascending: true });
+    if (error) throw error;
+
+    upcomingEvents = data || [];
+    window.__gwgmEvents = upcomingEvents;
+
+    if (!upcomingEvents.length) { emptyEl.classList.remove('hidden'); return; }
+
+    listEl.innerHTML = upcomingEvents.map(ev => `
+      <article class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover border border-royal/5 dark:border-white/10 p-6 pt-8">
+        <p class="text-xs font-semibold uppercase tracking-wide text-teal">
+          ${escapeHtml(formatDate(ev.event_date, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }))}${ev.event_time ? ' · ' + escapeHtml(ev.event_time) : ''}
+        </p>
+        <h3 class="mt-2 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(ev.title)}</h3>
+        ${ev.description ? `<p class="mt-2 text-sm text-ink/70 dark:text-[#CFE7E3]">${escapeHtml(ev.description)}</p>` : ''}
+        ${ev.location ? `<p class="mt-2 text-xs text-ink/50 dark:text-white/40 flex items-center gap-1"><i data-feather="map-pin" class="w-3.5 h-3.5"></i> ${escapeHtml(ev.location)}</p>` : ''}
+        <p class="mt-3 text-[11px] text-ink/40 dark:text-white/30">Last updated ${escapeHtml(formatDate(ev.updated_at || ev.event_date))}</p>
+        ${ev.allow_registration ? `<button type="button" class="event-register-btn btn-hover mt-4 text-sm font-semibold text-teal border border-teal/40 rounded-full px-4 py-2 hover:bg-teal hover:text-[#041619]" data-event-id="${escapeHtml(ev.id)}" data-event-title="${escapeHtml(ev.title)}">Register</button>` : ''}
+      </article>
+    `).join('');
+
+    listEl.querySelectorAll('.reveal').forEach(observeReveal);
+    refreshIcons();
+
+    const featured = upcomingEvents.find(e => e.is_featured) || upcomingEvents[0];
+    if (featured) startEventCountdown(featured);
+  } catch (err) {
+    console.error('[GWGM] events load failed:', err);
+    emptyEl.classList.remove('hidden');
+  }
+}
+
+function startEventCountdown(event) {
+  const wrap = document.getElementById('eventCountdownWrap');
+  wrap.classList.remove('hidden');
+  document.getElementById('eventCountdownTitle').textContent = event.title;
+
+  const target = new Date(`${event.event_date}T${(event.event_time || '00:00').slice(0,5)}:00`);
+  if (isNaN(target)) return;
+
+  const tick = () => {
+    const diff = target.getTime() - Date.now();
+    if (diff <= 0) { clearInterval(cdTimer); wrap.classList.add('hidden'); return; }
+    document.getElementById('cdDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+    document.getElementById('cdHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+    document.getElementById('cdMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+    document.getElementById('cdSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+  };
+  tick();
+  clearInterval(cdTimer);
+  cdTimer = setInterval(tick, 1000);
+}
+loadEvents();
+
+const eventRegModal = document.getElementById('eventRegModal');
+document.getElementById('eventsList').addEventListener('click', (e) => {
+  const btn = e.target.closest('.event-register-btn');
+  if (!btn) return;
+  document.getElementById('eventRegEventId').value = btn.dataset.eventId;
+  document.getElementById('eventRegTitle').textContent = `Register: ${btn.dataset.eventTitle}`;
+  document.getElementById('eventRegForm').classList.remove('hidden');
+  document.getElementById('eventRegSuccess').classList.add('hidden');
+  document.getElementById('eventRegError').classList.add('hidden');
+  document.getElementById('eventRegForm').reset();
+  document.getElementById('eventRegEventId').value = btn.dataset.eventId;
+  eventRegModal.classList.remove('hidden');
+});
+document.getElementById('eventRegCloseBtn').addEventListener('click', () => eventRegModal.classList.add('hidden'));
+document.getElementById('eventRegBackdrop').addEventListener('click', () => eventRegModal.classList.add('hidden'));
+
+document.getElementById('eventRegForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('eventRegError');
+  errorEl.classList.add('hidden');
+
+  const payload = {
+    event_id: document.getElementById('eventRegEventId').value,
+    name: document.getElementById('eventRegName').value.trim(),
+    email: document.getElementById('eventRegEmail').value.trim(),
+    phone: document.getElementById('eventRegPhone').value.trim() || null,
+  };
+
+  try {
+    if (!gwgmClient) throw new Error('Registration is temporarily unavailable.');
+    if (!payload.name || !payload.email) throw new Error('Please enter your name and email.');
+
+    const { error } = await gwgmClient.from('event_registrations').insert(payload);
+    if (error) throw error;
+
+    if (document.getElementById('eventRegReminder').checked) requestReminder(payload.event_id);
+
+    document.getElementById('eventRegForm').classList.add('hidden');
+    document.getElementById('eventRegSuccess').classList.remove('hidden');
+    toast('Registration confirmed 🎉');
+  } catch (err) {
+    errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errorEl.classList.remove('hidden');
+  }
+});
+
+function requestReminder(eventId) {
+  const ev = upcomingEvents.find(e => String(e.id) === String(eventId));
+  if (!ev || !('Notification' in window)) return;
+  Notification.requestPermission().then(perm => {
+    if (perm !== 'granted') return;
+    const target = new Date(`${ev.event_date}T${(ev.event_time || '00:00').slice(0,5)}:00`).getTime() - Date.now() - 3600000;
+    if (target > 0 && target < 2147483647) {
+      setTimeout(() => new Notification(`Reminder: ${ev.title}`, { body: 'Starting in about an hour.' }), target);
+    }
+  });
+}
+
+/* =========================================================================
+   14. NEWSLETTER
+   ========================================================================= */
+document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('newsletterError');
+  errorEl.classList.add('hidden');
+  const email = document.getElementById('newsletterEmail').value.trim();
+
+  try {
+    if (!gwgmClient) throw new Error('Sign-up is temporarily unavailable.');
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) throw new Error('Please enter a valid email address.');
+
+    const { error } = await gwgmClient.from('newsletter_subscribers').insert({ email });
+    if (error && error.code !== '23505') throw error;
+
+    document.getElementById('newsletterForm').classList.add('hidden');
+    document.getElementById('newsletterSuccess').classList.remove('hidden');
+    refreshIcons();
+  } catch (err) {
+    errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errorEl.classList.remove('hidden');
+  }
+});
+
+/* =========================================================================
+   15. COPY TO CLIPBOARD
+   ========================================================================= */
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.copy-btn');
+  if (!btn) return;
+  const targetEl = document.getElementById(btn.dataset.copyTarget);
+  if (!targetEl) return;
+  try {
+    await navigator.clipboard.writeText(targetEl.textContent.trim());
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    toast('Copied to clipboard');
+    setTimeout(() => { btn.textContent = original; }, 1800);
+  } catch (err) {
+    console.error('[GWGM] clipboard copy failed:', err);
+    toast('Copy failed — please copy manually', true);
+  }
+});
+
+/* =========================================================================
+   16. FLOATING CONTACT
+   ========================================================================= */
+const contactPanel = document.getElementById('contactPanel');
+document.getElementById('contactToggleBtn').addEventListener('click', () => contactPanel.classList.toggle('open'));
+document.addEventListener('click', (e) => {
+  const host = document.getElementById('floatingContact');
+  if (host && !host.contains(e.target)) contactPanel.classList.remove('open');
+});
+
+/* =========================================================================
+   17. COOKIE BANNER
+   ========================================================================= */
+const cookieBanner = document.getElementById('cookieBanner');
+if (!localStorage.getItem('gwgm_cookie_ack')) {
+  setTimeout(() => cookieBanner.classList.add('visible'), 900);
+}
+document.getElementById('cookieAcceptBtn').addEventListener('click', () => {
+  localStorage.setItem('gwgm_cookie_ack', 'true');
+  cookieBanner.classList.remove('visible');
+});
+
+/* =========================================================================
+   18. FAQ ACCORDION
+   ========================================================================= */
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+/* =========================================================================
+   19. CONFIRM MODAL
+   ========================================================================= */
+function gwgmConfirm(message, confirmLabel) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('confirmModal');
+    document.getElementById('confirmModalMessage').textContent = message;
+    const confirmBtn = document.getElementById('confirmModalConfirm');
+    const cancelBtn = document.getElementById('confirmModalCancel');
+    confirmBtn.textContent = confirmLabel || 'Confirm';
+    modal.classList.remove('hidden');
+
+    const cleanup = (result) => {
+      modal.classList.add('hidden');
+      confirmBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(result);
+    };
+    const onConfirm = () => cleanup(true);
+    const onCancel = () => cleanup(false);
+    confirmBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+  });
+}
+window.gwgmConfirm = gwgmConfirm;
+
+/* =========================================================================
+   20. UTM TRACKING ON OUTBOUND LINKS
+   ========================================================================= */
+(function tagOutboundLinks() {
+  const params = 'utm_source=gwgm-website&utm_medium=referral&utm_campaign=site-links';
+  const tag = (a) => {
+    try {
+      const url = new URL(a.href);
+      if (url.hostname === window.location.hostname) return;
+      if (url.search.includes('utm_')) return;
+      url.search += (url.search ? '&' : '?') + params;
+      a.href = url.toString();
+    } catch (err) { /* ignore */ }
+  };
+  document.querySelectorAll('a[href^="http"]').forEach(tag);
+
+  // Also tag links that get their href assigned later (telegram, giving, maps)
+  const mo = new MutationObserver(muts => {
+    muts.forEach(m => {
+      if (m.type === 'attributes' && m.attributeName === 'href') {
+        const a = m.target;
+        if (a.tagName === 'A' && a.href.startsWith('http')) tag(a);
+      }
+    });
+  });
+  mo.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['href'] });
+})();
+
+/* =========================================================================
+   21. COPYRIGHT + ICONS + REVEALS
+   ========================================================================= */
+document.getElementById('copyrightText').textContent =
+  `© ${new Date().getFullYear()} Gracious Word Global Mission. All Rights Reserved.`;
+
+refreshIcons();
+observeAllReveals();
+
+/* =========================================================================
+   22. 404 HANDLING
+   -------------------------------------------------------------------------
+   If this file is served for an unknown path (or ?404 is present), show the
+   404 view. For a true server-level 404, copy the #page404 block into a
+   standalone 404.html — it is fully self-contained styling-wise.
+   ========================================================================= */
+(function handle404() {
+  const params = new URLSearchParams(window.location.search);
+  const path = window.location.pathname;
+  const knownPaths = ['', '/', '/index.html', '/index'];
+  const isUnknownPath = !knownPaths.includes(path) && !path.endsWith('index.html');
+
+  if (params.has('404') || isUnknownPath) {
+    document.getElementById('page404').classList.remove('hidden');
+    document.getElementById('pageLoader').classList.add('done');
+    document.body.style.overflow = 'hidden';
+  }
+
+  document.getElementById('notFoundSearchBtn').addEventListener('click', () => {
+    document.getElementById('page404').classList.add('hidden');
+    document.body.style.overflow = '';
+    openSearch();
+  });
+})();
 </script>
 
 </body>
