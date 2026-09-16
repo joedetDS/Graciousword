@@ -16,7 +16,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -35,8 +35,8 @@
           ink: '#241B33',
         },
         fontFamily: {
-          display: ['"Playfair Display"', 'serif'],
-          body: ['"Work Sans"', 'sans-serif'],
+          display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          body: ['"Plus Jakarta Sans"', 'sans-serif'],
         },
       },
     },
@@ -53,10 +53,10 @@
   @media (min-width:768px){ html{ scroll-behavior:smooth; } }
 
   body{
-    font-family:'Work Sans',sans-serif; color:#241B33; background-color:#FBF8F3;
+    font-family:'Plus Jakarta Sans',sans-serif; color:#241B33; background-color:#FBF8F3;
     -webkit-font-smoothing:antialiased;
   }
-  h1,h2,h3,.font-display{ font-family:'Playfair Display',serif; }
+  h1,h2,h3,.font-display{ font-family:'Plus Jakarta Sans',sans-serif; }
 
   /* ---------- Signature "arch window" card ---------- */
   .arch-card{
@@ -492,24 +492,24 @@
 <section id="sermons" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Sermons &amp; Media Library</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">Catch up on the latest word, or explore everything we've shared.</p>
+    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">Listen to the latest word, or explore every message we've shared.</p>
   </div>
 
   <div class="max-w-3xl mx-auto mt-12">
     <div id="latestSermonSkeleton" class="arch-card bg-white dark:bg-[#10191c] shadow-lg p-8 animate-pulse">
-      <div class="h-5 w-1/2 bg-royal/10 rounded mb-4"></div>
-      <div class="h-40 w-full bg-royal/10 rounded-xl"></div>
+      <div class="h-4 w-24 bg-royal/10 rounded mb-3"></div>
+      <div class="h-5 w-1/2 bg-royal/10 rounded mb-2"></div>
+      <div class="h-3 w-1/3 bg-royal/10 rounded mb-6"></div>
+      <div class="h-24 w-full bg-royal/10 rounded-xl"></div>
     </div>
 
     <article id="latestSermonCard" class="hidden reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover border border-royal/5 dark:border-white/10">
-      <div class="aspect-video bg-black">
-        <div id="latestSermonPlayer" class="w-full h-full"></div>
-      </div>
       <div class="p-6 sm:p-8">
         <span class="text-xs font-semibold uppercase tracking-wider text-teal">Latest Sermon</span>
         <h3 id="latestSermonTitle" class="mt-2 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">—</h3>
         <p id="latestSermonMeta" class="mt-1 text-xs text-ink/50">—</p>
         <p id="latestSermonUpdated" class="mt-1 text-xs text-ink/40">—</p>
+        <div id="latestSermonPlayer" class="mt-5"></div>
       </div>
     </article>
 
@@ -517,7 +517,7 @@
 
     <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
       <button id="viewAllSermonsBtn" class="btn-hover inline-flex items-center gap-2 border border-royal/20 dark:border-white/20 hover:border-teal hover:text-teal text-royal-deep dark:text-[#EAFBF7] font-semibold px-6 py-3 rounded-full">
-        <i data-feather="film" class="w-4 h-4"></i> View all sermons
+        <i data-feather="headphones" class="w-4 h-4"></i> View all sermons
       </button>
       <a id="telegramJoinBtn" href="#" target="_blank" rel="noopener noreferrer"
         class="btn-hover inline-flex items-center gap-2 bg-[#229ED9] hover:bg-[#1b87ba] text-white font-semibold px-6 py-3 rounded-full">
@@ -718,9 +718,9 @@
     </div>
     <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
       <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
-        Where can I watch past sermons? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
+        Where can I listen to past sermons? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
       </button>
-      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Visit the Sermons &amp; Media Library section and tap "View all sermons", or join our Telegram group for every message ever shared.</p></div>
+      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Visit the Sermons &amp; Media Library section and tap "View all sermons" to play any MP3 message, or join our Telegram group for every message ever shared.</p></div>
     </div>
   </div>
 </section>
@@ -875,8 +875,8 @@
    0. CONFIG
    ========================================================================= */
 const GWGM_CONFIG = {
-  supabaseUrl: 'YOUR_SUPABASE_URL',
-  supabaseKey: 'YOUR_SUPABASE_ANON_KEY',
+  supabaseUrl: 'https://osrzaimxlcsvoitxvuya.supabase.co',
+  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zcnphaW14bGNzdm9pdHh2dXlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NTA2ODEsImV4cCI6MjEwMTMyNjY4MX0.Q3NF1s1IMPMU2Lo0pD30ZZs-Y40iwwVUKBALwNHBywo',
   telegramGroupUrl: 'https://t.me/YOUR_TELEGRAM_GROUP',
 };
 
@@ -1024,7 +1024,7 @@ const STATIC_SEARCH_INDEX = [
   { title: 'Home / Welcome', anchor: '#welcome', keywords: 'home welcome about church family' },
   { title: "Today's Grace Card", anchor: '#grace-card', keywords: 'grace card daily word kids' },
   { title: 'Our Vision, Mission & Purpose', anchor: '#vision', keywords: 'vision mission purpose' },
-  { title: 'Sermons & Media Library', anchor: '#sermons', keywords: 'sermon message preach video media library telegram' },
+  { title: 'Sermons & Media Library', anchor: '#sermons', keywords: 'sermon message preach audio mp3 media library telegram' },
   { title: 'Events & Programs', anchor: '#events', keywords: 'event calendar program youth conference countdown register' },
   { title: 'Online Giving', anchor: '#giving', keywords: 'giving tithe offering donate bank transfer seed' },
   { title: 'Our Ministries', anchor: '#ministries', keywords: 'ministry music protocol security hospitality media youth women children' },
@@ -1379,17 +1379,28 @@ refreshIcons();
 /* =========================================================================
    12. SERMONS
    ========================================================================= */
-function embedPlayerHtml(url) {
+function sermonAudioUrl(s) {
+  return safeUrl(s.audio_url || s.video_url || '');
+}
+
+function audioPlayerHtml(url, title) {
   const safe = safeUrl(url);
-  if (!safe) return '<div class="w-full h-full flex items-center justify-center text-white/40 text-sm">Video unavailable</div>';
-
-  const yt = safe.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/);
-  if (yt) return `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${yt[1]}" title="Sermon video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
-
-  const vimeo = safe.match(/vimeo\.com\/(\d+)/);
-  if (vimeo) return `<iframe class="w-full h-full" src="https://player.vimeo.com/video/${vimeo[1]}" title="Sermon video" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
-
-  return `<video class="w-full h-full" src="${escapeHtml(safe)}" controls preload="none"></video>`;
+  if (!safe) {
+    return `<div class="w-full rounded-xl bg-royal-deep/5 dark:bg-white/5 px-5 py-8 text-center text-sm text-ink/50 dark:text-white/40">Audio unavailable</div>`;
+  }
+  return `
+    <div class="sermon-player w-full rounded-xl bg-gradient-to-br from-royal-deep to-[#0A2A2F] p-5 sm:p-6 text-white shadow-lg">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-11 h-11 rounded-full bg-teal/20 flex items-center justify-center shrink-0">
+          <i data-feather="headphones" class="w-5 h-5 text-teal"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-[11px] uppercase tracking-wider text-teal/80 font-semibold">Audio sermon</p>
+          <p class="text-sm font-medium truncate">${escapeHtml(title || 'Sermon')}</p>
+        </div>
+      </div>
+      <audio class="w-full sermon-audio" controls preload="metadata" src="${escapeHtml(safe)}" style="height:40px;border-radius:9999px;"></audio>
+    </div>`;
 }
 
 async function loadSermons() {
@@ -1402,7 +1413,7 @@ async function loadSermons() {
   try {
     const { data, error } = await gwgmClient
       .from('sermons')
-      .select('id, title, video_url, description, preacher, sermon_date, thumbnail_url, created_at, updated_at')
+      .select('id, title, audio_url, video_url, description, preacher, sermon_date, thumbnail_url, created_at, updated_at')
       .order('sermon_date', { ascending: false });
     if (error) throw error;
 
@@ -1417,10 +1428,11 @@ async function loadSermons() {
       [latest.preacher, formatDate(latest.sermon_date || latest.created_at)].filter(Boolean).join(' · ');
     document.getElementById('latestSermonUpdated').textContent =
       `Last updated ${formatDate(latest.updated_at || latest.created_at)}`;
-    document.getElementById('latestSermonPlayer').innerHTML = embedPlayerHtml(latest.video_url);
+    document.getElementById('latestSermonPlayer').innerHTML = audioPlayerHtml(sermonAudioUrl(latest), latest.title);
 
     card.classList.remove('hidden');
     observeReveal(card);
+    refreshIcons();
 
     document.getElementById('allSermonsList').innerHTML = data.map(s => `
       <div class="border border-royal/10 dark:border-white/10 rounded-xl p-4">
@@ -1428,10 +1440,12 @@ async function loadSermons() {
         <p class="text-xs text-ink/50 dark:text-white/40 mt-1">
           ${escapeHtml([s.preacher, formatDate(s.sermon_date || s.created_at)].filter(Boolean).join(' · '))}
         </p>
+        ${s.description ? `<p class="text-sm text-ink/60 dark:text-white/50 mt-2">${escapeHtml(s.description)}</p>` : ''}
         <p class="text-[11px] text-ink/40 dark:text-white/30 mt-0.5">Last updated ${formatDate(s.updated_at || s.created_at)}</p>
-        <div class="aspect-video bg-black rounded-lg overflow-hidden mt-3">${embedPlayerHtml(s.video_url)}</div>
+        <div class="mt-3">${audioPlayerHtml(sermonAudioUrl(s), s.title)}</div>
       </div>
     `).join('');
+    refreshIcons();
   } catch (err) {
     console.error('[GWGM] sermons load failed:', err);
     skeleton.classList.add('hidden');
