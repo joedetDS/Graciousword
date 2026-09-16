@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>GWGM Admin — Gracious Word Global Mission</title>
+
+<link rel="icon" href="/favicon.ico">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          royal: { DEFAULT: '#041619', deep: '#041619', light: '#0A2A2F' },
+          teal:  { DEFAULT: '#00FFCF', light: '#66FFE1', deep: '#00C9A3', soft: '#DFFFF6' },
+          lime:  { DEFAULT: '#99FF00', light: '#C0FF66', deep: '#78CC00', soft: '#F0FFDE' },
+          crimson: { DEFAULT: '#DD040D' },
+          cream: '#FBF8F3',
+          lavender: '#F4EEFB',
+          ink: '#241B33',
+        },
+        fontFamily: {
+          display: ['"Playfair Display"', 'serif'],
+          body: ['"Work Sans"', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body{ font-family:'Work Sans',sans-serif; background:#FBF8F3; color:#241B33; }
+  h1,h2,h3,.font-display{ font-family:'Playfair Display',serif; }
+  .brand-gradient{ background:linear-gradient(90deg,#00FFCF,#99FF00); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:.5rem; font-weight:600; padding:.65rem 1.25rem; border-radius:9999px; transition:transform .18s ease, background-color .18s ease, color .18s ease, box-shadow .18s ease; cursor:pointer; border:none; }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn:active{ transform:translateY(0); }
+  .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+  .btn-primary{ background:#00FFCF; color:#041619; }
+  .btn-primary:hover{ background:#99FF00; }
+  .btn-dark{ background:#041619; color:#fff; }
+  .btn-dark:hover{ background:#0A2A2F; }
+  .btn-ghost{ background:transparent; border:1px solid rgba(4,22,25,.2); color:#041619; }
+  .btn-ghost:hover{ border-color:#00FFCF; color:#041619; }
+  .btn-danger{ background:#DD040D; color:#fff; }
+  .btn-danger:hover{ background:#a8030a; }
+
+  .field{ width:100%; padding:.7rem 1rem; border-radius:.75rem; border:1px solid rgba(4,22,25,.15); background:#fff; color:#241B33; font-size:.9rem; outline:none; transition:border-color .2s ease, box-shadow .2s ease; }
+  .field:focus{ border-color:#00FFCF; box-shadow:0 0 0 3px rgba(0,255,207,.18); }
+  .field::placeholder{ color:rgba(36,27,51,.4); }
+
+  .card{ background:#fff; border-radius:1.25rem; box-shadow:0 6px 24px -12px rgba(4,22,25,.15); border:1px solid rgba(4,22,25,.06); }
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .nav-item{ display:flex; align-items:center; gap:.75rem; padding:.7rem 1rem; border-radius:.75rem; font-size:.9rem; font-weight:500; color:rgba(255,255,255,.75); cursor:pointer; transition:background-color .2s ease, color .2s ease; }
+  .nav-item:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .nav-item.active{ background:rgba(0,255,207,.12); color:#00FFCF; }
+  .nav-item.active i{ color:#00FFCF; }
+
+  .toast{ position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(10px); background:#041619; color:#EAFBF7; padding:.75rem 1.2rem; border-radius:9999px; font-size:.85rem; box-shadow:0 12px 30px -8px rgba(0,0,0,.5); opacity:0; transition:opacity .25s ease, transform .25s ease; z-index:200; pointer-events:none; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.err{ background:#7f1016; }
+
+  .loader-ring{ width:36px; height:36px; border-radius:50%; border:3px solid rgba(0,255,207,.2); border-top-color:#00FFCF; animation:spin .8s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  #appLoader{ position:fixed; inset:0; background:#041619; display:flex; align-items:center; justify-content:center; z-index:300; transition:opacity .4s ease, visibility .4s ease; }
+  #appLoader.done{ opacity:0; visibility:hidden; }
+
+  .otp-input{ width:100%; text-align:center; font-size:1.75rem; letter-spacing:.6em; padding:.9rem; border-radius:.9rem; border:2px solid rgba(4,22,25,.15); font-weight:600; outline:none; }
+  .otp-input:focus{ border-color:#00FFCF; box-shadow:0 0 0 4px rgba(0,255,207,.18); }
+
+  .list-item{ display:flex; align-items:flex-start; gap:1rem; padding:1rem; border-radius:.9rem; border:1px solid rgba(4,22,25,.08); background:#fff; transition:box-shadow .2s ease; }
+  .list-item:hover{ box-shadow:0 8px 24px -12px rgba(4,22,25,.18); }
+
+  .badge{ display:inline-block; padding:.2rem .6rem; border-radius:9999px; font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  .badge-main{ background:#DFFFF6; color:#007A63; }
+  .badge-kids{ background:#F0FFDE; color:#4a7a00; }
+  .badge-on{ background:#DFFFF6; color:#007A63; }
+  .badge-off{ background:#F0F0F0; color:#666; }
+
+  @media (max-width:768px){
+    .sidebar{ position:fixed; inset:0 auto 0 0; width:260px; transform:translateX(-100%); transition:transform .3s ease; z-index:100; }
+    .sidebar.open{ transform:translateX(0); }
+  }
+</style>
+</head>
+
+<body class="min-h-screen">
+
+<div id="appLoader"><div class="loader-ring"></div></div>
+<div id="toast" class="toast"></div>
+
+<!-- =============================== LOGIN VIEW =============================== -->
+<section id="loginView" class="min-h-screen flex items-center justify-center px-5 py-12 bg-gradient-to-br from-royal via-royal-light to-royal-deep">
+  <div class="w-full max-w-md">
+
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 mx-auto rounded-full bg-white/10 border border-teal/40 flex items-center justify-center mb-4">
+        <i data-feather="shield" class="text-teal w-7 h-7"></i>
+      </div>
+      <h1 class="font-display font-bold text-2xl text-white">Admin Access</h1>
+      <p class="text-white/60 text-sm mt-2">Gracious Word Global Mission</p>
+    </div>
+
+    <!-- Step 1: Email -->
+    <div id="stepEmail" class="card p-7">
+      <h2 class="font-display font-semibold text-lg text-royal-deep">Sign in with email</h2>
+      <p class="text-sm text-ink/60 mt-1">We'll send a 6-digit code to your inbox.</p>
+
+      <form id="emailForm" class="mt-5 space-y-4" novalidate>
+        <div>
+          <label for="loginEmail" class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Email address</label>
+          <input id="loginEmail" type="email" required placeholder="you@example.com" class="field" autocomplete="email" />
+        </div>
+        <p id="emailError" class="hidden text-sm text-red-600"></p>
+        <button type="submit" id="sendOtpBtn" class="btn btn-primary w-full">
+          <i data-feather="send" class="w-4 h-4"></i>
+          Send access code
+        </button>
+      </form>
+
+      <p class="mt-5 text-xs text-ink/50 text-center leading-relaxed">
+        Only pre-approved admin emails can sign in. Contact the site owner if you need access.
+      </p>
+    </div>
+
+    <!-- Step 2: OTP -->
+    <div id="stepOtp" class="card p-7 hidden">
+      <button id="backToEmail" class="text-xs text-ink/60 hover:text-teal flex items-center gap-1 mb-4 transition-colors">
+        <i data-feather="arrow-left" class="w-3.5 h-3.5"></i> Use a different email
+      </button>
+
+      <h2 class="font-display font-semibold text-lg text-royal-deep">Enter your code</h2>
+      <p class="text-sm text-ink/60 mt-1">We sent a 6-digit code to <strong id="otpEmailLabel" class="text-royal-deep">—</strong></p>
+
+      <form id="otpForm" class="mt-5 space-y-4" novalidate>
+        <input id="otpInput" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" class="otp-input" />
+        <p id="otpError" class="hidden text-sm text-red-600"></p>
+        <button type="submit" id="verifyOtpBtn" class="btn btn-primary w-full">
+          <i data-feather="log-in" class="w-4 h-4"></i>
+          Verify &amp; sign in
+        </button>
+      </form>
+
+      <button id="resendOtp" class="mt-4 text-xs text-ink/60 hover:text-teal transition-colors w-full text-center">Didn't get it? Resend code</button>
+    </div>
+
+    <p class="text-center text-xs text-white/40 mt-8">© <span id="yearLogin"></span> Gracious Word Global Mission</p>
+  </div>
+</section>
+
+<!-- =============================== DASHBOARD =============================== -->
+<div id="dashboardView" class="hidden min-h-screen flex bg-cream">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar w-64 bg-royal-deep text-white flex flex-col shrink-0">
+    <div class="p-5 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-teal/20 flex items-center justify-center">
+          <i data-feather="shield" class="text-teal w-4 h-4"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="font-display font-semibold text-sm truncate">GWGM Admin</p>
+          <p class="text-xs text-white/50 truncate" id="sidebarEmail">—</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+      <div class="nav-item active" data-panel="panelGraceCards"><i data-feather="image" class="w-4 h-4"></i> Grace Cards</div>
+      <div class="nav-item" data-panel="panelSiteContent"><i data-feather="layout" class="w-4 h-4"></i> Site Content</div>
+      <div class="nav-item" data-panel="panelSermons"><i data-feather="film" class="w-4 h-4"></i> Sermons</div>
+      <div class="nav-item" data-panel="panelEvents"><i data-feather="calendar" class="w-4 h-4"></i> Events</div>
+      <div class="nav-item" data-panel="panelPastors"><i data-feather="users" class="w-4 h-4"></i> Pastors</div>
+      <div class="nav-item" data-panel="panelSubscribers"><i data-feather="mail" class="w-4 h-4"></i> Subscribers</div>
+      <div class="nav-item" data-panel="panelRegistrations"><i data-feather="clipboard" class="w-4 h-4"></i> Registrations</div>
+      <div class="nav-item" data-panel="panelAdmins"><i data-feather="user-plus" class="w-4 h-4"></i> Admin Users</div>
+    </nav>
+
+    <div class="p-3 border-t border-white/10 space-y-1">
+      <a href="index.html" class="nav-item" target="_blank" rel="noopener">
+        <i data-feather="external-link" class="w-4 h-4"></i> View site
+      </a>
+      <button id="signOutBtn" class="nav-item w-full text-left">
+        <i data-feather="log-out" class="w-4 h-4"></i> Sign out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 min-w-0">
+    <!-- Top bar -->
+    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-royal/10 px-5 sm:px-8 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="md:hidden btn-ghost btn !p-2 !rounded-lg">
+          <i data-feather="menu" class="w-5 h-5"></i>
+        </button>
+        <h1 id="pageTitle" class="font-display font-semibold text-lg text-royal-deep">Grace Cards</h1>
+      </div>
+      <span class="text-xs text-ink/50 hidden sm:block" id="lastSaved">—</span>
+    </header>
+
+    <div class="p-5 sm:p-8 max-w-5xl">
+
+      <!-- ==================== GRACE CARDS ==================== -->
+      <section id="panelGraceCards" class="panel active">
+        <div class="card p-6 sm:p-7">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Upload a Grace Card</h2>
+          <p class="text-sm text-ink/60 mt-1">Main and Kids cards display on the homepage. Only the newest active card per type is shown.</p>
+
+          <form id="graceCardForm" class="mt-5 grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Card type</label>
+              <select id="gcType" class="field" required>
+                <option value="main">Main Card</option>
+                <option value="kids">Kids Card</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Title</label>
+              <input id="gcTitle" type="text" class="field" placeholder="Today's Grace Card" required />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Scripture / note</label>
+              <textarea id="gcScripture" rows="2" class="field" placeholder="e.g. Psalm 23:1 — The Lord is my shepherd…"></textarea>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Image</label>
+              <input id="gcImage" type="file" accept="image/*" class="field" required />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Publish date (optional)</label>
+              <input id="gcPublish" type="date" class="field" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Expiry date (optional)</label>
+              <input id="gcExpiry" type="date" class="field" />
+            </div>
+
+            <p id="gcError" class="hidden text-sm text-red-600 sm:col-span-2"></p>
+
+            <div class="sm:col-span-2 flex flex-wrap gap-3">
+              <button type="submit" id="gcSubmit" class="btn btn-primary">
+                <i data-feather="upload-cloud" class="w-4 h-4"></i> Publish Grace Card
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-8">
+          <h3 class="font-display font-semibold text-lg text-royal-deep mb-4">Existing Grace Cards</h3>
+          <div id="gcList" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- ==================== SITE CONTENT ==================== -->
+      <section id="panelSiteContent" class="panel">
+        <div class="card p-6 sm:p-7">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Branding images</h2>
+          <p class="text-sm text-ink/60 mt-1">Replace the logo, landing background, and footer image.</p>
+
+          <div class="mt-5 grid sm:grid-cols-3 gap-5">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Logo</label>
+              <img id="previewLogo" src="" alt="" class="w-full h-32 object-contain rounded-xl border border-royal/10 bg-lavender mb-2" />
+              <input id="uploadLogo" type="file" accept="image/*" class="field text-xs" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Landing image</label>
+              <img id="previewLand" src="" alt="" class="w-full h-32 object-cover rounded-xl border border-royal/10 bg-lavender mb-2" />
+              <input id="uploadLand" type="file" accept="image/*" class="field text-xs" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Footer image</label>
+              <img id="previewFooter" src="" alt="" class="w-full h-32 object-cover rounded-xl border border-royal/10 bg-lavender mb-2" />
+              <input id="uploadFooter" type="file" accept="image/*" class="field text-xs" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 sm:p-7 mt-6">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Giving &amp; contact details</h2>
+
+          <form id="siteContentForm" class="mt-5 grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Account name</label>
+              <input id="scAccountName" type="text" class="field" placeholder="Gracious Word Global Mission" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Account number</label>
+              <input id="scAccountNumber" type="text" class="field" placeholder="0123456789" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Bank name</label>
+              <input id="scBankName" type="text" class="field" placeholder="e.g. Zenith Bank" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Online payment link</label>
+              <input id="scPaymentLink" type="url" class="field" placeholder="https://…" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Telegram group URL</label>
+              <input id="scTelegram" type="url" class="field" placeholder="https://t.me/your_group" />
+            </div>
+            <div class="sm:col-span-2">
+              <button type="submit" class="btn btn-primary">
+                <i data-feather="save" class="w-4 h-4"></i> Save details
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==================== SERMONS ==================== -->
+      <section id="panelSermons" class="panel">
+        <div class="card p-6 sm:p-7">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Add a sermon</h2>
+          <p class="text-sm text-ink/60 mt-1">Paste a YouTube, Vimeo, or direct video URL. The latest sermon shows on the homepage.</p>
+
+          <form id="sermonForm" class="mt-5 grid sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Title</label>
+              <input id="smTitle" type="text" class="field" placeholder="e.g. The Grace That Saves" required />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Preacher</label>
+              <input id="smPreacher" type="text" class="field" placeholder="Pastor Georgewealth Udoh" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Date preached</label>
+              <input id="smDate" type="date" class="field" required />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Video URL</label>
+              <input id="smVideo" type="url" class="field" placeholder="https://youtu.be/…" required />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Short description (optional)</label>
+              <textarea id="smDescription" rows="2" class="field"></textarea>
+            </div>
+
+            <p id="smError" class="hidden text-sm text-red-600 sm:col-span-2"></p>
+
+            <div class="sm:col-span-2">
+              <button type="submit" class="btn btn-primary">
+                <i data-feather="upload" class="w-4 h-4"></i> Add sermon
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-8">
+          <h3 class="font-display font-semibold text-lg text-royal-deep mb-4">All sermons</h3>
+          <div id="sermonList" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- ==================== EVENTS ==================== -->
+      <section id="panelEvents" class="panel">
+        <div class="card p-6 sm:p-7">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Add an event</h2>
+
+          <form id="eventForm" class="mt-5 grid sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Title</label>
+              <input id="evTitle" type="text" class="field" placeholder="e.g. Youth Conference 2025" required />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Date</label>
+              <input id="evDate" type="date" class="field" required />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Time (optional)</label>
+              <input id="evTime" type="time" class="field" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Location</label>
+              <input id="evLocation" type="text" class="field" placeholder="Uyo City Headquarters" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Description</label>
+              <textarea id="evDescription" rows="3" class="field"></textarea>
+            </div>
+
+            <label class="flex items-center gap-2 text-sm">
+              <input id="evRegistration" type="checkbox" checked /> Allow registration
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input id="evFeatured" type="checkbox" /> Feature on countdown
+            </label>
+
+            <p id="evError" class="hidden text-sm text-red-600 sm:col-span-2"></p>
+
+            <div class="sm:col-span-2">
+              <button type="submit" class="btn btn-primary">
+                <i data-feather="calendar" class="w-4 h-4"></i> Add event
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-8">
+          <h3 class="font-display font-semibold text-lg text-royal-deep mb-4">All events</h3>
+          <div id="eventList" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- ==================== PASTORS ==================== -->
+      <section id="panelPastors" class="panel">
+        <div class="card p-6 sm:p-7">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Add a pastor / leader</h2>
+
+          <form id="pastorForm" class="mt-5 grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Full name</label>
+              <input id="psName" type="text" class="field" required />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Role</label>
+              <input id="psRole" type="text" class="field" placeholder="Lead Pastor" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Quote</label>
+              <textarea id="psQuote" rows="2" class="field"></textarea>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Photo</label>
+              <input id="psPhoto" type="file" accept="image/*" class="field" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Sort order</label>
+              <input id="psSort" type="number" class="field" value="0" />
+            </div>
+
+            <p id="psError" class="hidden text-sm text-red-600 sm:col-span-2"></p>
+
+            <div class="sm:col-span-2">
+              <button type="submit" class="btn btn-primary">
+                <i data-feather="user-plus" class="w-4 h-4"></i> Add pastor
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-8">
+          <h3 class="font-display font-semibold text-lg text-royal-deep mb-4">Current leaders</h3>
+          <div id="pastorList" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- ==================== SUBSCRIBERS ==================== -->
+      <section id="panelSubscribers" class="panel">
+        <div class="card p-6 sm:p-7">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <h2 class="font-display font-semibold text-lg text-royal-deep">Newsletter subscribers</h2>
+              <p class="text-sm text-ink/60 mt-1" id="subCount">—</p>
+            </div>
+            <button id="exportSubs" class="btn btn-ghost"><i data-feather="download" class="w-4 h-4"></i> Export CSV</button>
+          </div>
+          <div id="subList" class="mt-5 space-y-2"></div>
+        </div>
+      </section>
+
+      <!-- ==================== REGISTRATIONS ==================== -->
+      <section id="panelRegistrations" class="panel">
+        <div class="card p-6 sm:p-7">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Event registrations</h2>
+          <p class="text-sm text-ink/60 mt-1" id="regCount">—</p>
+          <div id="regList" class="mt-5 space-y-2"></div>
+        </div>
+      </section>
+
+      <!-- ==================== ADMIN USERS ==================== -->
+      <section id="panelAdmins" class="panel">
+        <div class="card p-6 sm:p-7">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Admin users</h2>
+          <p class="text-sm text-ink/60 mt-1">Only emails listed here can sign in with an OTP. The owner email cannot be removed.</p>
+
+          <form id="adminForm" class="mt-5 flex flex-col sm:flex-row gap-3">
+            <input id="newAdminEmail" type="email" class="field flex-1" placeholder="new-admin@example.com" required />
+            <button type="submit" class="btn btn-primary shrink-0">
+              <i data-feather="user-plus" class="w-4 h-4"></i> Grant access
+            </button>
+          </form>
+          <p id="adminError" class="hidden text-sm text-red-600 mt-2"></p>
+
+          <div id="adminList" class="mt-5 space-y-2"></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+/* =========================================================================
+   CONFIG — replace with your Supabase project credentials
+   ========================================================================= */
+const GWGM_CONFIG = {
+  supabaseUrl: 'YOUR_SUPABASE_URL',
+  supabaseKey: 'YOUR_SUPABASE_ANON_KEY',
+  ownerEmail: 'simplyedetjoseph@gmail.com',
+  buckets: {
+    graceCards: 'grace-cards',
+    siteAssets: 'site-assets',
+    pastors:    'pastors',
+  },
+};
+
+/* =========================================================================
+   HELPERS
+   ========================================================================= */
+const $  = (id) => document.getElementById(id);
+const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+
+function toast(msg, isError) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' err' : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.className = 'toast', 3200);
+}
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str == null ? '' : String(str);
+  return d.innerHTML;
+}
+
+function fmtDate(v) {
+  if (!v) return '';
+  const d = new Date(v);
+  return isNaN(d) ? '' : d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function fmtDateTime(v) {
+  if (!v) return '';
+  const d = new Date(v);
+  return isNaN(d) ? '' : d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function stampSaved() {
+  $('lastSaved').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+/* =========================================================================
+   SUPABASE CLIENT
+   ========================================================================= */
+let sb = null;
+try {
+  if (window.supabase && !GWGM_CONFIG.supabaseUrl.includes('YOUR_')) {
+    sb = window.supabase.createClient(GWGM_CONFIG.supabaseUrl, GWGM_CONFIG.supabaseKey, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+    });
+  }
+} catch (e) { console.error('[admin] supabase init', e); }
+
+if (!sb) {
+  setTimeout(() => {
+    document.body.innerHTML =
+      '<div style="font-family:sans-serif;padding:2rem;max-width:560px;margin:4rem auto;background:#fff;border-radius:1rem;box-shadow:0 10px 30px rgba(0,0,0,.1)">' +
+      '<h1 style="color:#041619">Configuration needed</h1>' +
+      '<p style="color:#555;line-height:1.6">Open <code>admin.html</code> and replace the <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code> placeholders inside <code>GWGM_CONFIG</code> with your Supabase project credentials.</p>' +
+      '</div>';
+  }, 400);
+}
+
+/* =========================================================================
+   AUTH FLOW  (OTP / passwordless)
+   ========================================================================= */
+let pendingEmail = '';
+
+function showStep(which) {
+  $('stepEmail').classList.toggle('hidden', which !== 'email');
+  $('stepOtp').classList.toggle('hidden', which !== 'otp');
+}
+
+async function sendOtp(email) {
+  if (!sb) throw new Error('Supabase not configured.');
+  if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('Please enter a valid email.');
+
+  // Create the user if they don't exist yet — the admin_users check
+  // happens after verification, so we don't leak which emails are admins.
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: true, emailRedirectTo: window.location.origin + '/admin.html' },
+  });
+  if (error) throw error;
+}
+
+async function verifyOtp(email, token) {
+  if (!sb) throw new Error('Supabase not configured.');
+  const clean = token.replace(/\s+/g, '');
+  if (clean.length < 6) throw new Error('Enter the 6-digit code.');
+
+  const { data, error } = await sb.auth.verifyOtp({ email, token: clean, type: 'email' });
+  if (error) throw error;
+
+  // Now check whether this email is on the admin list.
+  const { data: admin, error: adminErr } = await sb
+    .from('admin_users')
+    .select('email')
+    .eq('email', email.toLowerCase())
+    .maybeSingle();
+
+  if (adminErr) { await sb.auth.signOut(); throw new Error('Could not verify admin access.'); }
+  if (!admin)   { await sb.auth.signOut(); throw new Error('This email is not authorised for admin access.'); }
+
+  return data.user;
+}
+
+on('emailForm', 'submit', async (e) => {
+  e.preventDefault();
+  const email = $('loginEmail').value.trim().toLowerCase();
+  const errEl = $('emailError');
+  errEl.classList.add('hidden');
+  $('sendOtpBtn').disabled = true;
+
+  try {
+    await sendOtp(email);
+    pendingEmail = email;
+    $('otpEmailLabel').textContent = email;
+    $('otpInput').value = '';
+    showStep('otp');
+    setTimeout(() => $('otpInput').focus(), 100);
+    toast('Code sent — check your inbox');
+  } catch (err) {
+    errEl.textContent = err.message || 'Could not send code. Try again.';
+    errEl.classList.remove('hidden');
+  } finally {
+    $('sendOtpBtn').disabled = false;
+  }
+});
+
+on('otpForm', 'submit', async (e) => {
+  e.preventDefault();
+  const errEl = $('otpError');
+  errEl.classList.add('hidden');
+  $('verifyOtpBtn').disabled = true;
+
+  try {
+    await verifyOtp(pendingEmail, $('otpInput').value);
+    toast('Welcome back');
+    await enterDashboard();
+  } catch (err) {
+    errEl.textContent = err.message || 'Invalid code. Try again.';
+    errEl.classList.remove('hidden');
+  } finally {
+    $('verifyOtpBtn').disabled = false;
+  }
+});
+
+on('backToEmail', 'click', () => { pendingEmail = ''; showStep('email'); $('loginEmail').focus(); });
+
+on('resendOtp', 'click', async () => {
+  try {
+    await sendOtp(pendingEmail);
+    toast('New code sent');
+  } catch (err) { toast(err.message || 'Could not resend', true); }
+});
+
+// Auto-fill OTP when 6 digits entered
+on('otpInput', 'input', (e) => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+  if (e.target.value.length === 6) $('otpForm').requestSubmit();
+});
+
+on('signOutBtn', 'click', async () => {
+  const ok = await gwgmConfirm('Sign out of the admin dashboard?', 'Sign out');
+  if (!ok) return;
+  await sb.auth.signOut();
+  window.location.reload();
+});
+
+/* =========================================================================
+   DASHBOARD ENTRY / NAV
+   ========================================================================= */
+async function enterDashboard() {
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return;
+
+  $('loginView').classList.add('hidden');
+  $('dashboardView').classList.remove('hidden');
+  $('sidebarEmail').textContent = user.email;
+  $('yearLogin').textContent = new Date().getFullYear();
+
+  // Load all data in parallel
+  await Promise.all([
+    loadGraceCards(),
+    loadSiteContent(),
+    loadSermonsAdmin(),
+    loadEventsAdmin(),
+    loadPastorsAdmin(),
+    loadSubscribers(),
+    loadRegistrations(),
+    loadAdmins(),
+  ]);
+
+  feather.replace();
+  $('appLoader').classList.add('done');
+}
+
+// If a session already exists, skip login
+(async () => {
+  if (!sb) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    // Double-check admin list
+    const { data: admin } = await sb.from('admin_users').select('email').eq('email', session.user.email).maybeSingle();
+    if (admin) { await enterDashboard(); return; }
+    await sb.auth.signOut();
+  }
+  $('appLoader').classList.add('done');
+  setTimeout(() => $('loginEmail').focus(), 300);
+})();
+
+// Sidebar nav
+document.querySelectorAll('.nav-item[data-panel]').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item[data-panel]').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    const target = $(item.dataset.panel);
+    if (target) target.classList.add('active');
+    $('pageTitle').textContent = item.textContent.trim();
+    if (window.innerWidth < 768) $('sidebar').classList.remove('open');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+on('sidebarToggle', 'click', () => $('sidebar').classList.toggle('open'));
+
+/* =========================================================================
+   CONFIRM MODAL
+   ========================================================================= */
+function gwgmConfirm(message, confirmLabel) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:250;background:rgba(4,22,25,.85);display:flex;align-items:center;justify-content:center;padding:1.25rem;backdrop-filter:blur(6px)';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:1rem;max-width:24rem;width:100%;padding:1.5rem;text-align:center;box-shadow:0 20px 50px -12px rgba(0,0,0,.4)">
+        <p style="color:#041619;font-weight:500;line-height:1.5">${esc(message)}</p>
+        <div style="display:flex;gap:.75rem;margin-top:1.25rem">
+          <button data-act="cancel" style="flex:1;padding:.6rem;border-radius:9999px;border:1px solid rgba(4,22,25,.2);background:transparent;font-weight:500;cursor:pointer">Cancel</button>
+          <button data-act="ok" style="flex:1;padding:.6rem;border-radius:9999px;border:none;background:#DD040D;color:#fff;font-weight:600;cursor:pointer">${esc(confirmLabel || 'Confirm')}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    const close = (r) => { overlay.remove(); resolve(r); };
+    overlay.querySelector('[data-act="cancel"]').onclick = () => close(false);
+    overlay.querySelector('[data-act="ok"]').onclick = () => close(true);
+    overlay.onclick = (e) => { if (e.target === overlay) close(false); };
+  });
+}
+window.gwgmConfirm = gwgmConfirm;
+
+/* =========================================================================
+   FILE UPLOAD
+   ========================================================================= */
+async function uploadFile(bucket, file, prefix) {
+  if (!file) throw new Error('No file selected.');
+  if (!file.type.startsWith('image/')) throw new Error('Please select an image file.');
+  if (file.size > 8 * 1024 * 1024) throw new Error('Image must be under 8 MB.');
+
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error } = await sb.storage.from(bucket).upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+    contentType: file.type,
+  });
+  if (error) throw error;
+
+  const { data: { publicUrl } } = sb.storage.from(bucket).getPublicUrl(path);
+  return publicUrl;
+}
+
+/* =========================================================================
+   GRACE CARDS
+   ========================================================================= */
+async function loadGraceCards() {
+  const { data, error } = await sb.from('grace_cards')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(50);
+  if (error) { toast('Could not load grace cards', true); return; }
+
+  const list = $('gcList');
+  if (!data || !data.length) {
+    list.innerHTML = '<p class="text-sm text-ink/50 italic">No Grace Cards yet. Upload your first one above.</p>';
+    return;
+  }
+
+  list.innerHTML = data.map(c => `
+    <div class="list-item">
+      <img src="${esc(c.image_url)}" alt="" class="w-16 h-20 object-cover rounded-lg shrink-0 bg-lavender" loading="lazy" />
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="badge badge-${c.card_type === 'kids' ? 'kids' : 'main'}">${c.card_type === 'kids' ? 'Kids' : 'Main'}</span>
+          <span class="badge ${c.is_active ? 'badge-on' : 'badge-off'}">${c.is_active ? 'Active' : 'Inactive'}</span>
+        </div>
+        <p class="font-medium text-royal-deep mt-1 truncate">${esc(c.title || "Today's Grace Card")}</p>
+        <p class="text-xs text-ink/50 truncate">${esc(c.scripture || '')}</p>
+        <p class="text-[11px] text-ink/40 mt-1">Uploaded ${fmtDateTime(c.uploaded_at || c.created_at)}</p>
+      </div>
+      <div class="flex flex-col gap-2 shrink-0">
+        <button class="btn btn-ghost !py-1.5 !px-3 !text-xs" data-gc-toggle="${c.id}" data-active="${c.is_active}">
+          ${c.is_active ? 'Deactivate' : 'Activate'}
+        </button>
+        <button class="btn btn-danger !py-1.5 !px-3 !text-xs" data-gc-del="${c.id}">Delete</button>
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('[data-gc-del]').forEach(btn => btn.addEventListener('click', async () => {
+    const ok = await gwgmConfirm('Delete this Grace Card? This cannot be undone.', 'Delete');
+    if (!ok) return;
+    const { error } = await sb.from('grace_cards').delete().eq('id', btn.dataset.gcDel);
+    if (error) { toast(error.message, true); return; }
+    toast('Grace Card deleted');
+    loadGraceCards();
+  }));
+
+  list.querySelectorAll('[data-gc-toggle]').forEach(btn => btn.addEventListener('click', async () => {
+    const next = btn.dataset.active !== 'true';
+    const { error } = await sb.from('grace_cards').update({ is_active: next }).eq('id', btn.dataset.gcToggle);
+    if (error) { toast(error.message, true); return; }
+    toast(next ? 'Card activated' : 'Card deactivated');
+    loadGraceCards();
+  }));
+}
+
+on('graceCardForm', 'submit', async (e) => {
+  e.preventDefault();
+  const errEl = $('gcError');
+  errEl.classList.add('hidden');
+  const submitBtn = e.submitter || $('gcSubmit') || e.target.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
+
+  try {
+    const file = $('gcImage').files[0];
+    if (!file) throw new Error('Please choose an image.');
+
+    const imageUrl = await uploadFile(
+      GWGM_CONFIG.buckets.graceCards,
+      file,
+      $('gcType').value
+    );
+
+    const payload = {
+      card_type: $('gcType').value,
+      title: $('gcTitle').value.trim() || "Today's Grace Card",
+      scripture: $('gcScripture').value.trim() || null,
+      image_url: imageUrl,
+      publish_date: $('gcPublish').value || null,
+      expiry_date: $('gcExpiry').value || null,
+      is_active: true,
+      uploaded_at: new Date().toISOString(),
+    };
+
+    // Deactivate older cards of the same type
+    await sb.from('grace_cards').update({ is_active: false }).eq('card_type', payload.card_type).eq('is_active', true);
+
+    const { error } = await sb.from('grace_cards').insert(payload);
+    if (error) throw error;
+
+    e.target.reset();
+    toast('Grace Card published');
+    stampSaved();
+    loadGraceCards();
+  } catch (err) {
+    errEl.textContent = err.message || 'Upload failed.';
+    errEl.classList.remove('hidden');
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
+});
+
+/* =========================================================================
+   SITE CONTENT
+   ========================================================================= */
+const SITE_KEYS = ['logo_url', 'land_image_url', 'footer_image_url'];
+
+async function loadSiteContent() {
+  const { data, error } = await sb.from('site_content').select('key, value');
+  if (error) { console.error(error); return; }
+  const map = Object.fromEntries((data || []).map(r => [r.key, r.value]));
+
+  if (map.logo_url)   $('previewLogo').src   = map.logo_url;
+  if (map.land_image_url)   $('previewLand').src   = map.land_image_url;
+  if (map.footer_image_url) $('previewFooter').src = map.footer_image_url;
+
+  $('scAccountName').value   = map.giving_account_name   || '';
+  $('scAccountNumber').value = map.giving_account_number || '';
+  $('scBankName').value      = map.giving_bank_name      || '';
+  $('scPaymentLink').value   = map.giving_payment_link   || '';
+  $('scTelegram').value      = map.telegram_group_url    || '';
+}
+
+async function upsertSiteContent(key, value) {
+  const { error } = await sb.from('site_content').upsert({ key, value }, { onConflict: 'key' });
+  if (error) throw error;
+}
+
+async function handleAssetUpload(inputId, previewId, key) {
+  const input = $(inputId);
+  input.addEventListener('change', async () => {
+    const file = input.files[0];
+    if (!file) return;
+    try {
+      toast('Uploading…');
+      const url = await uploadFile(GWGM_CONFIG.buckets.siteAssets, file, key);
+      await upsertSiteContent(key, url);
+      $(previewId).src = url;
+      toast('Image updated');
+      stampSaved();
+    } catch (err) {
+      toast(err.message || 'Upload failed', true);
+    } finally {
+      input.value = '';
+    }
+  });
+}
+handleAssetUpload('uploadLogo',   'previewLogo',   'logo_url');
+handleAssetUpload('uploadLand',   'previewLand',   'land_image_url');
+handleAssetUpload('uploadFooter', 'previewFooter', 'footer_image_url');
+
+on('siteContentForm', 'submit', async (e) => {
+  e.preventDefault();
+  try {
+    await Promise.all([
+      upsertSiteContent('giving_account_name',   $('scAccountName').value.trim()),
+      upsertSiteContent('giving_account_number', $('scAccountNumber').value.trim()),
+      upsertSiteContent('giving_bank_name',      $('scBankName').value.trim()),
+      upsertSiteContent('giving_payment_link',   $('scPaymentLink').value.trim()),
+      upsertSiteContent('telegram_group_url',    $('scTelegram').value.trim()),
+    ]);
+    toast('Details saved');
+    stampSaved();
+  } catch (err) {
+    toast(err.message || 'Save failed', true);
+  }
+});
+
+/* =========================================================================
+   SERMONS (admin)
+   ========================================================================= */
+async function loadSermonsAdmin() {
+  const { data, error } = await sb.from('sermons')
+    .select('*')
+    .order('sermon_date', { ascending: false })
+    .limit(100);
+  if (error) { console.error(error); return; }
+
+  const list = $('sermonList');
+  if (!data || !data.length) {
+    list.innerHTML = '<p class="text-sm text-ink/50 italic">No sermons yet.</p>';
+    return;
+  }
+
+  list.innerHTML = data.map(s => `
+    <div class="list-item">
+      <div class="w-10 h-10 rounded-full bg-teal-soft flex items-center justify-center shrink-0">
+        <i data-feather="film" class="w-4 h-4 text-teal"></i>
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="font-medium text-royal-deep truncate">${esc(s.title)}</p>
+        <p class="text-xs text-ink/50">${esc(s.preacher || '')} · ${esc(fmtDate(s.sermon_date))}</p>
+        <p class="text-[11px] text-ink/40 mt-0.5 truncate">${esc(s.video_url)}</p>
+      </div>
+      <button class="btn btn-danger !py-1.5 !px-3 !text-xs shrink-0" data-sm-del="${s.id}">Delete</button>
+    </div>
+  `).join('');
+
+  feather.replace();
+
+  list.querySelectorAll('[data-sm-del]').forEach(btn => btn.addEventListener('click', async () => {
+    const ok = await gwgmConfirm('Delete this sermon?', 'Delete');
+    if (!ok) return;
+    const { error } = await sb.from('sermons').delete().eq('id', btn.dataset.smDel);
+    if (error) { toast(error.message, true); return; }
+    toast('Sermon deleted');
+    loadSermonsAdmin();
+  }));
+}
+
+on('sermonForm', 'submit', async (e) => {
+  e.preventDefault();
+  const errEl = $('smError');
+  errEl.classList.add('hidden');
+
+  try {
+    const payload = {
+      title: $('smTitle').value.trim(),
+      preacher: $('smPreacher').value.trim() || null,
+      video_url: $('smVideo').value.trim(),
+      description: $('smDescription').value.trim() || null,
+      sermon_date: $('smDate').value || new Date().toISOString().slice(0, 10),
+      updated_at: new Date().toISOString(),
+    };
+    if (!payload.title || !payload.video_url) throw new Error('Title and video URL are required.');
+
+    const { error } = await sb.from('sermons').insert(payload);
+    if (error) throw error;
+
+    e.target.reset();
+    toast('Sermon added');
+    stampSaved();
+    loadSermonsAdmin();
+  } catch (err) {
+    errEl.textContent = err.message || 'Could not save sermon.';
+    errEl.classList.remove('hidden');
+  }
+});
+
+/* =========================================================================
+   EVENTS (admin)
+   ========================================================================= */
+async function loadEventsAdmin() {
+  const { data, error } = await sb.from('events')
+    .select('*')
+    .order('event_date', { ascending: false })
+    .limit(100);
+  if (error) { console.error(error); return; }
+
+  const list = $('eventList');
+  if (!data || !data.length) {
+    list.innerHTML = '<p class="text-sm text-ink/50 italic">No events yet.</p>';
+    return;
+  }
+
+  list.innerHTML = data.map(ev => `
+    <div class="list-item">
+      <div class="w-10 h-10 rounded-full bg-teal-soft flex items-center justify-center shrink-0">
+        <i data-feather="calendar" class="w-4 h-4 text-teal"></i>
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="font-medium text-royal-deep truncate">${esc(ev.title)}</p>
+        <p class="text-xs text-ink/50">${esc(fmtDate(ev.event_date))}${ev.event_time ? ' · ' + esc(ev.event_time) : ''}${ev.location ? ' · ' + esc(ev.location) : ''}</p>
+        <div class="flex gap-1.5 mt-1">
+          ${ev.is_featured ? '<span class="badge badge-on">Featured</span>' : ''}
+          ${ev.allow_registration ? '<span class="badge badge-kids">Registration open</span>' : ''}
+        </div>
+      </div>
+      <button class="btn btn-danger !py-1.5 !px-3 !text-xs shrink-0" data-ev-del="${ev.id}">Delete</button>
+    </div>
+  `).join('');
+
+  feather.replace();
+
+  list.querySelectorAll('[data-ev-del]').forEach(btn => btn.addEventListener('click', async () => {
+    const ok = await gwgmConfirm('Delete this event? Registrations for it will remain in the database.', 'Delete');
+    if (!ok) return;
+    const { error } = await sb.from('events').delete().eq('id', btn.dataset.evDel);
+    if (error) { toast(error.message, true); return; }
+    toast('Event deleted');
+    loadEventsAdmin();
+  }));
+}
+
+on('eventForm', 'submit', async (e) => {
+  e.preventDefault();
+  const errEl = $('evError');
+  errEl.classList.add('hidden');
+
+  try {
+    const payload = {
+      title: $('evTitle').value.trim(),
+      description: $('evDescription').value.trim() || null,
+      event_date: $('evDate').value,
+      event_time: $('evTime').value || null,
+      location: $('evLocation').value.trim() || null,
+      allow_registration: $('evRegistration').checked,
+      is_featured: $('evFeatured').checked,
+      updated_at: new Date().toISOString(),
+    };
+    if (!payload.title || !payload.event_date) throw new Error('Title and date are required.');
+
+    const { error } = await sb.from('events').insert(payload);
+    if (error) throw error;
+
+    e.target.reset();
+    $('evRegistration').checked = true;
+    toast('Event added');
+    stampSaved();
+    loadEventsAdmin();
+  } catch (err) {
+    errEl.textContent = err.message || 'Could not save event.';
+    errEl.classList.remove('hidden');
+  }
+});
+
+/* =========================================================================
+   PASTORS (admin)
+   ========================================================================= */
+async function loadPastorsAdmin() {
+  const { data, error } = await sb.from('pastors').select('*').order('sort_order', { ascending: true });
+  if (error) { console.error(error); return; }
+
+  const list = $('pastorList');
+  if (!data || !data.length) {
+    list.innerHTML = '<p class="text-sm text-ink/50 italic">No pastors added yet.</p>';
+    return;
+  }
+
+  list.innerHTML = data.map(p => `
+    <div class="list-item">
+      ${p.photo_url
+        ? `<img src="${esc(p.photo_url)}" class="w-14 h-14 rounded-full object-cover shrink-0 bg-lavender" alt="" />`
+        : `<div class="w-14 h-14 rounded-full bg-lavender flex items-center justify-center shrink-0"><i data-feather="user" class="w-5 h-5 text-ink/40"></i></div>`}
+      <div class="min-w-0 flex-1">
+        <p class="font-medium text-royal-deep truncate">${esc(p.name)}</p>
+        <p class="text-xs text-teal font-medium">${esc(p.role || 'Pastor')}</p>
+        ${p.quote ? `<p class="text-xs text-ink/50 mt-0.5 truncate italic">"${esc(p.quote)}"</p>` : ''}
+      </div>
+      <button class="btn btn-danger !py-1.5 !px-3 !text-xs shrink-0" data-ps-del="${p.id}">Delete</button>
+    </div>
+  `).join('');
+
+  feather.replace();
+
+  list.querySelectorAll('[data-ps-del]').forEach(btn => btn.addEventListener('click', async () => {
+    const ok = await gwgmConfirm('Remove this pastor from the homepage?', 'Remove');
+    if (!ok) return;
+    const { error } = await sb.from('pastors').delete().eq('id', btn.dataset.psDel);
+    if (error) { toast(error.message, true); return; }
+    toast('Pastor removed');
+    loadPastorsAdmin();
+  }));
+}
+
+on('pastorForm', 'submit', async (e) => {
+  e.preventDefault();
+  const errEl = $('psError');
+  errEl.classList.add('hidden');
+
+  try {
+    const file = $('psPhoto').files[0];
+    let photoUrl = null;
+    if (file) photoUrl = await uploadFile(GWGM_CONFIG.buckets.pastors, file, 'leaders');
+
+    const payload = {
+      name: $('psName').value.trim(),
+      role: $('psRole').value.trim() || 'Pastor',
+      quote: $('psQuote').value.trim() || null,
+      photo_url: photoUrl,
+      sort_order: parseInt($('psSort').value || '0', 10),
+      updated_at: new Date().toISOString(),
+    };
+    if (!payload.name) throw new Error('Name is required.');
+
+    const { error } = await sb.from('pastors').insert(payload);
+    if (error) throw error;
+
+    e.target.reset();
+    toast('Pastor added');
+    stampSaved();
+    loadPastorsAdmin();
+  } catch (err) {
+    errEl.textContent = err.message || 'Could not save pastor.';
+    errEl.classList.remove('hidden');
+  }
+});
+
+/* =========================================================================
+   SUBSCRIBERS
+   ========================================================================= */
+async function loadSubscribers() {
+  const { data, error } = await sb.from('newsletter_subscribers')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) { console.error(error); return; }
+
+  $('subCount').textContent = `${(data || []).length} subscriber${(data || []).length === 1 ? '' : 's'}`;
+
+  const list = $('subList');
+  if (!data || !data.length) {
+    list.innerHTML = '<p class="text-sm text-ink/50 italic">No subscribers yet.</p>';
+    return;
+  }
+
+  list.innerHTML = data.map(s => `
+    <div class="flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg bg-lavender">
+      <span class="text-sm truncate">${esc(s.email)}</span>
+      <span class="text-[11px] text-ink/40 shrink-0">${fmtDate(s.created_at)}</span>
+    </div>
+  `).join('');
+
+  $('exportSubs').onclick = () => {
+    const rows = [['email', 'subscribed_at'], ...data.map(s => [s.email, s.created_at || ''])];
+    const csv = rows.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `gwgmsubscribers-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+}
+
+/* =========================================================================
+   REGISTRATIONS
+   ========================================================================= */
+async function loadRegistrations() {
+  const { data, error } = await sb.from('event_registrations')
+    .select('*, events(title, event_date)')
+    .order('created_at', { ascending: false })
+    .limit(200);
+  if (error) { console.error(error); return; }
+
+  $('regCount').textContent = `${(data || []).length} registration${(data || []).length === 1 ? '' : 's'}`;
+
+  const list = $('regList');
+  if (!data || !data.length) {
+    list.innerHTML = '<p class="text-sm text-ink/50 italic">No registrations yet.</p>';
+    return;
+  }
+
+  list.innerHTML = data.map(r => `
+    <div class="list-item">
+      <div class="min-w-0 flex-1">
+        <p class="font-medium text-royal-deep truncate">${esc(r.name)}</p>
+        <p class="text-xs text-ink/60 truncate">${esc(r.email)}${r.phone ? ' · ' + esc(r.phone) : ''}</p>
+        <p class="text-[11px] text-ink/40 mt-0.5">
+          ${r.events ? esc(r.events.title) + ' · ' + esc(fmtDate(r.events.event_date)) : 'Event deleted'}
+        </p>
+      </div>
+      <span class="text-[11px] text-ink/40 shrink-0">${fmtDateTime(r.created_at)}</span>
+    </div>
+  `).join('');
+}
+
+/* =========================================================================
+   ADMIN USERS
+   ========================================================================= */
+async function loadAdmins() {
+  const { data, error } = await sb.from('admin_users').select('*').order('created_at', { ascending: true });
+  if (error) { console.error(error); return; }
+
+  const { data: { user } } = await sb.auth.getUser();
+  const me = user ? user.email : '';
+
+  const list = $('adminList');
+  list.innerHTML = (data || []).map(a => {
+    const isOwner = a.email === GWGM_CONFIG.ownerEmail;
+    const isMe = a.email === me;
+    return `
+      <div class="list-item">
+        <div class="w-10 h-10 rounded-full bg-lavender flex items-center justify-center shrink-0">
+          <i data-feather="user" class="w-4 h-4 text-ink/60"></i>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="font-medium text-royal-deep truncate">${esc(a.email)}</p>
+          <p class="text-[11px] text-ink/40">Added ${fmtDate(a.created_at)}${isMe ? ' · you' : ''}</p>
+        </div>
+        ${isOwner
+          ? '<span class="badge badge-on shrink-0">Owner</span>'
+          : `<button class="btn btn-danger !py-1.5 !px-3 !text-xs shrink-0" data-ad-del="${esc(a.email)}">Remove</button>`}
+      </div>
+    `;
+  }).join('');
+
+  feather.replace();
+
+  list.querySelectorAll('[data-ad-del]').forEach(btn => btn.addEventListener('click', async () => {
+    const email = btn.dataset.adDel;
+    const ok = await gwgmConfirm(`Remove admin access for ${email}?`, 'Remove');
+    if (!ok) return;
+    const { error } = await sb.from('admin_users').delete().eq('email', email);
+    if (error) { toast(error.message, true); return; }
+    toast('Admin removed');
+    loadAdmins();
+  }));
+}
+
+on('adminForm', 'submit', async (e) => {
+  e.preventDefault();
+  const errEl = $('adminError');
+  errEl.classList.add('hidden');
+  const email = $('newAdminEmail').value.trim().toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  const { data: { user } } = await sb.auth.getUser();
+
+  const { error } = await sb.from('admin_users').insert({ email, added_by: user ? user.email : null });
+  if (error) {
+    errEl.textContent = error.code === '23505' ? 'That email is already an admin.' : (error.message || 'Could not add admin.');
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  $('newAdminEmail').value = '';
+  toast('Admin access granted');
+  loadAdmins();
+});
+</script>
+
+</body>
+</html>
