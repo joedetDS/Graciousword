@@ -373,7 +373,7 @@
       </div>
 
       <div class="w-full aspect-[4/5] bg-lavender dark:bg-[#071012] flex items-center justify-center overflow-hidden">
-        <img id="graceCardImage" src="" alt="" class="w-full h-full object-cover hidden" loading="lazy" decoding="async" />
+        <img id="graceCardImage" src="" alt="" class="w-full h-full object-cover hidden" decoding="async" />
         <div id="graceCardSkeleton" class="w-full h-full animate-pulse bg-gradient-to-br from-royal/10 to-teal/10 flex items-center justify-center">
           <i data-feather="image" class="text-royal/30 w-10 h-10"></i>
         </div>
@@ -449,7 +449,7 @@
 <!-- ============================== WHY JOIN ============================== -->
 <section class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
   <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Why You should Join Us</h2>
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Why Join Us</h2>
   </div>
   <div class="max-w-6xl mx-auto mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
     <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
@@ -1031,7 +1031,7 @@ const STATIC_SEARCH_INDEX = [
   { title: 'Our Church Branches', anchor: '#branches', keywords: 'branch location uyo eket port harcourt aksu map' },
   { title: 'Frequently Asked Questions', anchor: '#faq', keywords: 'faq question help answer' },
   { title: 'Newsletter Signup', anchor: '#newsletter', keywords: 'newsletter subscribe email updates' },
-  { title: 'Why You should Join Us', anchor: '#welcome', keywords: 'why join benefits community' },
+  { title: 'Why Join Us', anchor: '#welcome', keywords: 'why join benefits community' },
   { title: 'Become Part of Our Family', anchor: '#welcome', keywords: 'register join membership' },
 ];
 
@@ -1163,22 +1163,48 @@ class GraceCardManager {
     const card = this.cards[type];
     if (!card) { this.showEmptyState(); return; }
 
-    this.els.image.classList.add('hidden');
-    this.els.skeleton.classList.remove('hidden');
-
     const url = safeUrl(card.image_url);
     if (!url) { this.showEmptyState(); return; }
 
-    this.els.image.src = url;
-    this.els.image.alt = card.title || "Today's Grace Card";
-    this.els.image.onload = () => {
-      this.els.image.classList.remove('hidden');
-      this.els.skeleton.classList.add('hidden');
+    const img = this.els.image;
+    const skeleton = this.els.skeleton;
+
+    const showImage = () => {
+      img.classList.remove('hidden');
+      skeleton.classList.add('hidden');
     };
-    this.els.image.onerror = () => {
-      this.els.skeleton.classList.add('hidden');
-      this.els.image.classList.add('hidden');
+    const showBroken = () => {
+      skeleton.classList.add('hidden');
+      img.classList.add('hidden');
     };
+
+    // Always start with skeleton until we know the image is ready
+    img.classList.add('hidden');
+    skeleton.classList.remove('hidden');
+
+    // Bind handlers BEFORE setting src (cached images may load synchronously)
+    img.onload = showImage;
+    img.onerror = showBroken;
+
+    // Force a reload path if the same URL is re-used (tab switch / re-render)
+    if (img.src === url || img.getAttribute('src') === url) {
+      if (img.complete && img.naturalWidth > 0) {
+        showImage();
+      } else {
+        // bust cache path for stubborn browsers
+        img.src = '';
+        img.src = url;
+      }
+    } else {
+      img.src = url;
+    }
+
+    img.alt = card.title || "Today's Grace Card";
+
+    // If already complete after assignment (from disk/memory cache), reveal immediately
+    if (img.complete && img.naturalWidth > 0) {
+      showImage();
+    }
 
     this.els.title.textContent = card.title || "Today's Grace Card";
     this.els.scripture.textContent = card.scripture || '';
@@ -1318,8 +1344,8 @@ async function loadPastors() {
 
   // Local headshots in the site root (same folder as index.html) — used when Supabase has no photo
   const LOCAL_HEADSHOTS = {
-    georgewealth: 'Georgewealth.jpeg',
-    ronke: 'ronke.jpeg',
+    georgewealth: 'Georgewealth.png',
+    ronke: 'ronke.png',
   };
 
   function localHeadshotFor(name) {
@@ -1327,7 +1353,7 @@ async function loadPastors() {
     if (n.includes('ronke')) return LOCAL_HEADSHOTS.ronke;
     if (n.includes('georgewealth') || n.includes('george wealth')) return LOCAL_HEADSHOTS.georgewealth;
     return '';
-  } 
+  }
 
   const fallback = [
     {
