@@ -26,13 +26,20 @@
     theme: {
       extend: {
         colors: {
-          royal: { DEFAULT: '#041619', deep: '#041619', light: '#0A2A2F' },
-          teal:  { DEFAULT: '#00FFCF', light: '#66FFE1', deep: '#00C9A3', soft: '#DFFFF6' },
-          lime:  { DEFAULT: '#99FF00', light: '#C0FF66', deep: '#78CC00', soft: '#F0FFDE' },
-          crimson: { DEFAULT: '#DD040D' },
-          cream: '#FBF8F3',
-          lavender: '#F4EEFB',
-          ink: '#241B33',
+          /* Brand anchor: royal remains the primary identity colour */
+          royal: { DEFAULT: '#041619', deep: '#041619', light: '#0A2A2F', muted: '#0F2E33' },
+          /* Teal family — primary accent */
+          teal:  { DEFAULT: '#00FFCF', light: '#66FFE1', deep: '#00C9A3', soft: '#E6FFF9', muted: '#B8F5E8' },
+          /* Lime family — secondary accent */
+          lime:  { DEFAULT: '#99FF00', light: '#C0FF66', deep: '#78CC00', soft: '#F0FFDE', muted: '#D4F5A0' },
+          crimson: { DEFAULT: '#DD040D', soft: '#FFE5E6' },
+          /* Light-mode friendly surfaces (white-first as requested) */
+          cream: '#FFFFFF',
+          surface: '#F5FBF9',
+          lavender: '#EEF7F5',
+          /* High-contrast ink for AA */
+          ink: '#0D1A1C',
+          inksoft: '#3A5A5C',
         },
         fontFamily: {
           display: ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -45,15 +52,17 @@
 
 <style>
   :root{
-    --royal:#041619; --teal:#00FFCF; --teal-light:#66FFE1;
+    --royal:#041619; --teal:#00FFCF; --teal-light:#66FFE1; --teal-deep:#00C9A3;
     --lime:#99FF00; --lime-light:#C0FF66; --crimson:#DD040D;
+    --ink:#0D1A1C; --inksoft:#3A5A5C;
+    --surface:#F5FBF9; --cream:#FFFFFF;
   }
 
   html { scroll-padding-top: 5.5rem; }
   @media (min-width:768px){ html{ scroll-behavior:smooth; } }
 
   body{
-    font-family:'Plus Jakarta Sans',sans-serif; color:#241B33; background-color:#FBF8F3;
+    font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); background-color:var(--cream);
     -webkit-font-smoothing:antialiased;
   }
   h1,h2,h3,.font-display{ font-family:'Plus Jakarta Sans',sans-serif; }
@@ -86,17 +95,69 @@
   #navbar{ background-color: rgba(4,22,25,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   #navbar.scrolled{ box-shadow:0 6px 24px -8px rgba(4,22,25,.45); background-color: rgba(4,22,25,.97); }
 
+  /* ---------- Focus (WCAG visible, high-contrast) ---------- */
   a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
     outline:2px solid var(--lime); outline-offset:3px; border-radius:6px;
+  }
+  html.dark a:focus-visible, html.dark button:focus-visible,
+  html.dark input:focus-visible, html.dark select:focus-visible, html.dark textarea:focus-visible{
+    outline-color: var(--teal);
   }
 
   /* ---------- Global hover polish ---------- */
   .lift-hover{ transition: transform .35s ease, box-shadow .35s ease, border-color .3s ease; }
   .lift-hover:hover{ transform:translateY(-8px); box-shadow:0 20px 40px -12px rgba(4,22,25,.28); }
 
-  .btn-hover{ transition: transform .2s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease; }
+  /* ---------- Button base + states (all variants) ---------- */
+  .btn-hover{
+    transition: transform .2s ease, background-color .2s ease, color .2s ease,
+                box-shadow .2s ease, border-color .2s ease, opacity .2s ease;
+  }
   .btn-hover:hover{ transform:translateY(-2px); }
   .btn-hover:active{ transform:translateY(0); }
+  .btn-hover:disabled, .btn-hover[disabled]{
+    opacity:.55; cursor:not-allowed; transform:none; pointer-events:none;
+  }
+
+  /* Primary (teal fill) */
+  .btn-primary, a.btn-primary, button.btn-primary{
+    background:var(--teal); color:var(--royal);
+  }
+  .btn-primary:hover, a.btn-primary:hover{ background:var(--lime); color:var(--royal); }
+  .btn-primary:active{ background:#78CC00; color:var(--royal); }
+  .btn-primary:focus-visible{ outline:2px solid var(--lime); outline-offset:3px; }
+
+  /* Secondary / outline */
+  .btn-secondary, a.btn-secondary{
+    background:transparent; border:1.5px solid rgba(4,22,25,.25); color:var(--ink);
+  }
+  .btn-secondary:hover{ border-color:var(--teal); color:var(--teal-deep); background:rgba(0,255,207,.06); }
+  .btn-secondary:active{ background:rgba(0,255,207,.12); }
+  html.dark .btn-secondary{ border-color:rgba(255,255,255,.25); color:#EAFBF7; }
+  html.dark .btn-secondary:hover{ border-color:var(--teal); color:var(--teal); background:rgba(0,255,207,.1); }
+
+  /* Ghost */
+  .btn-ghost{ background:transparent; color:inherit; }
+  .btn-ghost:hover{ background:rgba(0,255,207,.1); color:var(--teal-deep); }
+  html.dark .btn-ghost:hover{ background:rgba(0,255,207,.12); color:var(--teal); }
+
+  /* Danger */
+  .btn-danger{ background:var(--crimson); color:#fff; }
+  .btn-danger:hover{ background:#b8030a; }
+  .btn-danger:active{ background:#9a0208; }
+
+  /* ---------- Links (all contexts) ---------- */
+  a{ transition: color .2s ease, opacity .2s ease; }
+  a:hover{ color:var(--teal-deep); }
+  a:active{ color:var(--teal); }
+  a:visited{ color:inherit; } /* keep brand identity; do not force purple */
+  a:focus-visible{ outline:2px solid var(--lime); outline-offset:3px; }
+  html.dark a:hover{ color:var(--teal); }
+  html.dark a:active{ color:var(--lime); }
+
+  /* Nav links */
+  #navbar a:hover, #mobileMenu a:hover{ color:var(--lime) !important; }
+  #navbar a:active, #mobileMenu a:active{ color:var(--teal) !important; }
 
   .heading-flourish::after{
     content:""; display:block; width:64px; height:3px; margin:.85rem auto 0;
@@ -125,17 +186,25 @@
   @keyframes gc-pulse-dot{ 0%,100%{opacity:1} 50%{opacity:.35} }
   .gc-live-dot{ animation:gc-pulse-dot 1.6s ease-in-out infinite; }
 
-  /* ---------- Dark mode safety net ---------- */
-  html.dark body{ color:#E3F4F1; }
-  html.dark .text-ink, html.dark [class*="text-ink/"]{ color:#CFE7E3 !important; }
+  /* ---------- Dark mode (royal as main, white/soft as secondary) ---------- */
+  html.dark body{ color:#F0FFFB; background-color:#041619; }
+  html.dark .text-ink, html.dark [class*="text-ink/"]{ color:#D4EDE8 !important; }
+  html.dark .text-royal-deep, html.dark [class*="text-royal-deep"]{ color:#F0FFFB !important; }
   html.dark .bg-royal\/10{ background-color:rgba(255,255,255,.08) !important; }
-  html.dark .bg-teal-soft{ background-color:rgba(0,255,207,.08) !important; }
+  html.dark .bg-teal-soft{ background-color:rgba(0,255,207,.10) !important; }
+  html.dark .bg-cream{ background-color:#041619 !important; }
+  html.dark .bg-lavender{ background-color:#071512 !important; }
+  html.dark .bg-surface{ background-color:#0A2226 !important; }
   html.dark input, html.dark select, html.dark textarea{
-    background-color:#10191c; color:#E3F4F1; border-color:rgba(255,255,255,.15);
+    background-color:#0A2226; color:#F0FFFB; border-color:rgba(255,255,255,.18);
   }
-  html.dark ::placeholder{ color:rgba(227,244,241,.4); }
+  html.dark ::placeholder{ color:rgba(240,255,251,.4); }
+  html.dark .bg-white{ background-color:#0A2226 !important; }
+  html.dark .border-royal\/5, html.dark .border-royal\/10{ border-color:rgba(255,255,255,.1) !important; }
 
-  body, .bg-cream, .bg-lavender, .bg-white, .bg-royal-deep{ transition: background-color .3s ease, color .3s ease; }
+  body, .bg-cream, .bg-lavender, .bg-white, .bg-royal-deep, .bg-surface{
+    transition: background-color .3s ease, color .3s ease, border-color .3s ease;
+  }
 
   /* ---------- Scroll progress ---------- */
   #scrollProgress{
@@ -156,6 +225,8 @@
   }
   #backToTop.visible{ opacity:1; pointer-events:auto; transform:translateY(0); }
   #backToTop:hover{ background:var(--teal); color:var(--royal); }
+  #backToTop:active{ background:var(--lime); color:var(--royal); }
+  #backToTop:focus-visible{ outline:2px solid var(--lime); outline-offset:3px; }
 
   /* ---------- Floating contact ---------- */
   #floatingContact{ position:fixed; bottom:1.25rem; right:1.25rem; z-index:46; }
@@ -165,7 +236,7 @@
     transform:scale(.9) translateY(8px); opacity:0; pointer-events:none;
     transition:transform .25s ease, opacity .25s ease;
   }
-  html.dark #contactPanel{ background:#10191c; }
+  html.dark #contactPanel{ background:#0A2226; }
   #contactPanel.open{ transform:scale(1) translateY(0); opacity:1; pointer-events:auto; }
 
   /* ---------- Cookie banner ---------- */
@@ -239,7 +310,7 @@
 </style>
 </head>
 
-<body class="bg-cream dark:bg-[#0B1416] text-ink antialiased">
+<body class="bg-cream dark:bg-royal text-ink antialiased">
 
 <a href="#hero" class="skip-link">Skip to content</a>
 
@@ -350,10 +421,10 @@
 </header>
 
 <!-- ============================== GRACE CARD ============================== -->
-<section id="grace-card" class="py-16 sm:py-24 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
+<section id="grace-card" class="py-16 sm:py-24 px-5 sm:px-8 bg-surface dark:bg-[#071512]">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-2xl sm:text-3xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Today's Grace Card</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">A fresh word of grace, updated daily. Tap the card for a closer look.</p>
+    <p class="mt-4 text-inksoft text-sm sm:text-base max-w-xl mx-auto">A fresh word of grace, updated daily. Tap the card for a closer look.</p>
   </div>
 
   <div class="max-w-sm mx-auto mt-8 flex items-center justify-center gap-2" role="tablist" aria-label="Grace Card type">
@@ -365,14 +436,14 @@
 
   <div class="max-w-sm mx-auto mt-6">
     <button id="graceCardTrigger" type="button" aria-haspopup="dialog" aria-controls="graceCardModal"
-      class="reveal group w-full text-left arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover border border-royal/5 dark:border-white/10 disabled:opacity-60 disabled:cursor-not-allowed"
+      class="reveal group w-full text-left arch-card bg-white dark:bg-[#0A2226] shadow-xl lift-hover border border-royal/5 dark:border-white/10 disabled:opacity-60 disabled:cursor-not-allowed"
       disabled>
       <div class="absolute top-4 right-4 z-10 bg-royal-deep/85 backdrop-blur text-lime text-[11px] font-semibold tracking-wide px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
         <span class="w-1.5 h-1.5 rounded-full bg-crimson gc-live-dot"></span>
         <span id="graceCardCountdownText">Loading…</span>
       </div>
 
-      <div class="w-full aspect-[4/5] bg-lavender dark:bg-[#071012] flex items-center justify-center overflow-hidden">
+      <div class="w-full aspect-[4/5] bg-surface dark:bg-[#071512] flex items-center justify-center overflow-hidden">
         <img id="graceCardImage" src="" alt="" class="w-full h-full object-cover hidden" decoding="async" />
         <div id="graceCardSkeleton" class="w-full h-full animate-pulse bg-gradient-to-br from-royal/10 to-teal/10 flex items-center justify-center">
           <i data-feather="image" class="text-royal/30 w-10 h-10"></i>
@@ -381,14 +452,14 @@
 
       <div class="p-6 pt-5">
         <h3 id="graceCardTitle" class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Loading Grace Card…</h3>
-        <p id="graceCardScripture" class="mt-2 text-sm italic text-ink/60 leading-relaxed"></p>
+        <p id="graceCardScripture" class="mt-2 text-sm italic text-inksoft/90 leading-relaxed"></p>
         <span class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-teal tracking-wide uppercase">
           Tap to view full screen <i data-feather="maximize-2" class="w-3.5 h-3.5"></i>
         </span>
       </div>
     </button>
 
-    <p id="graceCardEmptyState" class="hidden mt-4 text-center text-sm text-ink/50 italic">
+    <p id="graceCardEmptyState" class="hidden mt-4 text-center text-sm text-inksoft/80 italic">
       No Grace Card has been published yet. Please check back soon.
     </p>
   </div>
@@ -412,7 +483,7 @@
 </div>
 
 <!-- ============================== WELCOME ============================== -->
-<section id="welcome" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+<section id="welcome" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-royal">
   <div class="max-w-4xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Welcome Home</h2>
     <p class="mt-8 text-base sm:text-lg leading-relaxed text-ink/80">
@@ -426,19 +497,19 @@
 </section>
 
 <!-- ============================== VISION ============================== -->
-<section id="vision" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
+<section id="vision" class="py-20 sm:py-28 px-5 sm:px-8 bg-surface dark:bg-[#071512]">
   <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+    <div class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-lg lift-hover p-8 pt-10 text-center">
       <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="eye" class="text-royal dark:text-teal w-6 h-6"></i></div>
       <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Vision</h3>
       <p class="mt-4 text-ink/75 leading-relaxed italic">"…bringing God's‑life to men."</p>
     </div>
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+    <div class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-lg lift-hover p-8 pt-10 text-center">
       <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="compass" class="text-royal dark:text-teal w-6 h-6"></i></div>
       <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Mission</h3>
       <p class="mt-4 text-ink/75 leading-relaxed">"…to live Christ, love and teach people of all nations, languages and cultures the message of God's love to mankind."</p>
     </div>
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+    <div class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-lg lift-hover p-8 pt-10 text-center">
       <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="target" class="text-royal dark:text-teal w-6 h-6"></i></div>
       <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Purpose</h3>
       <p class="mt-4 text-ink/75 leading-relaxed">We believe that commitment to the Great Commandment and the Great Commission will grow a great church.</p>
@@ -447,32 +518,32 @@
 </section>
 
 <!-- ============================== WHY JOIN ============================== -->
-<section class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+<section class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-royal">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Why You Should Join Us</h2>
   </div>
   <div class="max-w-6xl mx-auto mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal lift-hover bg-white dark:bg-[#0A2226] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="feather" class="text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Gospel of Grace</h3>
     </div>
-    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal lift-hover bg-white dark:bg-[#0A2226] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="book-open" class="text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Biblical Teaching</h3>
     </div>
-    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal lift-hover bg-white dark:bg-[#0A2226] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="heart" class="text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Loving Community</h3>
     </div>
-    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal lift-hover bg-white dark:bg-[#0A2226] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="wind" class="text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Freedom of Worship</h3>
     </div>
-    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal lift-hover bg-white dark:bg-[#0A2226] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="trending-up" class="text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Spiritual Growth</h3>
     </div>
-    <div class="reveal lift-hover bg-white dark:bg-[#10191c] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal lift-hover bg-white dark:bg-[#0A2226] rounded-2xl shadow-md p-7 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="users" class="text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Serving with Purpose</h3>
     </div>
@@ -489,31 +560,31 @@
 </section>
 
 <!-- ============================== SERMONS ============================== -->
-<section id="sermons" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+<section id="sermons" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-royal">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Sermons &amp; Media Library</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">Listen to the latest word, or explore every message we've shared.</p>
+    <p class="mt-4 text-inksoft text-sm sm:text-base max-w-xl mx-auto">Listen to the latest word, or explore every message we've shared.</p>
   </div>
 
   <div class="max-w-3xl mx-auto mt-12">
-    <div id="latestSermonSkeleton" class="arch-card bg-white dark:bg-[#10191c] shadow-lg p-8 animate-pulse">
+    <div id="latestSermonSkeleton" class="arch-card bg-white dark:bg-[#0A2226] shadow-lg p-8 animate-pulse">
       <div class="h-4 w-24 bg-royal/10 rounded mb-3"></div>
       <div class="h-5 w-1/2 bg-royal/10 rounded mb-2"></div>
       <div class="h-3 w-1/3 bg-royal/10 rounded mb-6"></div>
       <div class="h-24 w-full bg-royal/10 rounded-xl"></div>
     </div>
 
-    <article id="latestSermonCard" class="hidden reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover border border-royal/5 dark:border-white/10">
+    <article id="latestSermonCard" class="hidden reveal arch-card bg-white dark:bg-[#0A2226] shadow-xl lift-hover border border-royal/5 dark:border-white/10">
       <div class="p-6 sm:p-8">
         <span class="text-xs font-semibold uppercase tracking-wider text-teal">Latest Sermon</span>
         <h3 id="latestSermonTitle" class="mt-2 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">—</h3>
-        <p id="latestSermonMeta" class="mt-1 text-xs text-ink/50">—</p>
-        <p id="latestSermonUpdated" class="mt-1 text-xs text-ink/40">—</p>
+        <p id="latestSermonMeta" class="mt-1 text-xs text-inksoft/80">—</p>
+        <p id="latestSermonUpdated" class="mt-1 text-xs text-inksoft/70">—</p>
         <div id="latestSermonPlayer" class="mt-5"></div>
       </div>
     </article>
 
-    <p id="sermonsEmptyState" class="hidden text-center text-sm text-ink/50 italic">No sermons have been published yet. Please check back soon.</p>
+    <p id="sermonsEmptyState" class="hidden text-center text-sm text-inksoft/80 italic">No sermons have been published yet. Please check back soon.</p>
 
     <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
       <button id="viewAllSermonsBtn" class="btn-hover inline-flex items-center gap-2 border border-royal/20 dark:border-white/20 hover:border-teal hover:text-teal text-royal-deep dark:text-[#EAFBF7] font-semibold px-6 py-3 rounded-full">
@@ -531,7 +602,7 @@
 <div id="allSermonsModal" class="fixed inset-0 z-[100] hidden">
   <div id="allSermonsBackdrop" class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
   <div class="relative z-10 h-full w-full flex items-start justify-center p-4 sm:p-8 overflow-y-auto">
-    <div class="modal-content bg-cream dark:bg-[#0B1416] rounded-2xl max-w-3xl w-full mt-10 mb-10 p-6 sm:p-8">
+    <div class="modal-content bg-cream dark:bg-royal rounded-2xl max-w-3xl w-full mt-10 mb-10 p-6 sm:p-8">
       <div class="flex items-center justify-between mb-6">
         <h3 class="font-display font-bold text-xl sm:text-2xl text-royal-deep dark:text-[#EAFBF7]">All Sermons</h3>
         <button id="allSermonsCloseBtn" aria-label="Close" class="btn-hover w-10 h-10 rounded-full bg-royal/10 hover:bg-teal flex items-center justify-center">
@@ -544,32 +615,32 @@
 </div>
 
 <!-- ============================== EVENTS ============================== -->
-<section id="events" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
+<section id="events" class="py-20 sm:py-28 px-5 sm:px-8 bg-surface dark:bg-[#071512]">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Events &amp; Programs</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">From youth meetings to conferences — here's what's coming up.</p>
+    <p class="mt-4 text-inksoft text-sm sm:text-base max-w-xl mx-auto">From youth meetings to conferences — here's what's coming up.</p>
   </div>
 
   <div id="eventCountdownWrap" class="hidden max-w-xl mx-auto mt-10 text-center reveal">
-    <p class="text-sm font-medium text-ink/70">Counting down to</p>
+    <p class="text-sm font-medium text-inksoft">Counting down to</p>
     <p id="eventCountdownTitle" class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7] mt-1">—</p>
     <div class="flex items-center justify-center gap-3 mt-4">
-      <div class="countdown-unit"><span id="cdDays" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Days</span></div>
-      <div class="countdown-unit"><span id="cdHours" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Hrs</span></div>
-      <div class="countdown-unit"><span id="cdMins" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Min</span></div>
-      <div class="countdown-unit"><span id="cdSecs" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Sec</span></div>
+      <div class="countdown-unit"><span id="cdDays" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-inksoft/80">Days</span></div>
+      <div class="countdown-unit"><span id="cdHours" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-inksoft/80">Hrs</span></div>
+      <div class="countdown-unit"><span id="cdMins" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-inksoft/80">Min</span></div>
+      <div class="countdown-unit"><span id="cdSecs" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-inksoft/80">Sec</span></div>
     </div>
   </div>
 
   <div id="eventsList" class="max-w-4xl mx-auto mt-14 grid sm:grid-cols-2 gap-6"></div>
-  <p id="eventsEmptyState" class="hidden text-center text-sm text-ink/50 italic mt-10">No upcoming events right now — check back soon.</p>
+  <p id="eventsEmptyState" class="hidden text-center text-sm text-inksoft/80 italic mt-10">No upcoming events right now — check back soon.</p>
 </section>
 
 <!-- Event registration modal -->
 <div id="eventRegModal" class="fixed inset-0 z-[100] hidden">
   <div id="eventRegBackdrop" class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
   <div class="relative z-10 h-full w-full flex items-center justify-center p-5">
-    <div class="modal-content bg-white dark:bg-[#10191c] rounded-2xl max-w-md w-full p-6 sm:p-8">
+    <div class="modal-content bg-white dark:bg-[#0A2226] rounded-2xl max-w-md w-full p-6 sm:p-8">
       <div class="flex items-center justify-between mb-5">
         <h3 id="eventRegTitle" class="font-display font-bold text-lg text-royal-deep dark:text-[#EAFBF7]">Register for event</h3>
         <button id="eventRegCloseBtn" aria-label="Close" class="btn-hover w-9 h-9 rounded-full bg-royal/10 hover:bg-teal flex items-center justify-center">
@@ -581,7 +652,7 @@
         <input required type="text" id="eventRegName" placeholder="Full name" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
         <input required type="email" id="eventRegEmail" placeholder="Email address" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
         <input type="tel" id="eventRegPhone" placeholder="Phone number (optional)" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
-        <label class="flex items-start gap-2 text-xs text-ink/70 dark:text-[#CFE7E3]">
+        <label class="flex items-start gap-2 text-xs text-inksoft dark:text-[#CFE7E3]">
           <input type="checkbox" id="eventRegReminder" class="mt-0.5" />
           Remind me while this page is open (browser notification)
         </label>
@@ -597,32 +668,32 @@
 </div>
 
 <!-- ============================== GIVING ============================== -->
-<section id="giving" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+<section id="giving" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-royal">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Online Giving</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">"Bring the whole tithe into the storehouse." Give your tithes and offerings securely, wherever you are.</p>
+    <p class="mt-4 text-inksoft text-sm sm:text-base max-w-xl mx-auto">"Bring the whole tithe into the storehouse." Give your tithes and offerings securely, wherever you are.</p>
   </div>
 
-  <div class="max-w-md mx-auto mt-12 reveal arch-card bg-white dark:bg-[#10191c] shadow-xl p-8 pt-10 border border-royal/5 dark:border-white/10">
+  <div class="max-w-md mx-auto mt-12 reveal arch-card bg-white dark:bg-[#0A2226] shadow-xl p-8 pt-10 border border-royal/5 dark:border-white/10">
     <h3 class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7] text-center mb-6">Bank Transfer Details</h3>
     <div class="space-y-4">
-      <div class="flex items-center justify-between gap-3 bg-lavender dark:bg-[#071012] rounded-lg px-4 py-3">
+      <div class="flex items-center justify-between gap-3 bg-surface dark:bg-[#071512] rounded-lg px-4 py-3">
         <div>
-          <p class="text-[10px] uppercase tracking-wide text-ink/50">Account Name</p>
+          <p class="text-[10px] uppercase tracking-wide text-inksoft/80">Account Name</p>
           <p id="givingAccountName" class="font-medium text-royal-deep dark:text-[#EAFBF7]">Gracious Word Global Mission</p>
         </div>
         <button type="button" class="copy-btn btn-hover shrink-0 text-xs font-semibold text-teal border border-teal/40 rounded-full px-3 py-1.5 hover:bg-teal hover:text-[#041619]" data-copy-target="givingAccountName">Copy</button>
       </div>
-      <div class="flex items-center justify-between gap-3 bg-lavender dark:bg-[#071012] rounded-lg px-4 py-3">
+      <div class="flex items-center justify-between gap-3 bg-surface dark:bg-[#071512] rounded-lg px-4 py-3">
         <div>
-          <p class="text-[10px] uppercase tracking-wide text-ink/50">Account Number</p>
+          <p class="text-[10px] uppercase tracking-wide text-inksoft/80">Account Number</p>
           <p id="givingAccountNumber" class="font-mono font-medium text-royal-deep dark:text-[#EAFBF7]">—</p>
         </div>
         <button type="button" class="copy-btn btn-hover shrink-0 text-xs font-semibold text-teal border border-teal/40 rounded-full px-3 py-1.5 hover:bg-teal hover:text-[#041619]" data-copy-target="givingAccountNumber">Copy</button>
       </div>
-      <div class="flex items-center justify-between gap-3 bg-lavender dark:bg-[#071012] rounded-lg px-4 py-3">
+      <div class="flex items-center justify-between gap-3 bg-surface dark:bg-[#071512] rounded-lg px-4 py-3">
         <div>
-          <p class="text-[10px] uppercase tracking-wide text-ink/50">Bank</p>
+          <p class="text-[10px] uppercase tracking-wide text-inksoft/80">Bank</p>
           <p id="givingBankName" class="font-medium text-royal-deep dark:text-[#EAFBF7]">—</p>
         </div>
         <button type="button" class="copy-btn btn-hover shrink-0 text-xs font-semibold text-teal border border-teal/40 rounded-full px-3 py-1.5 hover:bg-teal hover:text-[#041619]" data-copy-target="givingBankName">Copy</button>
@@ -651,40 +722,40 @@
 </section>
 
 <!-- ============================== BRANCHES ============================== -->
-<section id="branches" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+<section id="branches" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-royal">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Our Church Branches</h2>
   </div>
 
   <div class="max-w-6xl mx-auto mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Uyo City Headquarters</h3>
       <p class="text-teal text-xs font-semibold uppercase tracking-wider mt-1">Headquarters</p>
-      <p class="mt-3 text-ink/60 text-sm">E3 Event Center, Ibom Tropicana Mall, Uyo (Temporary)</p>
+      <p class="mt-3 text-inksoft/90 text-sm">E3 Event Center, Ibom Tropicana Mall, Uyo (Temporary)</p>
       <a href="https://www.google.com/maps/search/?api=1&query=E3+Event+Center,+Ibom+Tropicana+Mall,+Uyo" target="_blank" rel="noopener noreferrer"
          class="btn-hover inline-block mt-5 text-sm font-medium text-royal dark:text-[#EAFBF7] border border-royal/30 dark:border-white/25 hover:bg-royal hover:text-white rounded-full px-5 py-2">View on Map</a>
     </div>
 
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Port Harcourt Branch</h3>
-      <p class="mt-3 text-ink/60 text-sm">(In Construction)</p>
+      <p class="mt-3 text-inksoft/90 text-sm">(In Construction)</p>
       <span class="inline-block mt-5 text-sm font-medium text-ink/35 border border-royal/10 dark:border-white/10 rounded-full px-5 py-2">Coming soon</span>
     </div>
 
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Eket Branch</h3>
-      <p class="mt-3 text-ink/60 text-sm">168 Eket Oron Road, Okopedi by cool room, Eket Akwa Ibom State</p>
+      <p class="mt-3 text-inksoft/90 text-sm">168 Eket Oron Road, Okopedi by cool room, Eket Akwa Ibom State</p>
       <a href="https://www.google.com/maps/search/?api=1&query=168+Eket+Oron+Road,+Okopedi+by+Cool+Room,+Eket,+Akwa+Ibom+State" target="_blank" rel="noopener noreferrer"
          class="btn-hover inline-block mt-5 text-sm font-medium text-royal dark:text-[#EAFBF7] border border-royal/30 dark:border-white/25 hover:bg-royal hover:text-white rounded-full px-5 py-2">View on Map</a>
     </div>
 
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
+    <div class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-md lift-hover p-7 pt-9 text-center border border-royal/5 dark:border-white/10">
       <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
       <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">AKSU Branch</h3>
-      <p class="mt-3 text-ink/60 text-sm">Behind Ikot Akpaden Main Market, Ikot Akpaden, Mkpat Enin LGA, Akwa Ibom State</p>
+      <p class="mt-3 text-inksoft/90 text-sm">Behind Ikot Akpaden Main Market, Ikot Akpaden, Mkpat Enin LGA, Akwa Ibom State</p>
       <a href="https://www.google.com/maps/search/?api=1&query=Behind+Ikot+Akpaden+Main+Market,+Ikot+Akpaden,+Mkpat+Enin+LGA,+Akwa+Ibom+State" target="_blank" rel="noopener noreferrer"
          class="btn-hover inline-block mt-5 text-sm font-medium text-royal dark:text-[#EAFBF7] border border-royal/30 dark:border-white/25 hover:bg-royal hover:text-white rounded-full px-5 py-2">View on Map</a>
     </div>
@@ -692,35 +763,35 @@
 </section>
 
 <!-- ============================== FAQ ============================== -->
-<section id="faq" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
+<section id="faq" class="py-20 sm:py-28 px-5 sm:px-8 bg-surface dark:bg-[#071512]">
   <div class="max-w-3xl mx-auto text-center reveal">
     <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Frequently Asked Questions</h2>
   </div>
 
   <div class="max-w-2xl mx-auto mt-12 space-y-3">
-    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+    <div class="faq-item reveal bg-white dark:bg-[#0A2226] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
       <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
         What time are your Sunday services? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
       </button>
-      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Sunday services hold weekly at each branch — check the Events section above or contact your nearest branch for the exact time.</p></div>
+      <div class="faq-answer px-5 text-sm text-inksoft dark:text-[#CFE7E3]"><p class="pb-4">Sunday services hold weekly at each branch — check the Events section above or contact your nearest branch for the exact time.</p></div>
     </div>
-    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+    <div class="faq-item reveal bg-white dark:bg-[#0A2226] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
       <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
         How do I become a member? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
       </button>
-      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Tap "Join Our Family" or "Register Now" anywhere on this site to fill out our membership form and receive your digital membership ID.</p></div>
+      <div class="faq-answer px-5 text-sm text-inksoft dark:text-[#CFE7E3]"><p class="pb-4">Tap "Join Our Family" or "Register Now" anywhere on this site to fill out our membership form and receive your digital membership ID.</p></div>
     </div>
-    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+    <div class="faq-item reveal bg-white dark:bg-[#0A2226] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
       <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
         Can I give online from outside Nigeria? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
       </button>
-      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Yes — use the "Give online now" link in the Online Giving section, which accepts international cards.</p></div>
+      <div class="faq-answer px-5 text-sm text-inksoft dark:text-[#CFE7E3]"><p class="pb-4">Yes — use the "Give online now" link in the Online Giving section, which accepts international cards.</p></div>
     </div>
-    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+    <div class="faq-item reveal bg-white dark:bg-[#0A2226] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
       <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
         Where can I listen to past sermons? <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
       </button>
-      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]"><p class="pb-4">Visit the Sermons &amp; Media Library section and tap "View all sermons" to play any MP3 message, or join our Telegram group for every message ever shared.</p></div>
+      <div class="faq-answer px-5 text-sm text-inksoft dark:text-[#CFE7E3]"><p class="pb-4">Visit the Sermons &amp; Media Library section and tap "View all sermons" to play any MP3 message, or join our Telegram group for every message ever shared.</p></div>
     </div>
   </div>
 </section>
@@ -831,7 +902,7 @@
 <div id="confirmModal" class="fixed inset-0 z-[110] hidden">
   <div class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
   <div class="relative z-10 h-full w-full flex items-center justify-center p-5">
-    <div class="bg-white dark:bg-[#10191c] rounded-2xl max-w-sm w-full p-6 text-center">
+    <div class="bg-white dark:bg-[#0A2226] rounded-2xl max-w-sm w-full p-6 text-center">
       <p id="confirmModalMessage" class="text-royal-deep dark:text-[#EAFBF7] font-medium">Are you sure?</p>
       <div class="mt-5 flex gap-3">
         <button id="confirmModalCancel" class="btn-hover flex-1 border border-royal/20 dark:border-white/20 rounded-full py-2 font-medium text-royal-deep dark:text-[#EAFBF7]">Cancel</button>
@@ -1387,16 +1458,16 @@ async function loadPastors() {
   grid.innerHTML = pastors.map(p => {
     const photo = safeUrl(p.photo_url) || localHeadshotFor(p.name);
     return `
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5 dark:border-white/10">
-      <div class="w-28 h-28 mx-auto rounded-full bg-lavender dark:bg-[#071012] border-4 border-teal/40 flex items-center justify-center overflow-hidden">
+    <div class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-28 h-28 mx-auto rounded-full bg-surface dark:bg-[#071512] border-4 border-teal/40 flex items-center justify-center overflow-hidden">
         ${photo
           ? `<img src="${escapeHtml(photo)}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover" loading="lazy" />`
           : `<span class="text-royal/40 dark:text-white/30 text-xs font-medium text-center px-2">Photo coming soon</span>`}
       </div>
       <h3 class="mt-6 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(p.name)}</h3>
       <p class="text-teal text-sm font-medium tracking-wide mt-1">${escapeHtml(p.role || 'Pastor')}</p>
-      ${p.quote ? `<p class="mt-4 italic text-ink/70 dark:text-[#CFE7E3] text-sm leading-relaxed">"${escapeHtml(p.quote)}"</p>` : ''}
-      ${p.updated_at ? `<p class="mt-4 text-[11px] text-ink/40 dark:text-white/35">Last updated ${formatDate(p.updated_at)}</p>` : ''}
+      ${p.quote ? `<p class="mt-4 italic text-inksoft dark:text-[#CFE7E3] text-sm leading-relaxed">"${escapeHtml(p.quote)}"</p>` : ''}
+      ${p.updated_at ? `<p class="mt-4 text-[11px] text-inksoft/70 dark:text-white/35">Last updated ${formatDate(p.updated_at)}</p>` : ''}
     </div>`;
   }).join('');
 
@@ -1443,7 +1514,7 @@ function sermonAudioUrl(s) {
 function audioPlayerHtml(url, title) {
   const safe = safeUrl(url);
   if (!safe) {
-    return `<div class="w-full rounded-xl bg-royal-deep/5 dark:bg-white/5 px-5 py-8 text-center text-sm text-ink/50 dark:text-white/40">Audio unavailable</div>`;
+    return `<div class="w-full rounded-xl bg-royal-deep/5 dark:bg-white/5 px-5 py-8 text-center text-sm text-inksoft/80 dark:text-white/40">Audio unavailable</div>`;
   }
   return `
     <div class="sermon-player w-full rounded-xl bg-gradient-to-br from-royal-deep to-[#0A2A2F] p-5 sm:p-6 text-white shadow-lg">
@@ -1494,11 +1565,11 @@ async function loadSermons() {
     document.getElementById('allSermonsList').innerHTML = data.map(s => `
       <div class="border border-royal/10 dark:border-white/10 rounded-xl p-4">
         <p class="font-display font-semibold text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(s.title)}</p>
-        <p class="text-xs text-ink/50 dark:text-white/40 mt-1">
+        <p class="text-xs text-inksoft/80 dark:text-white/40 mt-1">
           ${escapeHtml([s.preacher, formatDate(s.sermon_date || s.created_at)].filter(Boolean).join(' · '))}
         </p>
-        ${s.description ? `<p class="text-sm text-ink/60 dark:text-white/50 mt-2">${escapeHtml(s.description)}</p>` : ''}
-        <p class="text-[11px] text-ink/40 dark:text-white/30 mt-0.5">Last updated ${formatDate(s.updated_at || s.created_at)}</p>
+        ${s.description ? `<p class="text-sm text-inksoft/90 dark:text-white/50 mt-2">${escapeHtml(s.description)}</p>` : ''}
+        <p class="text-[11px] text-inksoft/70 dark:text-white/30 mt-0.5">Last updated ${formatDate(s.updated_at || s.created_at)}</p>
         <div class="mt-3">${audioPlayerHtml(sermonAudioUrl(s), s.title)}</div>
       </div>
     `).join('');
@@ -1543,14 +1614,14 @@ async function loadEvents() {
     if (!upcomingEvents.length) { emptyEl.classList.remove('hidden'); return; }
 
     listEl.innerHTML = upcomingEvents.map(ev => `
-      <article class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover border border-royal/5 dark:border-white/10 p-6 pt-8">
+      <article class="reveal arch-card bg-white dark:bg-[#0A2226] shadow-md lift-hover border border-royal/5 dark:border-white/10 p-6 pt-8">
         <p class="text-xs font-semibold uppercase tracking-wide text-teal">
           ${escapeHtml(formatDate(ev.event_date, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }))}${ev.event_time ? ' · ' + escapeHtml(ev.event_time) : ''}
         </p>
         <h3 class="mt-2 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(ev.title)}</h3>
-        ${ev.description ? `<p class="mt-2 text-sm text-ink/70 dark:text-[#CFE7E3]">${escapeHtml(ev.description)}</p>` : ''}
-        ${ev.location ? `<p class="mt-2 text-xs text-ink/50 dark:text-white/40 flex items-center gap-1"><i data-feather="map-pin" class="w-3.5 h-3.5"></i> ${escapeHtml(ev.location)}</p>` : ''}
-        <p class="mt-3 text-[11px] text-ink/40 dark:text-white/30">Last updated ${escapeHtml(formatDate(ev.updated_at || ev.event_date))}</p>
+        ${ev.description ? `<p class="mt-2 text-sm text-inksoft dark:text-[#CFE7E3]">${escapeHtml(ev.description)}</p>` : ''}
+        ${ev.location ? `<p class="mt-2 text-xs text-inksoft/80 dark:text-white/40 flex items-center gap-1"><i data-feather="map-pin" class="w-3.5 h-3.5"></i> ${escapeHtml(ev.location)}</p>` : ''}
+        <p class="mt-3 text-[11px] text-inksoft/70 dark:text-white/30">Last updated ${escapeHtml(formatDate(ev.updated_at || ev.event_date))}</p>
         ${ev.allow_registration ? `<button type="button" class="event-register-btn btn-hover mt-4 text-sm font-semibold text-teal border border-teal/40 rounded-full px-4 py-2 hover:bg-teal hover:text-[#041619]" data-event-id="${escapeHtml(ev.id)}" data-event-title="${escapeHtml(ev.title)}">Register</button>` : ''}
       </article>
     `).join('');
