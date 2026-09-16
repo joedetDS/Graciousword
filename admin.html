@@ -76,7 +76,17 @@
   @keyframes spin{ to{ transform:rotate(360deg); } }
 
   #appLoader{ position:fixed; inset:0; background:#041619; display:flex; align-items:center; justify-content:center; z-index:300; transition:opacity .4s ease, visibility .4s ease; }
-  #appLoader.done{ opacity:0; visibility:hidden; }
+  #appLoader.done{ opacity:0; visibility:hidden; pointer-events:none; }
+  .app-loader-inner{ display:flex; flex-direction:column; align-items:center; gap:1.25rem; }
+  .app-loader-logo{
+    width:72px; height:72px; object-fit:contain; border-radius:9999px;
+    background:rgba(0,255,207,.12); padding:8px; border:1px solid rgba(0,255,207,.35);
+    display:block;
+  }
+  .app-loader-label{
+    color:rgba(0,255,207,.7); font-size:11px; letter-spacing:.3em; text-transform:uppercase;
+    font-family:'Plus Jakarta Sans',sans-serif; margin:0;
+  }
 
   .otp-input{ width:100%; text-align:center; font-size:1.75rem; letter-spacing:.6em; padding:.9rem; border-radius:.9rem; border:2px solid rgba(4,22,25,.15); font-weight:600; outline:none; }
   .otp-input:focus{ border-color:#00FFCF; box-shadow:0 0 0 4px rgba(0,255,207,.18); }
@@ -101,7 +111,9 @@
 
 <div id="appLoader" aria-hidden="true">
   <div style="display:flex;flex-direction:column;align-items:center;gap:1.25rem">
-    <img src="logo.png" alt="Gracious Word Global Mission" style="width:72px;height:72px;object-fit:contain;border-radius:9999px;background:rgba(0,255,207,0.12);padding:8px;border:1px solid rgba(0,255,207,0.35)" />
+    <div id="loaderLogoWrap" style="width:80px;height:80px;border-radius:9999px;background:rgba(0,255,207,0.12);border:1px solid rgba(0,255,207,0.35);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px">
+      <img id="loaderLogo" src="logo.png" alt="Gracious Word Global Mission" style="width:100%;height:100%;object-fit:contain;display:block" />
+    </div>
     <div class="loader-ring"></div>
     <p style="color:rgba(0,255,207,0.7);font-size:11px;letter-spacing:0.3em;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif;margin:0">Gracious Word</p>
   </div>
@@ -113,8 +125,8 @@
   <div class="w-full max-w-md">
 
     <div class="text-center mb-8">
-      <div class="w-16 h-16 mx-auto rounded-full bg-white/10 border border-teal/40 flex items-center justify-center mb-4">
-        <i data-feather="shield" class="text-teal w-7 h-7"></i>
+      <div class="w-16 h-16 mx-auto rounded-full bg-white/10 border border-teal/40 flex items-center justify-center mb-4 overflow-hidden p-2">
+        <img id="loginLogo" src="logo.png" alt="GWGM Logo" class="w-full h-full object-contain" />
       </div>
       <h1 class="font-display font-bold text-2xl text-white">Admin Access</h1>
       <p class="text-white/60 text-sm mt-2">Gracious Word Global Mission</p>
@@ -174,8 +186,8 @@
   <aside id="sidebar" class="sidebar w-64 bg-royal-deep text-white flex flex-col shrink-0">
     <div class="p-5 border-b border-white/10">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full bg-teal/20 flex items-center justify-center">
-          <i data-feather="shield" class="text-teal w-4 h-4"></i>
+        <div class="w-9 h-9 rounded-full bg-teal/20 flex items-center justify-center overflow-hidden p-1">
+          <img src="logo.png" alt="" class="w-full h-full object-contain" width="36" height="36" decoding="async" />
         </div>
         <div class="min-w-0">
           <p class="font-display font-semibold text-sm truncate">GWGM Admin</p>
@@ -816,6 +828,18 @@ async function enterDashboard() {
 // If a session already exists, skip login
 (async () => {
   if (!sb) return;
+
+  // Load brand logo early (login + loader) from site_content — no auth required if RLS allows public read
+  try {
+    const { data: logoRows } = await sb.from('site_content').select('key, value').eq('key', 'logo_url').maybeSingle();
+    if (logoRows && logoRows.value) applyBrandLogo(logoRows.value);
+    else {
+      // fallback query shape when maybeSingle on filtered row returns null object differently
+      const { data: all } = await sb.from('site_content').select('key, value').eq('key', 'logo_url').limit(1);
+      if (all && all[0] && all[0].value) applyBrandLogo(all[0].value);
+    }
+  } catch (e) { console.warn('[admin] early logo load', e); }
+
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
     // Double-check admin list
@@ -1003,12 +1027,22 @@ on('graceCardForm', 'submit', async (e) => {
    ========================================================================= */
 const SITE_KEYS = ['logo_url', 'land_image_url', 'footer_image_url'];
 
+function applyBrandLogo(url) {
+  // Site Content uploads only update the admin preview — loader + login always use logo.png from the site root.
+  if (!url) return;
+  const el = $('previewLogo');
+  if (el) {
+    el.style.display = '';
+    el.src = url;
+  }
+}
+
 async function loadSiteContent() {
   const { data, error } = await sb.from('site_content').select('key, value');
   if (error) { console.error(error); return; }
   const map = Object.fromEntries((data || []).map(r => [r.key, r.value]));
 
-  if (map.logo_url)   $('previewLogo').src   = map.logo_url;
+  if (map.logo_url) applyBrandLogo(map.logo_url);
   if (map.land_image_url)   $('previewLand').src   = map.land_image_url;
   if (map.footer_image_url) $('previewFooter').src = map.footer_image_url;
 
@@ -1034,6 +1068,7 @@ async function handleAssetUpload(inputId, previewId, key) {
       const url = await uploadFile(GWGM_CONFIG.buckets.siteAssets, file, key);
       await upsertSiteContent(key, url);
       $(previewId).src = url;
+      if (key === 'logo_url') applyBrandLogo(url);
       toast('Image updated');
       stampSaved();
     } catch (err) {
