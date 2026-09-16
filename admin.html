@@ -1116,7 +1116,7 @@ async function loadSermonsAdmin() {
   }
 
   list.innerHTML = data.map(s => {
-    const audio = s.audio_url || s.video_url || '';
+    const audio = s.audio_url || '';
     return `
     <div class="list-item">
       <div class="w-10 h-10 rounded-full bg-teal-soft flex items-center justify-center shrink-0">
