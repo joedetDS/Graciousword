@@ -1315,33 +1315,64 @@ loadSiteContent();
    ========================================================================= */
 async function loadPastors() {
   const grid = document.getElementById('pastorsGrid');
+
+  // Local headshots in the site root (same folder as index.html) — used when Supabase has no photo
+  const LOCAL_HEADSHOTS = {
+    georgewealth: 'Georgewealth.jpeg',
+    ronke: 'ronke.jpeg',
+  };
+
+  function localHeadshotFor(name) {
+    const n = String(name || '').toLowerCase();
+    if (n.includes('ronke')) return LOCAL_HEADSHOTS.ronke;
+    if (n.includes('georgewealth') || n.includes('george wealth')) return LOCAL_HEADSHOTS.georgewealth;
+    return '';
+  } 
+
   const fallback = [
-    { name: 'Pastor Georgewealth Udoh', role: 'Lead Pastor', quote: "Our calling is to help people know Christ, grow in grace and walk in God's purpose.", photo_url: '' },
-    { name: 'Pastor Ronke Georgewealth Udoh', role: 'Lead Pastor', quote: 'Every believer deserves a loving church family where faith, purpose and destiny are nurtured.', photo_url: '' },
+    {
+      name: 'Pastor Georgewealth Udoh',
+      role: 'Lead Pastor',
+      quote: "Our calling is to help people know Christ, grow in grace and walk in God's purpose.",
+      photo_url: LOCAL_HEADSHOTS.georgewealth,
+    },
+    {
+      name: 'Pastor Ronke Georgewealth Udoh',
+      role: 'Lead Pastor',
+      quote: 'Every believer deserves a loving church family where faith, purpose and destiny are nurtured.',
+      photo_url: LOCAL_HEADSHOTS.ronke,
+    },
   ];
 
   let pastors = fallback;
   if (gwgmClient) {
     try {
       const { data, error } = await gwgmClient.from('pastors').select('id, name, role, quote, photo_url, sort_order, updated_at').order('sort_order', { ascending: true });
-      if (!error && data && data.length) pastors = data;
+      if (!error && data && data.length) {
+        pastors = data.map(p => ({
+          ...p,
+          photo_url: p.photo_url || localHeadshotFor(p.name) || '',
+        }));
+      }
     } catch (err) { console.error('[GWGM] pastors load failed:', err); }
   }
   window.__gwgmPastors = pastors;
 
-  grid.innerHTML = pastors.map(p => `
+  grid.innerHTML = pastors.map(p => {
+    const photo = safeUrl(p.photo_url) || localHeadshotFor(p.name);
+    return `
     <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5 dark:border-white/10">
       <div class="w-28 h-28 mx-auto rounded-full bg-lavender dark:bg-[#071012] border-4 border-teal/40 flex items-center justify-center overflow-hidden">
-        ${p.photo_url
-          ? `<img src="${escapeHtml(safeUrl(p.photo_url))}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover" loading="lazy" />`
+        ${photo
+          ? `<img src="${escapeHtml(photo)}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover" loading="lazy" />`
           : `<span class="text-royal/40 dark:text-white/30 text-xs font-medium text-center px-2">Photo coming soon</span>`}
       </div>
       <h3 class="mt-6 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(p.name)}</h3>
       <p class="text-teal text-sm font-medium tracking-wide mt-1">${escapeHtml(p.role || 'Pastor')}</p>
       ${p.quote ? `<p class="mt-4 italic text-ink/70 dark:text-[#CFE7E3] text-sm leading-relaxed">"${escapeHtml(p.quote)}"</p>` : ''}
       ${p.updated_at ? `<p class="mt-4 text-[11px] text-ink/40 dark:text-white/35">Last updated ${formatDate(p.updated_at)}</p>` : ''}
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   observeAllReveals(grid);
   refreshIcons();
