@@ -1437,7 +1437,7 @@ refreshIcons();
    12. SERMONS
    ========================================================================= */
 function sermonAudioUrl(s) {
-  return safeUrl(s.audio_url || s.video_url || '');
+  return safeUrl(s.audio_url || '');
 }
 
 function audioPlayerHtml(url, title) {
@@ -1470,7 +1470,7 @@ async function loadSermons() {
   try {
     const { data, error } = await gwgmClient
       .from('sermons')
-      .select('id, title, audio_url, video_url, description, preacher, sermon_date, thumbnail_url, created_at, updated_at')
+      .select('id, title, audio_url, description, preacher, sermon_date, artwork_url, created_at, updated_at')
       .order('sermon_date', { ascending: false });
     if (error) throw error;
 
