@@ -779,7 +779,7 @@
   </div>
 
   <div id="eventCountdownWrap" class="hidden max-w-xl mx-auto mt-10 text-center reveal">
-    <p class="text-sm font-medium text-ink/70">Counting down to</p>
+    <p id="eventCountdownLabel" class="text-sm font-medium text-ink/70">Starts in</p>
     <p id="eventCountdownTitle" class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7] mt-1">—</p>
     <div class="flex items-center justify-center gap-3 mt-4">
       <div class="countdown-unit"><span id="cdDays" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Days</span></div>
@@ -1393,23 +1393,34 @@ document.addEventListener('keydown', (e) => {
   }
 
   function slideEvent(ev) {
-    const dateStr = formatDate(ev.event_date, { weekday: 'long', month: 'long', day: 'numeric' });
+    const startStr = formatDate(ev.event_date, { weekday: 'long', month: 'long', day: 'numeric' });
+    const endStr = ev.end_date && ev.end_date !== ev.event_date
+      ? formatDate(ev.end_date, { weekday: 'long', month: 'long', day: 'numeric' })
+      : '';
+    const dateStr = endStr ? `${startStr} – ${endStr}` : startStr;
+    const banner = safeUrl(ev.image_url);
+    const now = Date.now();
+    const startMs = new Date(`${ev.event_date}T${(ev.event_time || '00:00').slice(0,5)}:00`).getTime();
+    const isLiveNow = !isNaN(startMs) && now >= startMs;
+    const badge = isLiveNow ? 'Happening Now' : 'Upcoming Event';
     return `
       <div class="hero-slide" data-slide="event">
         <div class="hero-slide-bg">
-          <div class="absolute inset-0 bg-gradient-to-br from-teal/20 via-royal-deep to-royal-deep"></div>
+          ${banner ? `<img src="${escapeHtml(banner)}" alt="" loading="lazy" />` : ''}
+          <div class="hero-slide-overlay" style="background: linear-gradient(to bottom, rgba(4,22,25,.88), rgba(4,22,25,.82), rgba(4,22,25,.95));"></div>
+          ${!banner ? '<div class="absolute inset-0 bg-gradient-to-br from-teal/20 via-royal-deep to-royal-deep"></div>' : ''}
         </div>
         <div class="hero-slide-inner">
           <div class="grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
             <div>
               <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-bold text-lime">
-                <span class="w-2 h-2 rounded-full bg-lime gc-live-dot"></span> Upcoming Event
+                <span class="w-2 h-2 rounded-full bg-lime gc-live-dot"></span> ${badge}
               </span>
               <h2 class="mt-4 font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">${escapeHtml(ev.title)}</h2>
               ${ev.description ? `<p class="mt-4 text-white/75 text-base sm:text-lg max-w-lg">${escapeHtml(ev.description)}</p>` : ''}
               <p class="mt-5 text-white/80 text-sm sm:text-base flex flex-wrap items-center gap-x-4 gap-y-2">
                 <span class="inline-flex items-center gap-1.5"><i data-feather="calendar" class="w-4 h-4"></i>${escapeHtml(dateStr)}</span>
-                ${ev.event_time ? `<span class="inline-flex items-center gap-1.5"><i data-feather="clock" class="w-4 h-4"></i>${escapeHtml(ev.event_time)}</span>` : ''}
+                ${ev.event_time ? `<span class="inline-flex items-center gap-1.5"><i data-feather="clock" class="w-4 h-4"></i>${escapeHtml(ev.event_time)}${ev.end_time ? ' – ' + escapeHtml(ev.end_time) : ''}</span>` : ''}
                 ${ev.location ? `<span class="inline-flex items-center gap-1.5"><i data-feather="map-pin" class="w-4 h-4"></i>${escapeHtml(ev.location)}</span>` : ''}
               </p>
               <div class="mt-7 flex flex-wrap gap-3">
@@ -1418,9 +1429,9 @@ document.addEventListener('keydown', (e) => {
               </div>
             </div>
             <div class="hidden md:flex justify-end">
-              <div class="w-52 h-52 lg:w-64 lg:h-64 rounded-full bg-white/5 border border-white/15 flex items-center justify-center shadow-2xl">
-                <i data-feather="calendar" class="w-20 h-20 text-teal"></i>
-              </div>
+              ${banner
+                ? `<div class="w-52 h-52 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border-2 border-teal/40 shadow-2xl"><img src="${escapeHtml(banner)}" alt="" class="w-full h-full object-cover" loading="lazy" /></div>`
+                : `<div class="w-52 h-52 lg:w-64 lg:h-64 rounded-full bg-white/5 border border-white/15 flex items-center justify-center shadow-2xl"><i data-feather="calendar" class="w-20 h-20 text-teal"></i></div>`}
             </div>
           </div>
         </div>
@@ -1558,9 +1569,10 @@ document.addEventListener('keydown', (e) => {
     setData({ event, giving, live, custom }) {
       const list = [];
       list.push({ key: 'main', html: slideMain() });
+      // Featured / upcoming event has priority — right after main, before live & giving
+      if (event) list.push({ key: 'event', html: slideEvent(event) });
       list.push({ key: 'live', html: slideLive(live || {}) });
       list.push({ key: 'giving', html: slideGiving(giving || {}) });
-      if (event) list.push({ key: 'event', html: slideEvent(event) });
       (custom || []).forEach((c, i) => {
         if (c && (c.title || c.description || c.image_url)) list.push({ key: 'custom-' + i, html: slideCustom(c) });
       });
@@ -2215,25 +2227,39 @@ async function loadEvents() {
     const today = new Date().toISOString().slice(0, 10);
     const { data, error } = await gwgmClient
       .from('events')
-      .select('id, title, description, event_date, event_time, location, allow_registration, is_featured, image_url, updated_at')
-      .gte('event_date', today)
+      .select('id, title, description, event_date, end_date, event_time, end_time, location, allow_registration, is_featured, image_url, updated_at')
       .order('event_date', { ascending: true });
     if (error) throw error;
-    upcomingEvents = data || [];
+    // Keep events that have not ended yet (end_date falls back to event_date)
+    upcomingEvents = (data || []).filter(ev => {
+      const end = ev.end_date || ev.event_date;
+      return end && end >= today;
+    });
     window.__gwgmEvents = upcomingEvents;
     if (!upcomingEvents.length) { emptyEl.classList.remove('hidden'); feedHeroFromCache(); return; }
-    listEl.innerHTML = upcomingEvents.map(ev => `
-      <article class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover border border-royal/5 dark:border-white/10 p-6 pt-8">
-        <p class="text-xs font-semibold uppercase tracking-wide text-teal">
-          ${escapeHtml(formatDate(ev.event_date, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }))}${ev.event_time ? ' · ' + escapeHtml(ev.event_time) : ''}
-        </p>
-        <h3 class="mt-2 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(ev.title)}</h3>
-        ${ev.description ? `<p class="mt-2 text-sm text-ink/70 dark:text-[#CFE7E3]">${escapeHtml(ev.description)}</p>` : ''}
-        ${ev.location ? `<p class="mt-2 text-xs text-ink/50 dark:text-white/40 flex items-center gap-1"><i data-feather="map-pin" class="w-3.5 h-3.5"></i> ${escapeHtml(ev.location)}</p>` : ''}
-        <p class="mt-3 text-[11px] text-ink/40 dark:text-white/30">Last updated ${escapeHtml(formatDate(ev.updated_at || ev.event_date))}</p>
-        ${ev.allow_registration ? `<button type="button" class="event-register-btn btn-hover mt-4 text-sm font-semibold text-teal border border-teal/40 rounded-full px-4 py-2 hover:bg-teal hover:text-[#041619]" data-event-id="${escapeHtml(ev.id)}" data-event-title="${escapeHtml(ev.title)}">Register</button>` : ''}
-      </article>
-    `).join('');
+    listEl.innerHTML = upcomingEvents.map(ev => {
+      const startLabel = formatDate(ev.event_date, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' });
+      const endLabel = ev.end_date && ev.end_date !== ev.event_date
+        ? formatDate(ev.end_date, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })
+        : '';
+      const dateLine = endLabel ? `${startLabel} → ${endLabel}` : startLabel;
+      const timeLine = [ev.event_time, ev.end_time].filter(Boolean).join(' – ');
+      const banner = safeUrl(ev.image_url);
+      return `
+      <article class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover border border-royal/5 dark:border-white/10 overflow-hidden">
+        ${banner ? `<div class="w-full aspect-[16/9] bg-lavender dark:bg-[#071012] overflow-hidden"><img src="${escapeHtml(banner)}" alt="" class="w-full h-full object-cover" loading="lazy" /></div>` : ''}
+        <div class="p-6 ${banner ? 'pt-5' : 'pt-8'}">
+          <p class="text-xs font-semibold uppercase tracking-wide text-teal">
+            ${escapeHtml(dateLine)}${timeLine ? ' · ' + escapeHtml(timeLine) : ''}
+          </p>
+          <h3 class="mt-2 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(ev.title)}</h3>
+          ${ev.description ? `<p class="mt-2 text-sm text-ink/70 dark:text-[#CFE7E3]">${escapeHtml(ev.description)}</p>` : ''}
+          ${ev.location ? `<p class="mt-2 text-xs text-ink/50 dark:text-white/40 flex items-center gap-1"><i data-feather="map-pin" class="w-3.5 h-3.5"></i> ${escapeHtml(ev.location)}</p>` : ''}
+          <p class="mt-3 text-[11px] text-ink/40 dark:text-white/30">Last updated ${escapeHtml(formatDate(ev.updated_at || ev.event_date))}</p>
+          ${ev.allow_registration ? `<button type="button" class="event-register-btn btn-hover mt-4 text-sm font-semibold text-teal border border-teal/40 rounded-full px-4 py-2 hover:bg-teal hover:text-[#041619]" data-event-id="${escapeHtml(ev.id)}" data-event-title="${escapeHtml(ev.title)}">Register</button>` : ''}
+        </div>
+      </article>`;
+    }).join('');
     listEl.querySelectorAll('.reveal').forEach(observeReveal);
     refreshIcons();
     const featured = upcomingEvents.find(e => e.is_featured) || upcomingEvents[0];
@@ -2247,13 +2273,33 @@ async function loadEvents() {
 
 function startEventCountdown(event) {
   const wrap = document.getElementById('eventCountdownWrap');
+  const labelEl = document.getElementById('eventCountdownLabel');
   wrap.classList.remove('hidden');
   document.getElementById('eventCountdownTitle').textContent = event.title;
-  const target = new Date(`${event.event_date}T${(event.event_time || '00:00').slice(0,5)}:00`);
-  if (isNaN(target)) return;
+
+  const start = new Date(`${event.event_date}T${(event.event_time || '00:00').slice(0, 5)}:00`);
+  const endDate = event.end_date || event.event_date;
+  const end = new Date(`${endDate}T${(event.end_time || event.event_time || '23:59').slice(0, 5)}:00`);
+  if (isNaN(start.getTime())) return;
+
   const tick = () => {
-    const diff = target.getTime() - Date.now();
-    if (diff <= 0) { clearInterval(cdTimer); wrap.classList.add('hidden'); return; }
+    const now = Date.now();
+    let targetMs;
+    if (now < start.getTime()) {
+      // Not started yet
+      if (labelEl) labelEl.textContent = 'Starts in';
+      targetMs = start.getTime();
+    } else if (!isNaN(end.getTime()) && now < end.getTime()) {
+      // Event is ongoing — count down to end
+      if (labelEl) labelEl.textContent = 'Ends in';
+      targetMs = end.getTime();
+    } else {
+      // Finished
+      clearInterval(cdTimer);
+      wrap.classList.add('hidden');
+      return;
+    }
+    const diff = targetMs - now;
     document.getElementById('cdDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
     document.getElementById('cdHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
     document.getElementById('cdMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
