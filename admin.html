@@ -533,12 +533,21 @@
               <input id="evTitle" type="text" class="field" placeholder="e.g. Youth Conference 2026" required />
             </div>
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Date</label>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Start date</label>
               <input id="evDate" type="date" class="field" required />
             </div>
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Time (optional)</label>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">End date</label>
+              <input id="evEndDate" type="date" class="field" />
+              <p class="text-[11px] text-ink/40 mt-1">Leave blank for a single-day event.</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Start time (optional)</label>
               <input id="evTime" type="time" class="field" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">End time (optional)</label>
+              <input id="evEndTime" type="time" class="field" />
             </div>
             <div class="sm:col-span-2">
               <label class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Location</label>
@@ -849,12 +858,20 @@
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-semibold uppercase text-ink/60 mb-1">Date</label>
+          <label class="block text-xs font-semibold uppercase text-ink/60 mb-1">Start date</label>
           <input id="editEvDate" type="date" class="field" required />
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase text-ink/60 mb-1">Time</label>
+          <label class="block text-xs font-semibold uppercase text-ink/60 mb-1">End date</label>
+          <input id="editEvEndDate" type="date" class="field" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase text-ink/60 mb-1">Start time</label>
           <input id="editEvTime" type="time" class="field" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase text-ink/60 mb-1">End time</label>
+          <input id="editEvEndTime" type="time" class="field" />
         </div>
       </div>
       <div>
@@ -2146,12 +2163,12 @@ const eventsPaginator = new UniversalPaginator({
     }
     list.innerHTML = pageItems.map(ev => `
       <div class="list-item">
-        <div class="w-10 h-10 rounded-full bg-teal-soft flex items-center justify-center shrink-0">
-          <i data-feather="calendar" class="w-4 h-4 text-teal"></i>
-        </div>
+        ${ev.image_url
+          ? `<img src="${esc(ev.image_url)}" alt="" class="w-12 h-12 rounded-lg object-cover shrink-0 bg-lavender" loading="lazy" />`
+          : `<div class="w-10 h-10 rounded-full bg-teal-soft flex items-center justify-center shrink-0"><i data-feather="calendar" class="w-4 h-4 text-teal"></i></div>`}
         <div class="min-w-0 flex-1">
           <p class="font-medium text-royal-deep truncate">${esc(ev.title)}</p>
-          <p class="text-xs text-ink/50">${esc(fmtDate(ev.event_date))}${ev.event_time ? ' · ' + esc(ev.event_time) : ''}${ev.location ? ' · ' + esc(ev.location) : ''}</p>
+          <p class="text-xs text-ink/50">${esc(fmtDate(ev.event_date))}${ev.end_date && ev.end_date !== ev.event_date ? ' → ' + esc(fmtDate(ev.end_date)) : ''}${ev.event_time ? ' · ' + esc(ev.event_time) : ''}${ev.end_time ? '–' + esc(ev.end_time) : ''}${ev.location ? ' · ' + esc(ev.location) : ''}</p>
           <div class="flex gap-1.5 mt-1">
             ${ev.is_featured ? '<span class="badge badge-on font-bold">Featured in Hero</span>' : ''}
             ${ev.allow_registration ? '<span class="badge badge-kids">Registration open</span>' : ''}
@@ -2198,18 +2215,23 @@ on('eventForm', 'submit', async (e) => {
     let imageUrl = null;
     if (file) imageUrl = await uploadFile(GWGM_CONFIG.buckets.media, file, 'events');
 
+    const startDate = $('evDate').value;
+    const endDate = $('evEndDate').value || startDate;
+    if (endDate < startDate) throw new Error('End date cannot be before start date.');
     const payload = {
       title: $('evTitle').value.trim(),
       description: $('evDescription').value.trim() || null,
-      event_date: $('evDate').value,
+      event_date: startDate,
+      end_date: endDate,
       event_time: $('evTime').value || null,
+      end_time: $('evEndTime').value || null,
       location: $('evLocation').value.trim() || null,
       image_url: imageUrl,
       allow_registration: $('evRegistration').checked,
       is_featured: isFeatured,
       updated_at: new Date().toISOString(),
     };
-    if (!payload.title || !payload.event_date) throw new Error('Title and date are required.');
+    if (!payload.title || !payload.event_date) throw new Error('Title and start date are required.');
 
     const { error } = await sb.from('events').insert(payload);
     if (error) throw error;
@@ -2231,7 +2253,9 @@ function openEditEvent(id) {
   $('editEvId').value = ev.id;
   $('editEvTitle').value = ev.title || '';
   $('editEvDate').value = ev.event_date || '';
+  $('editEvEndDate').value = ev.end_date || ev.event_date || '';
   $('editEvTime').value = ev.event_time || '';
+  $('editEvEndTime').value = ev.end_time || '';
   $('editEvLocation').value = ev.location || '';
   $('editEvDescription').value = ev.description || '';
   $('editEvRegistration').checked = !!ev.allow_registration;
@@ -2250,10 +2274,15 @@ on('editEventForm', 'submit', async (e) => {
     }
 
     const file = $('editEvImage').files[0];
+    const startDate = $('editEvDate').value;
+    const endDate = $('editEvEndDate').value || startDate;
+    if (endDate < startDate) throw new Error('End date cannot be before start date.');
     const update = {
       title: $('editEvTitle').value.trim(),
-      event_date: $('editEvDate').value,
+      event_date: startDate,
+      end_date: endDate,
       event_time: $('editEvTime').value || null,
+      end_time: $('editEvEndTime').value || null,
       location: $('editEvLocation').value.trim() || null,
       description: $('editEvDescription').value.trim() || null,
       allow_registration: $('editEvRegistration').checked,
