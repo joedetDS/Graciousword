@@ -749,15 +749,23 @@
       <section id="panelAdmins" class="panel">
         <div class="card p-6 sm:p-7">
           <h2 class="font-display font-semibold text-lg text-royal-deep">Admin Users</h2>
-          <p class="text-sm text-ink/60 mt-1">Only emails listed here can sign in with an OTP. The owner email cannot be removed.</p>
+          <p class="text-sm text-ink/60 mt-1">Only emails listed here can sign in with an OTP. Only the owner can add or remove admins.</p>
 
-          <form id="adminForm" class="mt-5 flex flex-col sm:flex-row gap-3">
-            <input id="newAdminEmail" type="email" class="field flex-1" placeholder="new-admin@example.com" required />
-            <button type="submit" class="btn btn-primary shrink-0">
-              <i data-feather="user-plus" class="w-4 h-4"></i> Grant access
-            </button>
-          </form>
-          <p id="adminError" class="hidden text-sm text-red-600 mt-2"></p>
+          <div id="adminOwnerOnlyWrap">
+            <form id="adminForm" class="mt-5 flex flex-col sm:flex-row gap-3">
+              <input id="newAdminEmail" type="email" class="field flex-1" placeholder="new-admin@example.com" required />
+              <button type="submit" id="adminGrantBtn" class="btn btn-primary shrink-0">
+                <i data-feather="user-plus" class="w-4 h-4"></i> Grant access
+              </button>
+            </form>
+            <p id="adminError" class="hidden text-sm text-red-600 mt-2"></p>
+          </div>
+          <p id="adminAccessDenied" class="hidden mt-5 text-sm text-ink/70 bg-lavender rounded-xl px-4 py-3 border border-royal/10">
+            <strong class="text-royal-deep">Access denied.</strong>
+            Only the owner can add or remove admin users. Contact the owner
+            (<span class="font-medium text-teal">simplyedetjoseph@gmail.com</span>)
+            to grant or revoke admin access.
+          </p>
 
           <div id="adminList" class="mt-5 space-y-2"></div>
         </div>
@@ -983,6 +991,7 @@ function isSupabaseConfigured(url, key) {
 /* =========================================================================
    HELPERS & DOM SHORTCUTS
    ========================================================================= */
+let currentAdminEmail = '';
 const $  = (id) => document.getElementById(id);
 const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
 
@@ -1297,6 +1306,7 @@ async function enterDashboard() {
 
   $('loginView').classList.add('hidden');
   $('dashboardView').classList.remove('hidden');
+  currentAdminEmail = (user.email || '').toLowerCase();
   $('sidebarEmail').textContent = user.email;
   $('yearLogin').textContent = new Date().getFullYear();
 
@@ -2713,19 +2723,66 @@ on('exportMembers', 'click', () => {
 });
 
 /* =========================================================================
-   ADMIN USERS MANAGEMENT
+   ADMIN USERS MANAGEMENT — owner-only add/remove
    ========================================================================= */
+function isOwnerUser() {
+  const owner = (GWGM_CONFIG.ownerEmail || '').toLowerCase().trim();
+  const me = (currentAdminEmail || '').toLowerCase().trim();
+  return !!owner && !!me && me === owner;
+}
+
+function denyAdminManage(action) {
+  const msg = action === 'add'
+    ? 'Access denied. Only the owner can add admin users. Contact simplyedetjoseph@gmail.com to grant access.'
+    : 'Access denied. Only the owner can remove admin users. Contact simplyedetjoseph@gmail.com to revoke access.';
+  toast(msg, true);
+  const errEl = $('adminError');
+  if (errEl) {
+    errEl.textContent = msg;
+    errEl.classList.remove('hidden');
+  }
+  const denied = $('adminAccessDenied');
+  if (denied) denied.classList.remove('hidden');
+}
+
+function applyAdminOwnerUi() {
+  const owner = isOwnerUser();
+  const formWrap = $('adminOwnerOnlyWrap');
+  const denied = $('adminAccessDenied');
+  if (formWrap) formWrap.classList.toggle('hidden', !owner);
+  if (denied) denied.classList.toggle('hidden', owner);
+  const grantBtn = $('adminGrantBtn');
+  const emailInput = $('newAdminEmail');
+  if (grantBtn) grantBtn.disabled = !owner;
+  if (emailInput) emailInput.disabled = !owner;
+}
+
 async function loadAdmins() {
   const { data, error } = await sb.from('admin_users').select('*').order('created_at', { ascending: true });
   if (error) { console.error(error); return; }
 
-  const { data: { user } } = await sb.auth.getUser();
-  const me = user ? user.email : '';
+  // Refresh current email from session if needed
+  if (!currentAdminEmail) {
+    const { data: { user } } = await sb.auth.getUser();
+    currentAdminEmail = user && user.email ? user.email.toLowerCase() : '';
+  }
+  const me = currentAdminEmail;
+  const ownerCanManage = isOwnerUser();
+  applyAdminOwnerUi();
 
   const list = $('adminList');
   list.innerHTML = (data || []).map(a => {
-    const isOwner = a.email === GWGM_CONFIG.ownerEmail;
-    const isMe = a.email === me;
+    const rowEmail = (a.email || '').toLowerCase();
+    const isOwnerRow = rowEmail === (GWGM_CONFIG.ownerEmail || '').toLowerCase();
+    const isMe = rowEmail === me;
+    let actionHtml;
+    if (isOwnerRow) {
+      actionHtml = '<span class="badge badge-on shrink-0">Owner</span>';
+    } else if (ownerCanManage) {
+      actionHtml = `<button class="btn btn-danger !py-1.5 !px-3 !text-xs shrink-0" data-ad-del="${esc(a.email)}">Remove</button>`;
+    } else {
+      actionHtml = '<span class="text-[11px] text-ink/40 shrink-0">Admin</span>';
+    }
     return `
       <div class="list-item">
         <div class="w-10 h-10 rounded-full bg-lavender flex items-center justify-center shrink-0">
@@ -2735,9 +2792,7 @@ async function loadAdmins() {
           <p class="font-medium text-royal-deep truncate">${esc(a.email)}</p>
           <p class="text-[11px] text-ink/40">Added ${fmtDate(a.created_at)}${isMe ? ' · you' : ''}</p>
         </div>
-        ${isOwner
-          ? '<span class="badge badge-on shrink-0">Owner</span>'
-          : `<button class="btn btn-danger !py-1.5 !px-3 !text-xs shrink-0" data-ad-del="${esc(a.email)}">Remove</button>`}
+        ${actionHtml}
       </div>
     `;
   }).join('');
@@ -2745,7 +2800,15 @@ async function loadAdmins() {
   feather.replace();
 
   list.querySelectorAll('[data-ad-del]').forEach(btn => btn.addEventListener('click', async () => {
+    if (!isOwnerUser()) {
+      denyAdminManage('remove');
+      return;
+    }
     const email = btn.dataset.adDel;
+    if ((email || '').toLowerCase() === (GWGM_CONFIG.ownerEmail || '').toLowerCase()) {
+      toast('The owner account cannot be removed.', true);
+      return;
+    }
     const ok = await gwgmConfirm(`Remove admin access for ${email}?`, 'Remove');
     if (!ok) return;
     const { error } = await sb.from('admin_users').delete().eq('email', email);
@@ -2758,19 +2821,29 @@ async function loadAdmins() {
 on('adminForm', 'submit', async (e) => {
   e.preventDefault();
   const errEl = $('adminError');
-  errEl.classList.add('hidden');
-  const email = $('newAdminEmail').value.trim().toLowerCase();
+  if (errEl) errEl.classList.add('hidden');
+
+  if (!isOwnerUser()) {
+    denyAdminManage('add');
+    return;
+  }
+
+  const email = ($('newAdminEmail').value || '').trim().toLowerCase();
   if (!/^\S+@\S+\.\S+$/.test(email)) {
-    errEl.textContent = 'Please enter a valid email address.';
-    errEl.classList.remove('hidden');
+    if (errEl) {
+      errEl.textContent = 'Please enter a valid email address.';
+      errEl.classList.remove('hidden');
+    }
     return;
   }
 
   const { data: { user } } = await sb.auth.getUser();
   const { error } = await sb.from('admin_users').insert({ email, added_by: user ? user.email : null });
   if (error) {
-    errEl.textContent = error.code === '23505' ? 'That email is already an admin.' : (error.message || 'Could not add admin.');
-    errEl.classList.remove('hidden');
+    if (errEl) {
+      errEl.textContent = error.code === '23505' ? 'That email is already an admin.' : (error.message || 'Could not add admin.');
+      errEl.classList.remove('hidden');
+    }
     return;
   }
 
