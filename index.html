@@ -440,6 +440,71 @@
   #givingGrid.single-card{ justify-content: center; }
   #givingGrid.single-card .giving-card{ flex: 0 0 100%; max-width: 28rem; }
 
+  /* ---------- Weekly Services Slide ---------- */
+  .service-chip{
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .35rem 1rem .35rem .8rem;
+    border-radius: 9999px;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    background: rgba(0,255,207,.12);
+    border: 1px solid rgba(0,255,207,.25);
+    color: var(--teal-light);
+    white-space: nowrap;
+  }
+  .service-chip .dot{
+    width: 6px; height: 6px;
+    border-radius: 9999px;
+    background: var(--lime);
+    flex-shrink: 0;
+  }
+  .service-card-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: .75rem;
+  }
+  .service-card{
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: .9rem;
+    padding: .85rem 1rem;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: border-color .3s ease, background-color .3s ease, transform .3s ease;
+  }
+  .service-card:hover{
+    border-color: var(--teal);
+    background: rgba(0,255,207,.08);
+    transform: translateY(-3px);
+  }
+  .service-card .service-day{
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--lime);
+    margin-bottom: .15rem;
+  }
+  .service-card .service-name{
+    font-size: .85rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .service-card .service-note{
+    font-size: .68rem;
+    color: rgba(255,255,255,.55);
+    margin-top: .15rem;
+  }
+  .service-card.highlight{
+    border-color: rgba(153,255,0,.35);
+    background: rgba(153,255,0,.06);
+  }
+  .service-card.highlight .service-day{ color: var(--lime); }
+
   /* ---------- Print ---------- */
   @media print{
     #navbar,#mobileMenu,#scrollProgress,#backToTop,#floatingContact,#cookieBanner,
@@ -1303,6 +1368,68 @@ document.addEventListener('keydown', (e) => {
       </div>`;
   }
 
+  /* --- NEW: Weekly Services Slide --- */
+  function slideWeeklyServices() {
+    return `
+      <div class="hero-slide" data-slide="weekly-services">
+        <div class="hero-slide-bg">
+          <div class="absolute inset-0" style="background: linear-gradient(135deg, #041619 0%, #0A2A2F 60%, #041619 100%);"></div>
+          <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 25% 40%, #00FFCF 0%, transparent 50%), radial-gradient(circle at 75% 60%, #99FF00 0%, transparent 50%);"></div>
+        </div>
+        <div class="hero-slide-inner">
+          <div class="max-w-3xl mx-auto text-center">
+            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-bold text-lime mb-5">
+              <i data-feather="calendar" class="w-4 h-4"></i> Weekly Services
+            </span>
+            <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
+              Join Us <span class="brand-gradient">Every Week</span>
+            </h2>
+            <p class="mt-4 text-white/70 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+              Experience the presence of God through our regular services. Every Sunday and Tuesday, we gather to worship, learn, and grow together.
+            </p>
+
+            <div class="service-card-grid mt-8 text-left">
+              <!-- First Sunday highlighted as the anchor service -->
+              <div class="service-card highlight">
+                <p class="service-day">Every First Sunday</p>
+                <p class="service-name">Thanksgiving Service</p>
+                <p class="service-note">A special time of gratitude and praise</p>
+              </div>
+              <div class="service-card">
+                <p class="service-day">Every Second Sunday</p>
+                <p class="service-name">Communion Service</p>
+                <p class="service-note">Remembering the Lord's sacrifice</p>
+              </div>
+              <div class="service-card">
+                <p class="service-day">Every Tuesday</p>
+                <p class="service-name">Bible Study &amp; Prayer</p>
+                <p class="service-note">6:00 PM — Midweek refresh</p>
+              </div>
+              <div class="service-card">
+                <p class="service-day">Other Sundays</p>
+                <p class="service-name">Moment of Grace</p>
+                <p class="service-note">Our Sunday celebration</p>
+              </div>
+              <div class="service-card">
+                <p class="service-day">Last Sunday</p>
+                <p class="service-name">Family &amp; Friends Service</p>
+                <p class="service-note">Bring a friend, celebrate family</p>
+              </div>
+            </div>
+
+            <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="#events" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 inline-flex items-center justify-center gap-2">
+                <i data-feather="calendar" class="w-4 h-4"></i> See all events
+              </a>
+              <a href="#branches" class="btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full inline-flex items-center justify-center gap-2">
+                <i data-feather="map-pin" class="w-4 h-4"></i> Find a branch
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   /* Live slide — rebuild live session card so it stays inside the site palette
      (teal/lime/royal) with red introduced tastefully only along the card's border. */
   function slideLive(cfg) {
@@ -1568,11 +1695,17 @@ document.addEventListener('keydown', (e) => {
   window.__gwgmHero = {
     setData({ event, giving, live, custom }) {
       const list = [];
+      // 1. Main slide — highest priority
       list.push({ key: 'main', html: slideMain() });
-      // Featured / upcoming event has priority — right after main, before live & giving
+      // 2. Featured / upcoming event — second priority
       if (event) list.push({ key: 'event', html: slideEvent(event) });
+      // 3. NEW: Weekly Services slide — right after event
+      list.push({ key: 'weekly-services', html: slideWeeklyServices() });
+      // 4. Live service
       list.push({ key: 'live', html: slideLive(live || {}) });
+      // 5. Giving
       list.push({ key: 'giving', html: slideGiving(giving || {}) });
+      // 6. Optional custom highlights
       (custom || []).forEach((c, i) => {
         if (c && (c.title || c.description || c.image_url)) list.push({ key: 'custom-' + i, html: slideCustom(c) });
       });
