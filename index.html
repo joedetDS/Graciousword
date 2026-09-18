@@ -1622,23 +1622,60 @@ class GraceCardManager {
     catch (err) { console.error('[GraceCard]', err); this.showEmptyState(); }
   }
 
+  /** Parse YYYY-MM-DD as local start/end of day (avoids UTC midnight off-by-one). */
+  dayStartMs(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(String(dateStr).slice(0, 10) + 'T00:00:00');
+    return isNaN(d.getTime()) ? null : d.getTime();
+  }
+  dayEndMs(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(String(dateStr).slice(0, 10) + 'T23:59:59.999');
+    return isNaN(d.getTime()) ? null : d.getTime();
+  }
+
+  /** Card is showable only while active, published, and not past expiry. */
+  isCardCurrentlyValid(c) {
+    if (!c || !c.image_url) return false;
+    const now = Date.now();
+    const pub = this.dayStartMs(c.publish_date);
+    if (pub != null && now < pub) return false;
+    const exp = this.dayEndMs(c.expiry_date);
+    // If expiry_date is set and today is after that day → hide until a new card is uploaded
+    if (exp != null && now > exp) return false;
+    return true;
+  }
+
   async fetchCards() {
     const { data, error } = await this.client
       .from('grace_cards')
-      .select('id, card_type, title, scripture, image_url, publish_date, expiry_date, uploaded_at, created_at')
+      .select('id, card_type, title, scripture, image_url, publish_date, expiry_date, is_active, uploaded_at, created_at')
       .eq('is_active', true)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    const now = Date.now();
-    const valid = (data || []).filter(c => {
-      if (c.publish_date && new Date(c.publish_date).getTime() > now) return false;
-      if (c.expiry_date && new Date(c.expiry_date).getTime() < now) return false;
-      return true;
-    });
+
+    const valid = (data || []).filter(c => this.isCardCurrentlyValid(c));
+    // Newest valid card per type only
     this.cards.main = valid.find(c => c.card_type === 'main') || null;
     this.cards.kids = valid.find(c => c.card_type === 'kids') || null;
-    this.els.tabKids.classList.toggle('hidden', !this.cards.kids);
-    if (!this.cards.kids && this.activeType === 'kids') this.activeType = 'main';
+
+    const hasMain = !!this.cards.main;
+    const hasKids = !!this.cards.kids;
+
+    // Hide Kids tab when no valid kids card
+    if (this.els.tabKids) this.els.tabKids.classList.toggle('hidden', !hasKids);
+    if (this.els.tabMain) this.els.tabMain.classList.toggle('hidden', !hasMain && hasKids);
+
+    if (!hasKids && this.activeType === 'kids') this.activeType = 'main';
+    if (!hasMain && hasKids) this.activeType = 'kids';
+
+    // Both expired / missing → empty state; otherwise render the active tab
+    if (!hasMain && !hasKids) {
+      this.cards.main = null;
+      this.cards.kids = null;
+      this.showEmptyState();
+      return;
+    }
     this.render(this.activeType);
   }
 
@@ -1685,30 +1722,44 @@ class GraceCardManager {
   }
 
   showEmptyState() {
-    this.els.trigger.classList.add('hidden');
-    this.els.emptyState.classList.remove('hidden');
+    if (this.els.trigger) this.els.trigger.classList.add('hidden');
+    if (this.els.emptyState) {
+      this.els.emptyState.classList.remove('hidden');
+      this.els.emptyState.textContent = 'No Grace Card is available right now. Please check back after a new one is published.';
+    }
     clearInterval(this.countdownTimer);
   }
 
   startCountdown(card) {
-    const target = card.expiry_date ? new Date(card.expiry_date) : this.endOfToday();
-    const label = card.expiry_date ? 'Card ends in' : 'New card in';
+    clearInterval(this.countdownTimer);
+    // No expiry set → card stays until replaced; show a soft “live” label
+    if (!card.expiry_date) {
+      if (this.els.countdownText) this.els.countdownText.textContent = 'Live now';
+      return;
+    }
+    const endMs = this.dayEndMs(card.expiry_date);
+    if (endMs == null) {
+      if (this.els.countdownText) this.els.countdownText.textContent = 'Live now';
+      return;
+    }
     const tick = () => {
-      const diff = target.getTime() - Date.now();
+      const diff = endMs - Date.now();
       if (diff <= 0) {
-        this.els.countdownText.textContent = 'Refreshing…';
+        // Expired → hide this card and do not show it again until a new upload
+        if (this.els.countdownText) this.els.countdownText.textContent = 'Expired';
         clearInterval(this.countdownTimer);
-        this.fetchCards().catch(() => {});
+        if (card.card_type === 'main') this.cards.main = null;
+        if (card.card_type === 'kids') this.cards.kids = null;
+        this.fetchCards().catch(() => this.showEmptyState());
         return;
       }
-      this.els.countdownText.textContent = `${label} ${this.formatDuration(diff)}`;
+      if (this.els.countdownText) {
+        this.els.countdownText.textContent = `Card ends in ${this.formatDuration(diff)}`;
+      }
     };
     tick();
-    clearInterval(this.countdownTimer);
     this.countdownTimer = setInterval(tick, 1000);
   }
-
-  endOfToday() { const d = new Date(); d.setHours(23, 59, 59, 999); return d; }
   formatDuration(ms) {
     const t = Math.max(0, Math.floor(ms / 1000));
     const h = String(Math.floor(t / 3600)).padStart(2, '0');
