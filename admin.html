@@ -38,7 +38,25 @@
 </script>
 
 <style>
-  body{ font-family:'Plus Jakarta Sans',sans-serif; background:#FBF8F3; color:#241B33; }
+  :root {
+    --page-bg: #FFFFFF;
+    --card-bg: #FFFFFF;
+    --text: #111111;
+    --text-muted: rgba(17,17,17,0.6);
+    --border: #EEEEEE;
+    --logo-bg: #FFFFFF;
+    --sidebar-bg: #041619;
+  }
+  html.dark {
+    --page-bg: #0A0A0A;
+    --card-bg: #141414;
+    --text: #FFFFFF;
+    --text-muted: rgba(255,255,255,0.65);
+    --border: rgba(255,255,255,0.12);
+    --logo-bg: #0A0A0A;
+    --sidebar-bg: #0A0A0A;
+  }
+  body{ font-family:'Plus Jakarta Sans',sans-serif; background:var(--page-bg); color:var(--text); transition: background-color .3s ease, color .3s ease; }
   h1,h2,h3,.font-display{ font-family:'Plus Jakarta Sans',sans-serif; }
   .brand-gradient{ background:linear-gradient(90deg,#00FFCF,#99FF00); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
@@ -50,18 +68,26 @@
   .btn-primary:hover{ background:#99FF00; }
   .btn-dark{ background:#041619; color:#fff; }
   .btn-dark:hover{ background:#0A2A2F; }
-  .btn-ghost{ background:transparent; border:1px solid rgba(4,22,25,.2); color:#041619; }
-  .btn-ghost:hover{ border-color:#00FFCF; color:#041619; }
+  .btn-ghost{ background:transparent; border:1px solid var(--border); color:var(--text); }
+  .btn-ghost:hover{ border-color:#00FFCF; color:var(--text); }
   .btn-danger{ background:#DD040D; color:#fff; }
   .btn-danger:hover{ background:#a8030a; }
 
-  .field{ width:100%; padding:.7rem 1rem; border-radius:.75rem; border:1px solid rgba(4,22,25,.15); background:#fff; color:#241B33; font-size:.9rem; outline:none; transition:border-color .2s ease, box-shadow .2s ease; }
+  .field{ width:100%; padding:.7rem 1rem; border-radius:.75rem; border:1px solid var(--border); background:var(--card-bg); color:var(--text); font-size:.9rem; outline:none; transition:border-color .2s ease, box-shadow .2s ease; }
   .field:focus{ border-color:#00FFCF; box-shadow:0 0 0 3px rgba(0,255,207,.18); }
-  .field::placeholder{ color:rgba(36,27,51,.4); }
+  .field::placeholder{ color:var(--text-muted); }
 
-  .card{ background:#fff; border-radius:1.25rem; box-shadow:0 6px 24px -12px rgba(4,22,25,.15); border:1px solid rgba(4,22,25,.06); }
+  .card{ background:var(--card-bg); border-radius:1.25rem; box-shadow:0 6px 24px -12px rgba(0,0,0,.08); border:1px solid var(--border); color:var(--text); }
   .panel{ display:none; }
   .panel.active{ display:block; }
+  .list-item{ background:var(--card-bg) !important; border-color:var(--border) !important; }
+  #dashboardView{ background:var(--page-bg) !important; }
+  #sidebar{ background:var(--sidebar-bg) !important; }
+  header.sticky{ background:color-mix(in srgb, var(--card-bg) 90%, transparent) !important; border-color:var(--border) !important; }
+  .text-royal-deep{ color:var(--text) !important; }
+  .text-ink\/60, .text-ink\/50, .text-ink\/40, .text-ink\/70{ color:var(--text-muted) !important; }
+  .bg-lavender{ background:var(--page-bg) !important; }
+  .bg-cream{ background:var(--page-bg) !important; }
 
   .nav-item{ display:flex; align-items:center; gap:.75rem; padding:.7rem 1rem; border-radius:.75rem; font-size:.9rem; font-weight:500; color:rgba(255,255,255,.75); cursor:pointer; transition:background-color .2s ease, color .2s ease; }
   .nav-item:hover{ background:rgba(255,255,255,.06); color:#fff; }
@@ -93,12 +119,12 @@
   /* Universal Pagination Styles matching index.html modal style */
   .sermon-perpage-select{
     font-size:12px; font-weight:600; padding:4px 10px; border-radius:8px;
-    border:1px solid rgba(4,22,25,.18); background:#fff; color:#241B33; outline:none;
+    border:1px solid var(--border); background:var(--card-bg); color:var(--text); outline:none;
   }
   .sermon-perpage-select:focus{ border-color:#00FFCF; }
   .sermon-page-btn{
     min-width:34px; height:34px; padding:0 10px; border-radius:8px;
-    border:1px solid rgba(4,22,25,.15); background:#fff; color:#241B33;
+    border:1px solid var(--border); background:var(--card-bg); color:var(--text);
     font-size:12px; font-weight:600; display:inline-flex; align-items:center; justify-content:center;
     transition:all .18s ease; cursor:pointer;
   }
@@ -157,47 +183,29 @@
       <p class="text-white/60 text-sm mt-2">Gracious Word Global Mission</p>
     </div>
 
-    <!-- Step 1: Email -->
-    <div id="stepEmail" class="card p-7">
-      <h2 class="font-display font-semibold text-lg text-royal-deep">Sign in with email</h2>
-      <p class="text-sm text-ink/60 mt-1">We'll send a 6-digit code to your inbox.</p>
+    <div id="stepLogin" class="card p-7">
+      <h2 class="font-display font-semibold text-lg text-royal-deep">Sign in</h2>
+      <p class="text-sm text-ink/60 mt-1">Use your admin email and password.</p>
 
-      <form id="emailForm" class="mt-5 space-y-4" novalidate>
+      <form id="loginForm" class="mt-5 space-y-4" novalidate>
         <div>
           <label for="loginEmail" class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Email address</label>
-          <input id="loginEmail" type="email" required placeholder="you@example.com" class="field" autocomplete="email" />
+          <input id="loginEmail" name="email" type="email" required placeholder="you@example.com" class="field" autocomplete="username" />
         </div>
-        <p id="emailError" class="hidden text-sm text-red-600"></p>
-        <button type="submit" id="sendOtpBtn" class="btn btn-primary w-full">
-          <i data-feather="send" class="w-4 h-4"></i>
-          Send access code
+        <div>
+          <label for="loginPassword" class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Password</label>
+          <input id="loginPassword" name="password" type="password" required minlength="8" placeholder="••••••••" class="field" autocomplete="current-password" />
+        </div>
+        <p id="loginError" class="hidden text-sm text-red-600"></p>
+        <button type="submit" id="loginBtn" class="btn btn-primary w-full">
+          <i data-feather="log-in" class="w-4 h-4"></i>
+          Sign in
         </button>
       </form>
 
       <p class="mt-5 text-xs text-ink/50 text-center leading-relaxed">
-        Only pre-approved admin emails can sign in. Contact the site owner if you need access.
+        Only pre-approved admin accounts can sign in. Contact the site owner if you need access.
       </p>
-    </div>
-
-    <!-- Step 2: OTP -->
-    <div id="stepOtp" class="card p-7 hidden">
-      <button id="backToEmail" class="text-xs text-ink/60 hover:text-teal flex items-center gap-1 mb-4 transition-colors">
-        <i data-feather="arrow-left" class="w-3.5 h-3.5"></i> Use a different email
-      </button>
-
-      <h2 class="font-display font-semibold text-lg text-royal-deep">Enter your code</h2>
-      <p class="text-sm text-ink/60 mt-1">We sent a 6-digit code to <strong id="otpEmailLabel" class="text-royal-deep">—</strong></p>
-
-      <form id="otpForm" class="mt-5 space-y-4" novalidate>
-        <input id="otpInput" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" class="otp-input" />
-        <p id="otpError" class="hidden text-sm text-red-600"></p>
-        <button type="submit" id="verifyOtpBtn" class="btn btn-primary w-full">
-          <i data-feather="log-in" class="w-4 h-4"></i>
-          Verify &amp; sign in
-        </button>
-      </form>
-
-      <button id="resendOtp" class="mt-4 text-xs text-ink/60 hover:text-teal transition-colors w-full text-center">Didn't get it? Resend code</button>
     </div>
 
     <p class="text-center text-xs text-white/40 mt-8">© <span id="yearLogin"></span> Gracious Word Global Mission</p>
@@ -231,6 +239,7 @@
       <div class="nav-item" data-panel="panelRegistrations"><i data-feather="clipboard" class="w-4 h-4"></i> Registrations</div>
       <div class="nav-item" data-panel="panelMembers"><i data-feather="credit-card" class="w-4 h-4"></i> Members Directory</div>
       <div class="nav-item" data-panel="panelAdmins"><i data-feather="user-plus" class="w-4 h-4"></i> Admin Users</div>
+      <div class="nav-item" data-panel="panelPassword"><i data-feather="lock" class="w-4 h-4"></i> Change Password</div>
     </nav>
 
     <div class="p-3 border-t border-white/10 space-y-1">
@@ -246,14 +255,19 @@
   <!-- Main -->
   <main class="flex-1 min-w-0">
     <!-- Top bar -->
-    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-royal/10 px-5 sm:px-8 py-3 flex items-center justify-between">
+    <header class="sticky top-0 z-40 backdrop-blur border-b px-5 sm:px-8 py-3 flex items-center justify-between" style="background:color-mix(in srgb, var(--card-bg) 90%, transparent); border-color:var(--border)">
       <div class="flex items-center gap-3">
         <button id="sidebarToggle" class="md:hidden btn-ghost btn !p-2 !rounded-lg" aria-label="Toggle sidebar">
           <i data-feather="menu" class="w-5 h-5"></i>
         </button>
         <h1 id="pageTitle" class="font-display font-semibold text-lg text-royal-deep">Grace Cards</h1>
       </div>
-      <span class="text-xs text-ink/50 hidden sm:block" id="lastSaved">—</span>
+      <div class="flex items-center gap-3">
+        <button id="adminThemeToggle" type="button" aria-label="Toggle dark mode" class="btn-ghost btn !p-2 !rounded-lg">
+          <i data-feather="moon" class="w-4 h-4"></i>
+        </button>
+        <span class="text-xs hidden sm:block" id="lastSaved" style="color:var(--text-muted)">—</span>
+      </div>
     </header>
 
     <div class="p-5 sm:p-8 max-w-5xl space-y-8">
@@ -749,15 +763,20 @@
       <section id="panelAdmins" class="panel">
         <div class="card p-6 sm:p-7">
           <h2 class="font-display font-semibold text-lg text-royal-deep">Admin Users</h2>
-          <p class="text-sm text-ink/60 mt-1">Only emails listed here can sign in with an OTP. Only the owner can add or remove admins.</p>
+          <p class="text-sm text-ink/60 mt-1">
+            Only emails listed here can sign in with email and password.
+            New admins receive the default password <code class="text-teal font-semibold">12345678</code> (stored as a bcrypt hash).
+            Only the owner can add or remove admins.
+          </p>
 
           <div id="adminOwnerOnlyWrap">
             <form id="adminForm" class="mt-5 flex flex-col sm:flex-row gap-3">
-              <input id="newAdminEmail" type="email" class="field flex-1" placeholder="new-admin@example.com" required />
+              <input id="newAdminEmail" type="email" class="field flex-1" placeholder="new-admin@example.com" required autocomplete="off" />
               <button type="submit" id="adminGrantBtn" class="btn btn-primary shrink-0">
                 <i data-feather="user-plus" class="w-4 h-4"></i> Grant access
               </button>
             </form>
+            <p class="text-[11px] text-ink/50 mt-2">Default password is assigned automatically and hashed with bcrypt (pgcrypto).</p>
             <p id="adminError" class="hidden text-sm text-red-600 mt-2"></p>
           </div>
           <p id="adminAccessDenied" class="hidden mt-5 text-sm text-ink/70 bg-lavender rounded-xl px-4 py-3 border border-royal/10">
@@ -768,6 +787,34 @@
           </p>
 
           <div id="adminList" class="mt-5 space-y-2"></div>
+        </div>
+      </section>
+
+      <!-- ==================== CHANGE PASSWORD ==================== -->
+      <section id="panelPassword" class="panel">
+        <div class="card p-6 sm:p-7 max-w-lg">
+          <h2 class="font-display font-semibold text-lg text-royal-deep">Change Password</h2>
+          <p class="text-sm text-ink/60 mt-1">Update the password for your signed-in account. Minimum 8 characters.</p>
+
+          <form id="changePasswordForm" class="mt-5 space-y-4" autocomplete="on">
+            <div>
+              <label for="oldPassword" class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Old password</label>
+              <input id="oldPassword" name="oldPassword" type="password" required minlength="8" class="field" autocomplete="current-password" />
+            </div>
+            <div>
+              <label for="newPassword" class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">New password</label>
+              <input id="newPassword" name="newPassword" type="password" required minlength="8" class="field" autocomplete="new-password" />
+            </div>
+            <div>
+              <label for="confirmPassword" class="block text-xs font-semibold uppercase tracking-wide text-ink/60 mb-1.5">Confirm new password</label>
+              <input id="confirmPassword" name="confirmPassword" type="password" required minlength="8" class="field" autocomplete="new-password" />
+            </div>
+            <p id="passwordError" class="hidden text-sm text-red-600"></p>
+            <p id="passwordSuccess" class="hidden text-sm text-teal font-medium"></p>
+            <button type="submit" id="changePasswordBtn" class="btn btn-primary">
+              <i data-feather="lock" class="w-4 h-4"></i> Update password
+            </button>
+          </form>
         </div>
       </section>
 
@@ -1146,100 +1193,128 @@ try {
 } catch (e) { console.error('[admin] supabase init', e); }
 
 /* =========================================================================
-   AUTH FLOW (OTP passwordless)
+   AUTH FLOW (Email + Password)
+   Passwords are bcrypt-hashed by Supabase Auth (pgcrypto / GoTrue).
    ========================================================================= */
-let pendingEmail = '';
+const DEFAULT_ADMIN_PASSWORD = '12345678';
 
-function showStep(which) {
-  $('stepEmail').classList.toggle('hidden', which !== 'email');
-  $('stepOtp').classList.toggle('hidden', which !== 'otp');
-}
-
-async function sendOtp(email) {
-  if (!sb) throw new Error('Supabase not configured.');
-  if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('Please enter a valid email.');
-  const { error } = await sb.auth.signInWithOtp({
-    email,
-    options: { shouldCreateUser: true, emailRedirectTo: window.location.origin + '/admin.html' },
-  });
-  if (error) throw error;
-}
-
-async function verifyOtp(email, token) {
-  if (!sb) throw new Error('Supabase not configured.');
-  const clean = token.replace(/\s+/g, '');
-  if (clean.length < 6) throw new Error('Enter the 6-digit code.');
-
-  const { data, error } = await sb.auth.verifyOtp({ email, token: clean, type: 'email' });
-  if (error) throw error;
-
+async function ensureAdminAccess(email) {
+  const normalized = (email || '').toLowerCase().trim();
   const { data: admin, error: adminErr } = await sb
     .from('admin_users')
     .select('email')
-    .eq('email', email.toLowerCase())
+    .eq('email', normalized)
     .maybeSingle();
+  if (adminErr) {
+    await sb.auth.signOut();
+    throw new Error('Could not verify admin access.');
+  }
+  if (!admin) {
+    await sb.auth.signOut();
+    throw new Error('This email is not authorised for admin access.');
+  }
+  return true;
+}
 
-  if (adminErr) { await sb.auth.signOut(); throw new Error('Could not verify admin access.'); }
-  if (!admin)   { await sb.auth.signOut(); throw new Error('This email is not authorised for admin access.'); }
+async function signInWithPassword(email, password) {
+  if (!sb) throw new Error('Supabase not configured.');
+  if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('Please enter a valid email.');
+  if (!password || password.length < 8) throw new Error('Password must be at least 8 characters.');
 
+  const { data, error } = await sb.auth.signInWithPassword({
+    email: email.toLowerCase().trim(),
+    password,
+  });
+  if (error) {
+    if (/invalid login credentials/i.test(error.message)) {
+      throw new Error('Invalid email or password.');
+    }
+    throw error;
+  }
+
+  await ensureAdminAccess(data.user.email);
   return data.user;
 }
 
-on('emailForm', 'submit', async (e) => {
+on('loginForm', 'submit', async (e) => {
   e.preventDefault();
   const email = $('loginEmail').value.trim().toLowerCase();
-  const errEl = $('emailError');
+  const password = $('loginPassword').value;
+  const errEl = $('loginError');
   errEl.classList.add('hidden');
-  $('sendOtpBtn').disabled = true;
+  $('loginBtn').disabled = true;
 
   try {
-    await sendOtp(email);
-    pendingEmail = email;
-    $('otpEmailLabel').textContent = email;
-    $('otpInput').value = '';
-    showStep('otp');
-    setTimeout(() => $('otpInput').focus(), 100);
-    toast('Code sent — check your inbox');
-  } catch (err) {
-    errEl.textContent = err.message || 'Could not send access code.';
-    errEl.classList.remove('hidden');
-  } finally {
-    $('sendOtpBtn').disabled = false;
-  }
-});
-
-on('backToEmail', 'click', () => showStep('email'));
-on('resendOtp', 'click', async () => {
-  try {
-    await sendOtp(pendingEmail);
-    toast('New code sent');
-  } catch (err) {
-    toast(err.message || 'Could not resend', true);
-  }
-});
-
-on('otpForm', 'submit', async (e) => {
-  e.preventDefault();
-  const token = $('otpInput').value.trim();
-  const errEl = $('otpError');
-  errEl.classList.add('hidden');
-  $('verifyOtpBtn').disabled = true;
-
-  try {
-    await verifyOtp(pendingEmail, token);
+    await signInWithPassword(email, password);
     toast('Signed in successfully');
     await enterDashboard();
   } catch (err) {
-    errEl.textContent = err.message || 'Verification failed.';
+    errEl.textContent = err.message || 'Sign-in failed.';
     errEl.classList.remove('hidden');
   } finally {
-    $('verifyOtpBtn').disabled = false;
+    $('loginBtn').disabled = false;
   }
 });
 
 on('signOutBtn', 'click', async () => {
   if (sb) await sb.auth.signOut();
   window.location.reload();
+});
+
+/* Change password (current user) */
+on('changePasswordForm', 'submit', async (e) => {
+  e.preventDefault();
+  const errEl = $('passwordError');
+  const okEl = $('passwordSuccess');
+  errEl.classList.add('hidden');
+  okEl.classList.add('hidden');
+
+  const oldPassword = $('oldPassword').value;
+  const newPassword = $('newPassword').value;
+  const confirmPassword = $('confirmPassword').value;
+
+  if (newPassword.length < 8) {
+    errEl.textContent = 'New password must be at least 8 characters.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  if (newPassword !== confirmPassword) {
+    errEl.textContent = 'New password and confirmation do not match.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  if (oldPassword === newPassword) {
+    errEl.textContent = 'New password must be different from the old password.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  const btn = $('changePasswordBtn');
+  btn.disabled = true;
+  try {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user || !user.email) throw new Error('You must be signed in to change your password.');
+
+    // Verify old password by re-authenticating
+    const { error: reauthErr } = await sb.auth.signInWithPassword({
+      email: user.email,
+      password: oldPassword,
+    });
+    if (reauthErr) throw new Error('Old password is incorrect.');
+
+    const { error: updateErr } = await sb.auth.updateUser({ password: newPassword });
+    if (updateErr) throw updateErr;
+
+    $('changePasswordForm').reset();
+    okEl.textContent = 'Password updated successfully.';
+    okEl.classList.remove('hidden');
+    toast('Password updated');
+  } catch (err) {
+    errEl.textContent = err.message || 'Could not update password.';
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 /* =========================================================================
@@ -1341,6 +1416,24 @@ async function enterDashboard() {
     await sb.auth.signOut();
   }
   $('appLoader').classList.add('done');
+})();
+
+/* Theme (synced via gwgm_dark_mode) */
+(function initAdminTheme() {
+  function applyTheme(isDark) {
+    document.documentElement.classList.toggle('dark', isDark);
+    const icon = document.querySelector('#adminThemeToggle i');
+    if (icon) icon.setAttribute('data-feather', isDark ? 'sun' : 'moon');
+    if (typeof feather !== 'undefined') feather.replace();
+  }
+  const stored = localStorage.getItem('gwgm_dark_mode');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(stored !== null ? stored === 'true' : prefersDark);
+  document.getElementById('adminThemeToggle')?.addEventListener('click', () => {
+    const next = !document.documentElement.classList.contains('dark');
+    applyTheme(next);
+    localStorage.setItem('gwgm_dark_mode', String(next));
+  });
 })();
 
 // Sidebar navigation tabs
@@ -2837,19 +2930,34 @@ on('adminForm', 'submit', async (e) => {
     return;
   }
 
-  const { data: { user } } = await sb.auth.getUser();
-  const { error } = await sb.from('admin_users').insert({ email, added_by: user ? user.email : null });
-  if (error) {
+  const btn = $('adminGrantBtn');
+  if (btn) btn.disabled = true;
+  try {
+    // SECURITY DEFINER RPC: creates auth.users row with bcrypt(hash of "12345678")
+    // and inserts into admin_users. See gwgm_admin_auth.sql.
+    const { error } = await sb.rpc('create_admin_with_default_password', { p_email: email });
+    if (error) {
+      const msg = error.message || 'Could not add admin.';
+      if (errEl) {
+        errEl.textContent = /already|duplicate|exists/i.test(msg)
+          ? 'That email is already an admin or auth user.'
+          : msg;
+        errEl.classList.remove('hidden');
+      }
+      return;
+    }
+
+    $('newAdminEmail').value = '';
+    toast('Admin created with default password');
+    loadAdmins();
+  } catch (err) {
     if (errEl) {
-      errEl.textContent = error.code === '23505' ? 'That email is already an admin.' : (error.message || 'Could not add admin.');
+      errEl.textContent = err.message || 'Could not add admin.';
       errEl.classList.remove('hidden');
     }
-    return;
+  } finally {
+    if (btn) btn.disabled = false;
   }
-
-  $('newAdminEmail').value = '';
-  toast('Admin access granted');
-  loadAdmins();
 });
 </script>
 
