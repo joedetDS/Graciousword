@@ -48,13 +48,36 @@
     --royal:#041619; --teal:#00FFCF; --teal-light:#66FFE1;
     --lime:#99FF00; --lime-light:#C0FF66; --crimson:#DD040D;
     --crimson-deep:#8B0209; --crimson-soft:#FF5A61;
+    /* Theme tokens */
+    --page-bg: #FFFFFF;
+    --card-bg: #FFFFFF;
+    --text: #111111;
+    --text-muted: rgba(17,17,17,0.65);
+    --border: #EEEEEE;
+    --logo-bg: #FFFFFF;
+    --nav-bg: #FFFFFF;
+    --nav-text: #111111;
+    --section-alt: #F8F8F8;
+  }
+  html.dark {
+    --page-bg: #0A0A0A;
+    --card-bg: #141414;
+    --text: #FFFFFF;
+    --text-muted: rgba(255,255,255,0.65);
+    --border: rgba(255,255,255,0.12);
+    --logo-bg: #0A0A0A;
+    --nav-bg: #0A0A0A;
+    --nav-text: #FFFFFF;
+    --section-alt: #111111;
   }
 
   html { scroll-padding-top: 5.5rem; }
   @media (min-width:768px){ html{ scroll-behavior:smooth; } }
 
   body{
-    font-family:'Plus Jakarta Sans',sans-serif; color:#241B33; background-color:#FBF8F3;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    color: var(--text);
+    background-color: var(--page-bg);
     -webkit-font-smoothing:antialiased;
   }
   body.no-scroll{ overflow:hidden !important; }
@@ -85,9 +108,37 @@
     .ministry-card, .hero-float, .hero-track{ animation:none !important; transition:none !important; }
   }
 
-  /* ---------- Nav ---------- */
-  #navbar{ background-color: rgba(4,22,25,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
-  #navbar.scrolled{ box-shadow:0 6px 24px -8px rgba(4,22,25,.45); background-color: rgba(4,22,25,.97); }
+  /* ---------- Nav — matches page background ---------- */
+  #navbar{
+    background-color: var(--nav-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  #navbar.scrolled{
+    box-shadow: 0 6px 24px -8px rgba(0,0,0,.12);
+  }
+  html.dark #navbar.scrolled{ box-shadow: 0 6px 24px -8px rgba(0,0,0,.55); }
+
+  /* Active nav link: brand border-top */
+  #navbar .nav-link{
+    position: relative;
+    color: var(--nav-text);
+    opacity: 0.85;
+    transition: color .2s ease, opacity .2s ease;
+    padding-top: 2px;
+  }
+  #navbar .nav-link:hover{ opacity: 1; color: var(--teal); }
+  #navbar .nav-link.active{
+    opacity: 1;
+    border-top: 2.5px solid var(--teal);
+    color: var(--nav-text);
+  }
+  #navbar .nav-brand-text{ color: var(--nav-text); }
+  #navbar .nav-icon-btn{ color: var(--nav-text); opacity: 0.8; }
+  #navbar .nav-icon-btn:hover{ color: var(--lime); opacity: 1; }
+  #mobileMenu{ background-color: var(--nav-bg); border-top: 1px solid var(--border); }
+  #mobileMenu a{ color: var(--nav-text); }
 
   a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
     outline:2px solid var(--lime); outline-offset:3px; border-radius:6px;
@@ -95,7 +146,8 @@
 
   /* ---------- Global hover polish ---------- */
   .lift-hover{ transition: transform .35s ease, box-shadow .35s ease, border-color .3s ease; }
-  .lift-hover:hover{ transform:translateY(-8px); box-shadow:0 20px 40px -12px rgba(4,22,25,.28); }
+  .lift-hover:hover{ transform:translateY(-8px); box-shadow:0 20px 40px -12px rgba(0,0,0,.18); }
+  html.dark .lift-hover:hover{ box-shadow:0 20px 40px -12px rgba(0,0,0,.5); }
 
   .btn-hover{ transition: transform .2s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease; }
   .btn-hover:hover{ transform:translateY(-2px); }
@@ -128,17 +180,29 @@
   @keyframes gc-pulse-dot{ 0%,100%{opacity:1} 50%{opacity:.35} }
   .gc-live-dot{ animation:gc-pulse-dot 1.6s ease-in-out infinite; }
 
-  /* ---------- Dark mode safety net ---------- */
-  html.dark body{ color:#E3F4F1; }
-  html.dark .text-ink, html.dark [class*="text-ink/"]{ color:#CFE7E3 !important; }
+  /* ---------- Theme safety net (override Tailwind dark: remnants) ---------- */
+  html.dark body{ color: var(--text); background-color: var(--page-bg); }
+  .text-ink, [class*="text-ink/"]{ color: var(--text) !important; }
+  html.dark .text-ink, html.dark [class*="text-ink/"]{ color: var(--text) !important; }
+  .bg-cream, .bg-lavender{ background-color: var(--page-bg) !important; }
+  html.dark .bg-cream, html.dark .bg-lavender{ background-color: var(--page-bg) !important; }
+  .bg-white, .dark\:bg-\[\#10191c\]{ background-color: var(--card-bg) !important; }
+  html.dark .bg-white, html.dark .dark\:bg-\[\#10191c\]{ background-color: var(--card-bg) !important; }
+  .text-royal-deep, .dark\:text-\[\#EAFBF7\]{ color: var(--text) !important; }
+  html.dark .text-royal-deep, html.dark .dark\:text-\[\#EAFBF7\]{ color: var(--text) !important; }
   html.dark .bg-royal\/10{ background-color:rgba(255,255,255,.08) !important; }
   html.dark .bg-teal-soft{ background-color:rgba(0,255,207,.08) !important; }
   html.dark input, html.dark select, html.dark textarea{
-    background-color:#10191c; color:#E3F4F1; border-color:rgba(255,255,255,.15);
+    background-color: #141414; color: #FFFFFF; border-color: rgba(255,255,255,.15);
   }
-  html.dark ::placeholder{ color:rgba(227,244,241,.4); }
+  html.dark ::placeholder{ color:rgba(255,255,255,.4); }
+  input, select, textarea{
+    background-color: #FFFFFF; color: #111111; border-color: #EEEEEE;
+  }
 
-  body, .bg-cream, .bg-lavender, .bg-white, .bg-royal-deep{ transition: background-color .3s ease, color .3s ease; }
+  body, .bg-cream, .bg-lavender, .bg-white, .bg-royal-deep, #navbar, #mobileMenu{
+    transition: background-color .3s ease, color .3s ease, border-color .3s ease;
+  }
 
   /* ---------- Scroll progress ---------- */
   #scrollProgress{
@@ -168,7 +232,8 @@
     transform:scale(.9) translateY(8px); opacity:0; pointer-events:none;
     transition:transform .25s ease, opacity .25s ease;
   }
-  html.dark #contactPanel{ background:#10191c; }
+  html.dark #contactPanel{ background:#141414; color:#FFFFFF; }
+  #contactPanel{ background:#FFFFFF; color:#111111; }
   #contactPanel.open{ transform:scale(1) translateY(0); opacity:1; pointer-events:auto; }
 
   /* ---------- Cookie banner ---------- */
@@ -212,6 +277,7 @@
 
   /* ---------- Countdown units ---------- */
   .countdown-unit{ background:rgba(4,22,25,.06); border-radius:.75rem; padding:.6rem .4rem; min-width:58px; text-align:center; }
+  .countdown-unit{ background:rgba(0,0,0,.04); }
   html.dark .countdown-unit{ background:rgba(255,255,255,.08); }
 
   /* ---------- Toast ---------- */
@@ -382,15 +448,15 @@
      COPY BUTTONS (darker, readable in light mode)
      ========================================================= */
   .copy-btn{
-    color: #0A2A2F !important;
-    border-color: rgba(4,22,25,.30) !important;
-    background: rgba(4,22,25,.04);
+    color: #111111 !important;
+    border-color: #EEEEEE !important;
+    background: rgba(0,0,0,.04);
     transition: background-color .2s ease, color .2s ease, border-color .2s ease;
   }
   .copy-btn:hover{ background: var(--teal); color:#041619 !important; border-color: var(--teal) !important; }
   html.dark .copy-btn{
-    color: #DFFFF6 !important;
-    border-color: rgba(255,255,255,.35) !important;
+    color: #FFFFFF !important;
+    border-color: rgba(255,255,255,.25) !important;
     background: rgba(255,255,255,.06);
   }
   html.dark .copy-btn:hover{ background: var(--teal); color:#041619 !important; }
@@ -401,19 +467,19 @@
   .sermon-page-btn{
     min-width:38px; height:38px; border-radius:9999px; font-size:.8rem; font-weight:600;
     display:inline-flex; align-items:center; justify-content:center;
-    border:1px solid rgba(4,22,25,.15); color:#241B33; background:#fff;
+    border:1px solid #EEEEEE; color:#111111; background:#FFFFFF;
     transition: all .2s ease;
   }
-  html.dark .sermon-page-btn{ background:#10191c; color:#E3F4F1; border-color:rgba(255,255,255,.15); }
+  html.dark .sermon-page-btn{ background:#141414; color:#FFFFFF; border-color:rgba(255,255,255,.15); }
   .sermon-page-btn:hover:not(:disabled){ border-color:var(--teal); color:var(--teal); }
   .sermon-page-btn.active{ background:var(--teal); border-color:var(--teal); color:#041619; }
   .sermon-page-btn:disabled{ opacity:.35; cursor:not-allowed; }
 
   .sermon-perpage-select{
-    border:1px solid rgba(4,22,25,.15); color:#241B33; background:#fff;
+    border:1px solid #EEEEEE; color:#111111; background:#FFFFFF;
     border-radius:9999px; padding:.35rem .75rem; font-size:.8rem; font-weight:600;
   }
-  html.dark .sermon-perpage-select{ background:#10191c; color:#E3F4F1; border-color:rgba(255,255,255,.15); }
+  html.dark .sermon-perpage-select{ background:#141414; color:#FFFFFF; border-color:rgba(255,255,255,.15); }
 
   /* =========================================================
      GIVING GRID — center when 1 card, animate shift as more arrive
@@ -520,7 +586,7 @@
 </style>
 </head>
 
-<body class="bg-cream dark:bg-[#0B1416] text-ink antialiased">
+<body class="antialiased">
 
 <a href="#hero" class="skip-link">Skip to content</a>
 
@@ -537,22 +603,22 @@
   <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 md:h-20">
     <a href="#hero" class="flex items-center gap-3 shrink-0">
       <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission Logo"
-           class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]" />
-      <span class="text-white font-display font-semibold tracking-wide text-sm sm:text-base">
+           class="w-9 h-9 rounded-full object-contain p-1" style="background:var(--logo-bg)" />
+      <span class="nav-brand-text font-display font-semibold tracking-wide text-sm sm:text-base">
         Gracious Word <span class="brand-gradient">Global Mission</span>
       </span>
     </a>
 
-    <div class="hidden md:flex items-center gap-6 text-sm text-white/85 font-medium">
-      <a href="#welcome" class="hover:text-lime transition-colors">Home</a>
-      <a href="#sermons" class="hover:text-lime transition-colors">Sermons</a>
-      <a href="#events" class="hover:text-lime transition-colors">Events</a>
-      <a href="#giving" class="hover:text-lime transition-colors">Giving</a>
-      <a href="#branches" class="hover:text-lime transition-colors">Branches</a>
-      <button id="searchBtn" aria-label="Search the site" class="btn-hover text-white/80 hover:text-lime">
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+      <a href="#welcome" class="nav-link" data-section="welcome">Home</a>
+      <a href="#sermons" class="nav-link" data-section="sermons">Sermons</a>
+      <a href="#events" class="nav-link" data-section="events">Events</a>
+      <a href="#giving" class="nav-link" data-section="giving">Giving</a>
+      <a href="#branches" class="nav-link" data-section="branches">Branches</a>
+      <button id="searchBtn" aria-label="Search the site" class="btn-hover nav-icon-btn">
         <i data-feather="search" class="w-4 h-4"></i>
       </button>
-      <button id="darkModeToggle" aria-label="Toggle dark mode" class="btn-hover text-white/80 hover:text-lime">
+      <button id="darkModeToggle" aria-label="Toggle dark mode" class="btn-hover nav-icon-btn">
         <i data-feather="moon" class="w-4 h-4"></i>
       </button>
       <a href="id_app.html" class="btn-hover ml-1 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2 rounded-full shadow-md">
@@ -561,23 +627,23 @@
     </div>
 
     <div class="flex items-center gap-4 md:hidden">
-      <button id="searchBtnMobile" aria-label="Search the site" class="btn-hover text-white"><i data-feather="search" class="w-6 h-6"></i></button>
-      <button id="darkModeToggleMobile" aria-label="Toggle dark mode" class="btn-hover text-white"><i data-feather="moon" class="w-6 h-6"></i></button>
-      <button id="menuBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu" class="btn-hover text-white">
+      <button id="searchBtnMobile" aria-label="Search the site" class="btn-hover nav-icon-btn"><i data-feather="search" class="w-6 h-6"></i></button>
+      <button id="darkModeToggleMobile" aria-label="Toggle dark mode" class="btn-hover nav-icon-btn"><i data-feather="moon" class="w-6 h-6"></i></button>
+      <button id="menuBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu" class="btn-hover nav-icon-btn">
         <i data-feather="menu" class="w-7 h-7"></i>
       </button>
     </div>
   </div>
 
-  <div id="mobileMenu" class="md:hidden max-h-0 bg-royal-deep/98 px-5">
-    <div class="flex flex-col gap-4 py-5 text-white/90 font-medium">
-      <a href="#welcome" class="mobile-link hover:text-lime transition-colors">Home</a>
-      <a href="#sermons" class="mobile-link hover:text-lime transition-colors">Sermons</a>
-      <a href="#events" class="mobile-link hover:text-lime transition-colors">Events</a>
-      <a href="#giving" class="mobile-link hover:text-lime transition-colors">Giving</a>
-      <a href="#branches" class="mobile-link hover:text-lime transition-colors">Branches</a>
-      <a href="#faq" class="mobile-link hover:text-lime transition-colors">FAQ</a>
-      <a href="id_app.html" class="mobile-link text-lime font-semibold">Register Now →</a>
+  <div id="mobileMenu" class="md:hidden max-h-0 px-5">
+    <div class="flex flex-col gap-4 py-5 font-medium">
+      <a href="#welcome" class="mobile-link nav-link" data-section="welcome">Home</a>
+      <a href="#sermons" class="mobile-link nav-link" data-section="sermons">Sermons</a>
+      <a href="#events" class="mobile-link nav-link" data-section="events">Events</a>
+      <a href="#giving" class="mobile-link nav-link" data-section="giving">Giving</a>
+      <a href="#branches" class="mobile-link nav-link" data-section="branches">Branches</a>
+      <a href="#faq" class="mobile-link nav-link" data-section="faq">FAQ</a>
+      <a href="id_app.html" class="mobile-link text-teal font-semibold">Register Now →</a>
     </div>
   </div>
 </nav>
@@ -1214,6 +1280,21 @@ function toggleDarkMode() {
 }
 document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
 document.getElementById('darkModeToggleMobile').addEventListener('click', toggleDarkMode);
+
+/* Active nav highlight via IntersectionObserver */
+(function setupActiveNav() {
+  const links = document.querySelectorAll('#navbar .nav-link[data-section]');
+  const sections = Array.from(links).map(l => document.getElementById(l.dataset.section)).filter(Boolean);
+  if (!sections.length) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const id = entry.target.id;
+      links.forEach(l => l.classList.toggle('active', l.dataset.section === id));
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+  sections.forEach(s => io.observe(s));
+})();
 
 /* =========================================================================
    4. NAV / MOBILE MENU
