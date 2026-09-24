@@ -29,15 +29,15 @@
 
 <script>
   tailwind.config = {
+    darkMode: 'class',
     theme: {
       extend: {
         colors: {
-          /* Teal base #00FFCF, Lime accent #99FF00 — dark brand keeps contrast */
           brand: '#041619',
           brand2: '#0A2A2C',
           accent: '#00FFCF',
           accentsoft: '#99FF00',
-          paper: '#F0FFFB',
+          paper: '#FFFFFF',
           slate: '#3D5A5C'
         },
         fontFamily: {
@@ -52,21 +52,44 @@
 </script>
 
 <style>
-  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  :root {
+    --page-bg: #FFFFFF;
+    --card-bg: #FFFFFF;
+    --text: #111111;
+    --text-muted: rgba(17,17,17,0.65);
+    --border: #EEEEEE;
+    --logo-bg: #FFFFFF;
+    --heading: #111111;
+  }
+  html.dark {
+    --page-bg: #0A0A0A;
+    --card-bg: #141414;
+    --text: #FFFFFF;
+    --text-muted: rgba(255,255,255,0.65);
+    --border: rgba(255,255,255,0.12);
+    --logo-bg: #0A0A0A;
+    --heading: #FFFFFF;
+  }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--page-bg);
+    color: var(--text);
+    transition: background-color .3s ease, color .3s ease;
+  }
   .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
   .field-focus:focus-within { box-shadow: 0 0 0 3px rgba(0,255,207,0.28); border-color: #00FFCF; }
   .photo-drop { transition: border-color .2s ease, background-color .2s ease; }
   .photo-drop.dragover { border-color: #00FFCF; background-color: rgba(0,255,207,0.10); }
   ::selection { background: #99FF00; color: #041619; }
 
-  /* Soft animated background orbs (teal + lime mix, low opacity) */
+  /* Soft animated background orbs */
   .bg-orbs {
     position: fixed;
     inset: 0;
     z-index: -10;
     overflow: hidden;
     pointer-events: none;
-    background: #041619;
+    background: var(--page-bg);
   }
   .bg-orbs::before,
   .bg-orbs::after {
@@ -74,9 +97,11 @@
     position: absolute;
     border-radius: 50%;
     filter: blur(40px);
-    opacity: 0.22;
+    opacity: 0.12;
     animation: orbFloat 18s ease-in-out infinite;
   }
+  html.dark .bg-orbs::before,
+  html.dark .bg-orbs::after { opacity: 0.22; }
   .bg-orbs::before {
     width: min(55vw, 420px);
     height: min(55vw, 420px);
@@ -98,6 +123,31 @@
     0%, 100% { transform: translate(0, 0) scale(1); }
     33% { transform: translate(18px, -22px) scale(1.06); }
     66% { transform: translate(-14px, 16px) scale(0.96); }
+  }
+
+  /* Theme-aware text / form helpers */
+  label, .text-slate, [class*="text-slate"] { color: var(--text-muted) !important; }
+  .text-brand, [class*="text-brand"] { color: var(--text) !important; }
+  input, select, textarea {
+    background: var(--card-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+  }
+  .bg-brand\/5, [class*="bg-brand"] { background-color: rgba(0,0,0,0.04) !important; }
+  html.dark .bg-brand\/5, html.dark [class*="bg-brand"] { background-color: rgba(255,255,255,0.06) !important; }
+  .border-brand\/15, [class*="border-brand"] { border-color: var(--border) !important; }
+  #cardView header button, #cardView .text-accentsoft { color: var(--text) !important; }
+  #emptyState { background: var(--card-bg) !important; border-color: var(--border) !important; }
+  #emptyState h2, #emptyState p { color: var(--text) !important; }
+  #emptyState p { color: var(--text-muted) !important; }
+  html.dark #submitBtn {
+    color: var(--text);
+    background: var(--card-bg);
+    border: 1px solid rgba(0,255,207,0.4);
+  }
+  html.dark #submitBtn:hover {
+    border-color: #99FF00;
+    background-color: rgba(0,255,207,0.10);
   }
 
   .guilloche {
@@ -135,30 +185,40 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
-<body class="bg-brand min-h-screen text-slate-800">
+<body class="min-h-screen">
 
 <div class="bg-orbs" aria-hidden="true"></div>
+
+<!-- Theme toggle -->
+<button id="themeToggle" type="button" aria-label="Toggle dark mode"
+  class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full border flex items-center justify-center transition-colors"
+  style="background:var(--card-bg); border-color:var(--border); color:var(--text)">
+  <i data-feather="moon" class="w-4 h-4"></i>
+</button>
 
 <!-- ============================= REGISTRATION VIEW ============================= -->
 <div id="registrationView" class="view-fade">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
 
     <header class="text-center mb-8">
-      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-white/10 border border-accent/40 flex items-center justify-center overflow-hidden p-2 mb-4 shadow-lg"><img src="logo.png" alt="Graciousword Global Missions Logo" class="w-full h-full object-cover" /></div>
-      <h1 class="font-display text-2xl sm:text-3xl text-white tracking-tight">Graciousword Global Missions</h1>
-      <p class="text-accentsoft/80 text-sm mt-1 tracking-[0.2em] uppercase">Member Registration</p>
+      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-teal/20 border border-teal/40 flex items-center justify-center overflow-hidden p-2 mb-4">
+        <img src="logo.png" alt="Gracious Word Global Mission Logo" class="w-full h-full object-contain" width="80" height="80" decoding="async" />
+      </div>
+      <h1 class="font-display text-2xl sm:text-3xl tracking-tight" style="color:var(--heading)">Gracious Word Global Mission</h1>
+      <p class="text-sm mt-1 tracking-[0.2em] uppercase" style="color:var(--text-muted)">Member Registration</p>
     </header>
 
-    <main class="bg-paper rounded-2xl shadow-2xl p-5 sm:p-8 border border-white/10">
+    <main class="rounded-2xl shadow-2xl p-5 sm:p-8 border" style="background:var(--card-bg); border-color:var(--border); color:var(--text)">
       <form id="registrationForm" novalidate>
         <div class="flex flex-col sm:flex-row gap-6 sm:gap-8">
 
           <!-- Photo upload (max 300 KB; prefers ≤ 200 KB) -->
           <div class="flex flex-col items-center gap-3 shrink-0">
             <label for="photoInput" class="sr-only">Upload profile photo</label>
-            <div id="photoDrop" class="photo-drop w-32 h-32 sm:w-36 sm:h-36 rounded-xl border-2 border-dashed border-brand/20 bg-white flex items-center justify-center overflow-hidden cursor-pointer relative">
+            <div id="photoDrop" class="photo-drop w-32 h-32 sm:w-36 sm:h-36 rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden cursor-pointer relative"
+                 style="border-color:var(--border); background:var(--card-bg)">
               <img id="photoPreview" src="" alt="" class="w-full h-full object-cover hidden" />
-              <div id="photoPlaceholder" class="flex flex-col items-center text-slate gap-1 px-2 text-center">
+              <div id="photoPlaceholder" class="flex flex-col items-center gap-1 px-2 text-center" style="color:var(--text-muted)">
                 <i data-feather="camera" class="w-6 h-6"></i>
                 <span class="text-xs">Add photo</span>
               </div>
@@ -295,14 +355,15 @@
 
         <div class="mt-7 flex flex-wrap justify-center items-center gap-3">
           <button type="submit" id="submitBtn"
-            class="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand2 text-white font-medium px-5 py-3 rounded-lg transition-all duration-200 hover:shadow-lg active:scale-[0.98] border border-accent/30">
-            <i data-feather="credit-card" class="w-4 h-4 text-accent"></i>
+            class="btn-hover inline-flex items-center justify-center gap-2 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2.5 rounded-full shadow-md">
+            <i data-feather="credit-card" class="w-4 h-4"></i>
             Generate my ID card
           </button>
 
           <a href="index.html"
              id="backHomeBtn"
-             class="inline-flex items-center justify-center gap-2 border border-accent/40 hover:border-accentsoft hover:bg-accent/10 text-black font-medium px-5 py-3 rounded-lg transition-all duration-200">
+             class="btn-hover inline-flex items-center justify-center gap-2 border border-teal/40 hover:border-lime hover:bg-teal/10 font-semibold px-5 py-2.5 rounded-full shadow-md transition-all duration-200"
+             style="color:var(--text); background:var(--card-bg)">
              <i data-feather="home" class="w-4 h-4"></i>
              Back to Home
           </a>
@@ -310,7 +371,7 @@
       </form>
     </main>
 
-    <p class="text-center text-white/40 text-xs mt-6">
+    <p class="text-center text-xs mt-6" style="color:var(--text-muted)">
       Your details are stored securely in Supabase and cached on this device for offline card viewing.
     </p>
   </div>
@@ -321,26 +382,28 @@
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-14">
 
     <header class="no-print flex items-center justify-between mb-8 sm:mb-10">
-      <button id="backBtn" class="btn-hover inline-flex items-center gap-2 text-accentsoft/90 hover:text-accentsoft text-sm font-medium">
+      <button id="backBtn" class="btn-hover inline-flex items-center gap-2 text-sm font-medium" style="color:var(--text)">
         <i data-feather="arrow-left" class="w-4 h-4"></i>
         <span class="hidden sm:inline">Back to registration</span>
         <span class="sm:hidden">Back</span>
       </button>
       <div class="text-center flex flex-col items-center">
-        <div class="w-12 h-12 rounded-full bg-white/10 border border-accent/40 flex items-center justify-center overflow-hidden p-1.5 mb-1.5 shadow-md"><img src="logo.png" alt="Graciousword Global Missions Logo" class="w-full h-full object-cover" /></div>
-        <h1 class="sr-only">Graciousword Global Missions</h1>
-        <p class="text-accentsoft/70 text-[10px] tracking-[0.25em] uppercase">Digital Membership</p>
+        <div class="w-12 h-12 rounded-full bg-teal/20 border border-teal/40 flex items-center justify-center overflow-hidden p-1.5 mb-1.5">
+          <img src="logo.png" alt="Gracious Word Global Mission Logo" class="w-full h-full object-contain" width="48" height="48" decoding="async" />
+        </div>
+        <h1 class="sr-only">Gracious Word Global Mission</h1>
+        <p class="text-[10px] tracking-[0.25em] uppercase" style="color:var(--text-muted)">Digital Membership</p>
       </div>
       <div class="w-[74px] sm:w-[168px]"></div>
     </header>
 
-    <section id="emptyState" class="hidden max-w-md mx-auto text-center bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur">
-      <div class="empty-state-icon inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 mb-4">
-        <i data-feather="user-x" class="w-6 h-6 text-accentsoft"></i>
+    <section id="emptyState" class="hidden max-w-md mx-auto text-center rounded-2xl p-8 border" style="background:var(--card-bg); border-color:var(--border)">
+      <div class="empty-state-icon inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal/20 border border-teal/40 mb-4">
+        <i data-feather="user-x" class="w-6 h-6" style="color:var(--text)"></i>
       </div>
-      <h2 class="font-display text-white text-xl mb-2">No membership record found</h2>
-      <p class="text-white/60 text-sm mb-6">Register as a member first to generate your digital ID card.</p>
-      <button id="emptyStateRegisterBtn" class="btn-hover inline-flex items-center gap-2 bg-accent hover:bg-accentsoft text-brand font-semibold px-5 py-2.5 rounded-lg">
+      <h2 class="font-display text-xl mb-2" style="color:var(--heading)">No membership record found</h2>
+      <p class="text-sm mb-6" style="color:var(--text-muted)">Register as a member first to generate your digital ID card.</p>
+      <button id="emptyStateRegisterBtn" class="btn-hover inline-flex items-center gap-2 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2.5 rounded-full shadow-md">
         <i data-feather="user-plus" class="w-4 h-4"></i>
         Go to registration
       </button>
@@ -1028,6 +1091,22 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     showView('register');
+  });
+
+  /* Theme (synced with index/admin via gwgm_dark_mode) */
+  function applyTheme(isDark) {
+    document.documentElement.classList.toggle('dark', isDark);
+    const icon = document.querySelector('#themeToggle i');
+    if (icon) icon.setAttribute('data-feather', isDark ? 'sun' : 'moon');
+    feather.replace();
+  }
+  const stored = localStorage.getItem('gwgm_dark_mode');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(stored !== null ? stored === 'true' : prefersDark);
+  document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const next = !document.documentElement.classList.contains('dark');
+    applyTheme(next);
+    localStorage.setItem('gwgm_dark_mode', String(next));
   });
 </script>
 </body>
