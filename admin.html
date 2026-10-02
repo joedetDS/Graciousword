@@ -4,7 +4,24 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, private" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="X-Frame-Options" content="DENY" />
+<meta name="referrer" content="no-referrer" />
 <title>GWGM Admin — Gracious Word Global Mission</title>
+<style id="anti-clickjack">html{display:none !important}</style>
+<script>
+  /* Anti-clickjacking: only render if not framed */
+  if (self === top) {
+    document.documentElement.style.display = 'block';
+    var s = document.getElementById('anti-clickjack');
+    if (s) s.remove();
+  } else {
+    try { top.location = self.location; } catch (e) {}
+  }
+</script>
 
 <link rel="icon" href="/favicon.ico">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -1182,22 +1199,189 @@ class UniversalPaginator {
 
 /* =========================================================================
    SUPABASE CLIENT
+   Auth tokens live in sessionStorage (tab-scoped) — not indefinite localStorage.
+   Passwords are never stored client-side; Supabase Auth hashes with bcrypt server-side.
    ========================================================================= */
 let sb = null;
 try {
   if (window.supabase && isSupabaseConfigured(GWGM_CONFIG.supabaseUrl, GWGM_CONFIG.supabaseKey)) {
     sb = window.supabase.createClient(GWGM_CONFIG.supabaseUrl, GWGM_CONFIG.supabaseKey, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: false,
+        storage: window.sessionStorage,
+        storageKey: 'gwgm-admin-auth',
+      },
     });
   }
 } catch (e) { console.error('[admin] supabase init', e); }
 
 /* =========================================================================
-   AUTH FLOW (Email + Password)
-   Passwords are bcrypt-hashed by Supabase Auth (pgcrypto / GoTrue).
+   SESSION SECURITY — idle + absolute timeouts
+   Idle: 4 min without input | Absolute: 20 min from login
    ========================================================================= */
-const DEFAULT_ADMIN_PASSWORD = '12345678';
+const SESSION_IDLE_MS = 4 * 60 * 1000;
+const SESSION_ABSOLUTE_MS = 20 * 60 * 1000;
+const SESSION_MARK_START = 'gwgm_admin_sess_start';
+const SESSION_MARK_ACTIVITY = 'gwgm_admin_sess_activity';
 
+let _idleTimer = null;
+let _absoluteTimer = null;
+let _activityBound = false;
+let _sessionGuardActive = false;
+
+function _now() { return Date.now(); }
+
+function clearSessionMarkers() {
+  try {
+    sessionStorage.removeItem(SESSION_MARK_START);
+    sessionStorage.removeItem(SESSION_MARK_ACTIVITY);
+  } catch (e) { /* ignore */ }
+}
+
+function markSessionStart() {
+  const t = String(_now());
+  try {
+    sessionStorage.setItem(SESSION_MARK_START, t);
+    sessionStorage.setItem(SESSION_MARK_ACTIVITY, t);
+  } catch (e) { /* ignore */ }
+}
+
+function touchActivity() {
+  if (!_sessionGuardActive) return;
+  try { sessionStorage.setItem(SESSION_MARK_ACTIVITY, String(_now())); } catch (e) { /* ignore */ }
+  resetIdleTimer();
+}
+
+function resetIdleTimer() {
+  if (_idleTimer) clearTimeout(_idleTimer);
+  _idleTimer = setTimeout(() => forceSecureLogout('idle'), SESSION_IDLE_MS);
+}
+
+function resetAbsoluteTimer() {
+  if (_absoluteTimer) clearTimeout(_absoluteTimer);
+  let start = 0;
+  try { start = parseInt(sessionStorage.getItem(SESSION_MARK_START) || '0', 10) || 0; } catch (e) { start = 0; }
+  const elapsed = start ? (_now() - start) : 0;
+  const remaining = Math.max(0, SESSION_ABSOLUTE_MS - elapsed);
+  _absoluteTimer = setTimeout(() => forceSecureLogout('absolute'), remaining || SESSION_ABSOLUTE_MS);
+}
+
+function stopSessionGuard() {
+  _sessionGuardActive = false;
+  if (_idleTimer) { clearTimeout(_idleTimer); _idleTimer = null; }
+  if (_absoluteTimer) { clearTimeout(_absoluteTimer); _absoluteTimer = null; }
+}
+
+function startSessionGuard() {
+  stopSessionGuard();
+  _sessionGuardActive = true;
+  if (!sessionStorage.getItem(SESSION_MARK_START)) markSessionStart();
+  else touchActivity();
+  resetIdleTimer();
+  resetAbsoluteTimer();
+
+  if (!_activityBound) {
+    _activityBound = true;
+    const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+    let last = 0;
+    const onAct = () => {
+      const n = _now();
+      if (n - last < 1000) return; // throttle
+      last = n;
+      touchActivity();
+    };
+    events.forEach(ev => window.addEventListener(ev, onAct, { passive: true, capture: true }));
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') validateSessionOrLogout();
+    });
+  }
+}
+
+/** True if idle or absolute limits exceeded (based on sessionStorage marks). */
+function isSessionExpired() {
+  let start = 0, activity = 0;
+  try {
+    start = parseInt(sessionStorage.getItem(SESSION_MARK_START) || '0', 10) || 0;
+    activity = parseInt(sessionStorage.getItem(SESSION_MARK_ACTIVITY) || '0', 10) || 0;
+  } catch (e) { return true; }
+  if (!start || !activity) return true;
+  const n = _now();
+  if (n - start > SESSION_ABSOLUTE_MS) return true;
+  if (n - activity > SESSION_IDLE_MS) return true;
+  return false;
+}
+
+async function clearAuthStorage() {
+  clearSessionMarkers();
+  try {
+    const keys = [];
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const k = sessionStorage.key(i);
+      if (k && (k === 'gwgm-admin-auth' || k.startsWith('sb-') || k.includes('supabase') || k.startsWith('gwgm_admin'))) {
+        keys.push(k);
+      }
+    }
+    keys.forEach(k => sessionStorage.removeItem(k));
+  } catch (e) { /* ignore */ }
+  // Remove any legacy localStorage auth leftovers from older admin builds
+  try {
+    const lkeys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k.startsWith('sb-') || k.includes('supabase.auth') || k === 'gwgm-admin-auth' || k.startsWith('gwgm_admin_sess'))) {
+        lkeys.push(k);
+      }
+    }
+    lkeys.forEach(k => localStorage.removeItem(k));
+  } catch (e) { /* ignore */ }
+}
+
+async function forceSecureLogout(reason) {
+  stopSessionGuard();
+  try {
+    if (sb) await sb.auth.signOut({ scope: 'local' });
+  } catch (e) { /* ignore */ }
+  await clearAuthStorage();
+  currentAdminEmail = '';
+  const msg = reason === 'idle'
+    ? 'Signed out due to inactivity. Please sign in again.'
+    : reason === 'absolute'
+      ? 'Session expired. Please sign in again.'
+      : 'Signed out.';
+  try { sessionStorage.setItem('gwgm_admin_logout_msg', msg); } catch (e) { /* ignore */ }
+  window.location.replace(window.location.pathname + window.location.search);
+}
+
+async function validateSessionOrLogout() {
+  if (!_sessionGuardActive) return;
+  let start = 0, activity = 0;
+  try {
+    start = parseInt(sessionStorage.getItem(SESSION_MARK_START) || '0', 10) || 0;
+    activity = parseInt(sessionStorage.getItem(SESSION_MARK_ACTIVITY) || '0', 10) || 0;
+  } catch (e) { /* ignore */ }
+  const n = _now();
+  if (!start || (n - start > SESSION_ABSOLUTE_MS)) {
+    await forceSecureLogout('absolute');
+    return;
+  }
+  if (!activity || (n - activity > SESSION_IDLE_MS)) {
+    await forceSecureLogout('idle');
+    return;
+  }
+  if (!sb) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) await forceSecureLogout('expired');
+}
+
+async function secureLogout() {
+  await forceSecureLogout('manual');
+}
+
+/* =========================================================================
+   AUTH FLOW (Email + Password — bcrypt via Supabase Auth server-side)
+   ========================================================================= */
 async function ensureAdminAccess(email) {
   const normalized = (email || '').toLowerCase().trim();
   const { data: admin, error: adminErr } = await sb
@@ -1206,11 +1390,13 @@ async function ensureAdminAccess(email) {
     .eq('email', normalized)
     .maybeSingle();
   if (adminErr) {
-    await sb.auth.signOut();
-    throw new Error('Could not verify admin access.');
+    await sb.auth.signOut({ scope: 'local' }).catch(() => {});
+    await clearAuthStorage();
+    throw new Error('Could not verify admin access. Check RLS policies on admin_users.');
   }
   if (!admin) {
-    await sb.auth.signOut();
+    await sb.auth.signOut({ scope: 'local' }).catch(() => {});
+    await clearAuthStorage();
     throw new Error('This email is not authorised for admin access.');
   }
   return true;
@@ -1221,6 +1407,7 @@ async function signInWithPassword(email, password) {
   if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('Please enter a valid email.');
   if (!password || password.length < 8) throw new Error('Password must be at least 8 characters.');
 
+  // Password is sent over TLS to Supabase Auth only — never written to storage
   const { data, error } = await sb.auth.signInWithPassword({
     email: email.toLowerCase().trim(),
     password,
@@ -1233,12 +1420,13 @@ async function signInWithPassword(email, password) {
   }
 
   await ensureAdminAccess(data.user.email);
+  markSessionStart();
   return data.user;
 }
 
 on('loginForm', 'submit', async (e) => {
   e.preventDefault();
-  const email = $('loginEmail').value.trim().toLowerCase();
+  const email = ($('loginEmail').value || '').trim().toLowerCase();
   const password = $('loginPassword').value;
   const errEl = $('loginError');
   errEl.classList.add('hidden');
@@ -1246,9 +1434,12 @@ on('loginForm', 'submit', async (e) => {
 
   try {
     await signInWithPassword(email, password);
+    // Clear password field from DOM memory as soon as auth succeeds
+    $('loginPassword').value = '';
     toast('Signed in successfully');
     await enterDashboard();
   } catch (err) {
+    $('loginPassword').value = '';
     errEl.textContent = err.message || 'Sign-in failed.';
     errEl.classList.remove('hidden');
   } finally {
@@ -1257,8 +1448,7 @@ on('loginForm', 'submit', async (e) => {
 });
 
 on('signOutBtn', 'click', async () => {
-  if (sb) await sb.auth.signOut();
-  window.location.reload();
+  await secureLogout();
 });
 
 /* Change password (current user) */
@@ -1309,10 +1499,17 @@ on('changePasswordForm', 'submit', async (e) => {
     okEl.textContent = 'Password updated successfully.';
     okEl.classList.remove('hidden');
     toast('Password updated');
+    markSessionStart(); // refresh absolute window after sensitive action
+    touchActivity();
   } catch (err) {
     errEl.textContent = err.message || 'Could not update password.';
     errEl.classList.remove('hidden');
   } finally {
+    // Never leave password values in the DOM
+    ['oldPassword', 'newPassword', 'confirmPassword'].forEach(id => {
+      const el = $(id);
+      if (el) el.value = '';
+    });
     btn.disabled = false;
   }
 });
@@ -1379,11 +1576,19 @@ async function enterDashboard() {
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return;
 
+  // Enforce timeouts before showing dashboard
+  if (isSessionExpired()) {
+    await forceSecureLogout('absolute');
+    return;
+  }
+
   $('loginView').classList.add('hidden');
   $('dashboardView').classList.remove('hidden');
   currentAdminEmail = (user.email || '').toLowerCase();
-  $('sidebarEmail').textContent = user.email;
+  $('sidebarEmail').textContent = user.email || '—';
   $('yearLogin').textContent = new Date().getFullYear();
+
+  startSessionGuard();
 
   await Promise.all([
     loadGraceCards(),
@@ -1401,8 +1606,17 @@ async function enterDashboard() {
   $('appLoader').classList.add('done');
 }
 
-// Auto-login session check
+// Boot: restore short-lived session only if still within idle/absolute limits
 (async () => {
+  // Show logout reason from previous timeout if any
+  try {
+    const msg = sessionStorage.getItem('gwgm_admin_logout_msg');
+    if (msg) {
+      sessionStorage.removeItem('gwgm_admin_logout_msg');
+      setTimeout(() => toast(msg, true), 400);
+    }
+  } catch (e) { /* ignore */ }
+
   if (!sb) { $('appLoader').classList.add('done'); return; }
   try {
     const { data: logoRows } = await sb.from('site_content').select('key, value').eq('key', 'logo_url').maybeSingle();
@@ -1410,10 +1624,20 @@ async function enterDashboard() {
   } catch (e) {}
 
   const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    const { data: admin } = await sb.from('admin_users').select('email').eq('email', session.user.email).maybeSingle();
-    if (admin) { await enterDashboard(); return; }
-    await sb.auth.signOut();
+  if (session && session.user) {
+    if (isSessionExpired()) {
+      await forceSecureLogout('absolute');
+      return;
+    }
+    try {
+      await ensureAdminAccess(session.user.email);
+      if (!sessionStorage.getItem(SESSION_MARK_START)) markSessionStart();
+      await enterDashboard();
+      return;
+    } catch (e) {
+      await clearAuthStorage();
+      try { await sb.auth.signOut({ scope: 'local' }); } catch (err) { /* ignore */ }
+    }
   }
   $('appLoader').classList.add('done');
 })();
