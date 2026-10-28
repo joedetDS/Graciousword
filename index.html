@@ -48,16 +48,17 @@
     --royal:#041619; --teal:#00FFCF; --teal-light:#66FFE1;
     --lime:#99FF00; --lime-light:#C0FF66; --crimson:#DD040D;
     --crimson-deep:#8B0209; --crimson-soft:#FF5A61;
-    /* Theme tokens */
+    /* Theme tokens — light mode: near-white throughout */
     --page-bg: #FFFFFF;
     --card-bg: #FFFFFF;
-    --text: #111111;
-    --text-muted: rgba(17,17,17,0.65);
-    --border: #EEEEEE;
+    --text: #0F1416;
+    --text-muted: rgba(15,20,22,0.68);
+    --border: #E8EBEB;
     --logo-bg: #FFFFFF;
     --nav-bg: #FFFFFF;
-    --nav-text: #111111;
-    --section-alt: #F8F8F8;
+    --nav-text: #0F1416;
+    --section-alt: #F7F9F9;
+    --section-soft: #F4F7F7;
   }
   html.dark {
     --page-bg: #0A0A0A;
@@ -69,6 +70,7 @@
     --nav-bg: #0A0A0A;
     --nav-text: #FFFFFF;
     --section-alt: #111111;
+    --section-soft: #0D1214;
   }
 
   html { scroll-padding-top: 5.5rem; }
@@ -182,9 +184,24 @@
 
   /* ---------- Theme safety net (override Tailwind dark: remnants) ---------- */
   html.dark body{ color: var(--text); background-color: var(--page-bg); }
-  .text-ink, [class*="text-ink/"]{ color: var(--text) !important; }
-  html.dark .text-ink, html.dark [class*="text-ink/"]{ color: var(--text) !important; }
-  .bg-cream, .bg-lavender{ background-color: var(--page-bg) !important; }
+  .text-ink{ color: var(--text) !important; }
+  html.dark .text-ink{ color: var(--text) !important; }
+  /* Keep opacity variants readable without forcing full black/white */
+  .text-ink\/80{ color: rgba(15,20,22,0.82) !important; }
+  .text-ink\/75{ color: rgba(15,20,22,0.78) !important; }
+  .text-ink\/70{ color: rgba(15,20,22,0.72) !important; }
+  .text-ink\/60{ color: rgba(15,20,22,0.62) !important; }
+  .text-ink\/50{ color: rgba(15,20,22,0.52) !important; }
+  .text-ink\/40{ color: rgba(15,20,22,0.42) !important; }
+  html.dark .text-ink\/80{ color: rgba(255,255,255,0.82) !important; }
+  html.dark .text-ink\/75{ color: rgba(255,255,255,0.75) !important; }
+  html.dark .text-ink\/70{ color: rgba(255,255,255,0.70) !important; }
+  html.dark .text-ink\/60{ color: rgba(255,255,255,0.60) !important; }
+  html.dark .text-ink\/50{ color: rgba(255,255,255,0.50) !important; }
+  html.dark .text-ink\/40{ color: rgba(255,255,255,0.40) !important; }
+  /* Light mode: cream/lavender become soft near-white so sections blend */
+  .bg-cream{ background-color: var(--page-bg) !important; }
+  .bg-lavender{ background-color: var(--section-soft) !important; }
   html.dark .bg-cream, html.dark .bg-lavender{ background-color: var(--page-bg) !important; }
   .bg-white, .dark\:bg-\[\#10191c\]{ background-color: var(--card-bg) !important; }
   html.dark .bg-white, html.dark .dark\:bg-\[\#10191c\]{ background-color: var(--card-bg) !important; }
@@ -197,12 +214,23 @@
   }
   html.dark ::placeholder{ color:rgba(255,255,255,.4); }
   input, select, textarea{
-    background-color: #FFFFFF; color: #111111; border-color: #EEEEEE;
+    background-color: #FFFFFF; color: #0F1416; border-color: #E8EBEB;
   }
 
   body, .bg-cream, .bg-lavender, .bg-white, .bg-royal-deep, #navbar, #mobileMenu{
     transition: background-color .3s ease, color .3s ease, border-color .3s ease;
   }
+
+  /* Consolidated primary buttons (light + dark) */
+  .btn-primary{
+    background-color: var(--teal);
+    color: #041619;
+    font-weight: 600;
+    border-radius: 9999px;
+    transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary:hover{ background-color: var(--lime); transform: translateY(-2px); }
+  .btn-primary:active{ transform: translateY(0); }
 
   /* ---------- Scroll progress ---------- */
   #scrollProgress{
@@ -416,24 +444,26 @@
   }
 
   /* =========================================================
-     MINISTRY CARDS — clean theme border colour on hover
+     MINISTRY CARDS — light mode near-white, dark mode glass
      ========================================================= */
   .ministry-card{
     position: relative;
     border-radius: 1rem;
-    background: rgba(255,255,255,.06);
-    border: 1.5px solid rgba(255,255,255,.12);
+    background: #FFFFFF;
+    border: 1.5px solid #E8EBEB;
+    color: #0F1416;
     transition:
       border-color .3s ease,
       background-color .3s ease,
       box-shadow .3s ease,
       transform .35s ease;
   }
+  .ministry-card p{ color: #0F1416; }
   .ministry-card:hover,
   .ministry-card:focus-within{
     border-color: var(--teal);
-    background: rgba(0,255,207,.06);
-    box-shadow: 0 0 0 1px rgba(0,255,207,.18), 0 12px 28px -10px rgba(0,255,207,.22);
+    background: #F0FFFB;
+    box-shadow: 0 0 0 1px rgba(0,255,207,.25), 0 12px 28px -10px rgba(0,201,163,.18);
   }
   .ministry-card:hover .ministry-icon-wrap,
   .ministry-card:focus-within .ministry-icon-wrap{
@@ -441,7 +471,61 @@
   }
   .ministry-card:hover p,
   .ministry-card:focus-within p{
+    color: #00A88A;
+  }
+  html.dark .ministry-card{
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.12);
+    color: #fff;
+  }
+  html.dark .ministry-card p{ color: #fff; }
+  html.dark .ministry-card:hover,
+  html.dark .ministry-card:focus-within{
+    border-color: var(--teal);
+    background: rgba(0,255,207,.06);
+    box-shadow: 0 0 0 1px rgba(0,255,207,.18), 0 12px 28px -10px rgba(0,255,207,.22);
+  }
+  html.dark .ministry-card:hover p,
+  html.dark .ministry-card:focus-within p{
     color: var(--lime);
+  }
+
+  /* =========================================================
+     VISION / MISSION / PURPOSE — glowing border on hover
+     ========================================================= */
+  .vmp-card{
+    position: relative;
+    overflow: visible; /* allow glow to show outside the arch */
+    border: 1.5px solid rgba(4,22,25,.08);
+    background: #FFFFFF;
+    transition:
+      border-color .35s ease,
+      box-shadow .35s ease,
+      transform .35s ease,
+      background-color .35s ease;
+  }
+  .vmp-card:hover,
+  .vmp-card:focus-within{
+    border-color: rgba(0,255,207,.55);
+    box-shadow:
+      0 0 0 1px rgba(0,255,207,.35),
+      0 0 24px 4px rgba(0,255,207,.22),
+      0 0 48px 8px rgba(153,255,0,.12),
+      0 16px 36px -12px rgba(4,22,25,.12);
+    transform: translateY(-6px);
+  }
+  html.dark .vmp-card{
+    border-color: rgba(255,255,255,.10);
+    background: #10191c;
+  }
+  html.dark .vmp-card:hover,
+  html.dark .vmp-card:focus-within{
+    border-color: rgba(0,255,207,.5);
+    box-shadow:
+      0 0 0 1px rgba(0,255,207,.3),
+      0 0 28px 6px rgba(0,255,207,.2),
+      0 0 56px 10px rgba(153,255,0,.1),
+      0 16px 36px -12px rgba(0,0,0,.45);
   }
 
   /* =========================================================
@@ -769,17 +853,17 @@
 <!-- ============================== VISION ============================== -->
 <section id="vision" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
   <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+    <div class="reveal arch-card vmp-card shadow-lg p-8 pt-10 text-center">
       <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="eye" class="text-royal dark:text-teal w-6 h-6"></i></div>
       <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Vision</h3>
       <p class="mt-4 text-ink/75 leading-relaxed italic">"...bringing the God‑life to men"</p>
     </div>
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+    <div class="reveal arch-card vmp-card shadow-lg p-8 pt-10 text-center">
       <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="compass" class="text-royal dark:text-teal w-6 h-6"></i></div>
       <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Mission</h3>
       <p class="mt-4 text-ink/75 leading-relaxed">"…to live Christ, love and teach people of all nations, languages and cultures the message of God's love to mankind."</p>
     </div>
-    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-lg lift-hover p-8 pt-10 text-center">
+    <div class="reveal arch-card vmp-card shadow-lg p-8 pt-10 text-center">
       <div class="w-14 h-14 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="target" class="text-royal dark:text-teal w-6 h-6"></i></div>
       <h3 class="mt-5 font-display font-bold text-xl text-royal-deep dark:text-[#EAFBF7]">Our Purpose</h3>
       <p class="mt-4 text-ink/75 leading-relaxed">We believe that commitment to the Great Commandment and the Great Commission will grow a great church.</p>
@@ -821,10 +905,10 @@
 </section>
 
 <!-- ============================== MINISTRIES ============================== -->
-<section id="ministries" class="py-20 sm:py-28 px-5 sm:px-8 bg-royal-deep">
+<section id="ministries" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-royal-deep">
   <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-white heading-flourish">Our Ministries</h2>
-    <p class="mt-4 text-white/70">There is a place to serve for every gift.</p>
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-white heading-flourish">Our Ministries</h2>
+    <p class="mt-4 text-ink/70 dark:text-white/70">There is a place to serve for every gift.</p>
   </div>
   <div id="ministriesGrid" class="max-w-6xl mx-auto mt-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6"></div>
 </section>
@@ -1038,19 +1122,19 @@
 </section>
 
 <!-- ============================== NEWSLETTER ============================== -->
-<section id="newsletter" class="py-16 sm:py-20 px-5 sm:px-8 bg-royal-deep">
+<section id="newsletter" class="py-16 sm:py-20 px-5 sm:px-8 bg-lavender dark:bg-royal-deep">
   <div class="max-w-xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-2xl sm:text-3xl text-white">Stay in the loop</h2>
-    <p class="mt-3 text-white/70 text-sm">Get sermon drops, event reminders, and Grace Card updates in your inbox.</p>
+    <h2 class="font-display font-bold text-2xl sm:text-3xl text-royal-deep dark:text-white">Stay in the loop</h2>
+    <p class="mt-3 text-ink/70 dark:text-white/70 text-sm">Get sermon drops, event reminders, and Grace Card updates in your inbox.</p>
 
     <form id="newsletterForm" class="mt-6 flex flex-col sm:flex-row gap-3" novalidate>
       <label for="newsletterEmail" class="sr-only">Email address</label>
       <input required type="email" id="newsletterEmail" placeholder="you@example.com"
-        class="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/15 text-white placeholder:text-white/40 outline-none focus:border-teal" />
-      <button type="submit" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full">Subscribe</button>
+        class="flex-1 px-4 py-3 rounded-full bg-white dark:bg-white/10 border border-royal/10 dark:border-white/15 text-royal-deep dark:text-white placeholder:text-ink/40 dark:placeholder:text-white/40 outline-none focus:border-teal" />
+      <button type="submit" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full shadow-md shadow-teal/15">Subscribe</button>
     </form>
-    <p id="newsletterError" class="hidden mt-3 text-sm text-red-300"></p>
-    <div id="newsletterSuccess" class="hidden mt-4 flex items-center justify-center gap-2 text-teal font-medium">
+    <p id="newsletterError" class="hidden mt-3 text-sm text-red-600 dark:text-red-300"></p>
+    <div id="newsletterSuccess" class="hidden mt-4 flex items-center justify-center gap-2 text-teal-deep dark:text-teal font-medium">
       <i data-feather="check-circle" class="w-5 h-5"></i> You're subscribed — welcome aboard!
     </div>
   </div>
@@ -2290,9 +2374,9 @@ ministries.forEach(m => {
   wrap.className = 'reveal ministry-card lift-hover p-6 text-center cursor-default';
   wrap.innerHTML = `
     <div class="ministry-icon-wrap w-11 h-11 mx-auto rounded-full bg-teal/20 flex items-center justify-center transition-colors duration-300">
-      <i data-feather="${m.icon}" class="text-lime w-5 h-5"></i>
+      <i data-feather="${m.icon}" class="text-[#00C9A3] dark:text-lime w-5 h-5"></i>
     </div>
-    <p class="mt-4 text-white font-medium text-sm transition-colors duration-300">${escapeHtml(m.name)}</p>
+    <p class="mt-4 font-medium text-sm transition-colors duration-300">${escapeHtml(m.name)}</p>
   `;
   ministriesGrid.appendChild(wrap);
   observeReveal(wrap);
