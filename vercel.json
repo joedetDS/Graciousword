@@ -1,7 +1,10 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": ".",
   "rewrites": [
-    { "source": "/", "destination": "/index.html" }
-  ]
+    { "source": "/sermons", "destination": "/sermons.html" },
+    { "source": "/events", "destination": "/events.html" },
+    { "source": "/giving", "destination": "/giving.html" },
+    { "source": "/branches", "destination": "/branches.html" },
+    { "source": "/register", "destination": "/register.html" }
+  ],
+  "trailingSlash": false
 }
