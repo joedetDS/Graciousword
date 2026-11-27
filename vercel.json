@@ -1,4 +1,12 @@
 {
+  "redirects": [
+    { "source": "/sermons.html", "destination": "/sermons", "permanent": true },
+    { "source": "/events.html", "destination": "/events", "permanent": true },
+    { "source": "/giving.html", "destination": "/giving", "permanent": true },
+    { "source": "/branches.html", "destination": "/branches", "permanent": true },
+    { "source": "/register.html", "destination": "/register", "permanent": true },
+    { "source": "/index.html", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/sermons", "destination": "/sermons.html" },
     { "source": "/events", "destination": "/events.html" },
