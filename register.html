@@ -743,13 +743,15 @@
       registrationView.classList.add('hidden');
       cardView.classList.remove('hidden');
       cardView.classList.add('view-fade');
-      window.location.hash = 'card';
+      history.replaceState(null, '', window.location.pathname + '#card');
       loadMemberData();
     } else {
       cardView.classList.add('hidden');
       registrationView.classList.remove('hidden');
       registrationView.classList.add('view-fade');
-      window.location.hash = 'register';
+      if (window.location.hash) {
+  history.replaceState(null, '', window.location.pathname);
+}
 
       if (currentMemberData && currentMemberData.membershipId) {
         membershipIdField.textContent = currentMemberData.membershipId;
