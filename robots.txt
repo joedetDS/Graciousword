@@ -1,0 +1,28 @@
+# Gracious Word Global Mission — robots.txt
+# https://gwgm.vercel.app/
+# Public URLs are clean (no .html); Vercel rewrites map them to *.html files.
+
+User-agent: *
+Allow: /
+
+# Block non-public / noise paths if added later
+Disallow: /api/
+Disallow: /admin/
+Disallow: /*?*utm_
+Disallow: /*?*fbclid=
+Disallow: /*?*gclid=
+
+# Allow major AI crawlers on public content
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+Sitemap: https://gwgm.vercel.app/sitemap.xml
