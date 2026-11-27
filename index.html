@@ -1,17 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#041619" />
-<title>GWGM — The Official Website of Gracious Word Global Mission</title>
-<meta name="description" content="Gracious Word Global Mission — living Christ, loving people, making disciples. Sermons, events, giving, branches and more." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gracious Word Global Mission">
+<meta name="theme-color" content="#041619">
+<title>Gracious Word Global Mission | Church in Uyo, Port Harcourt, Eket & AKSU – Gospel of Grace</title>
+<meta name="description" content="Gracious Word Global Mission is a Christ-centred church in Akwa Ibom & Rivers State teaching the Gospel of Grace. Join us for worship, sermons, events and membership in Uyo, Port Harcourt, Eket and AKSU.">
+<meta name="keywords" content="Gracious Word Global Mission, GWGM, church in Uyo, church Akwa Ibom, Gospel of Grace, Pastor Georgewealth, Port Harcourt church, Eket church">
+<link rel="canonical" href="https://gwgm.vercel.app/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gracious Word Global Mission">
+<meta property="og:title" content="[Page-specific title]">
+<meta property="og:description" content="[Page-specific description]">
+<meta property="og:url" content="https://gwgm.vercel.app/[page]">
+<meta property="og:image" content="https://gwgm.vercel.app/logo.png"> <!-- better: create a 1200×630 OG image -->
+<meta property="og:locale" content="en_NG">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="[same as og:title]">
+<meta name="twitter:description" content="[same as og:description]">
+<meta name="twitter:image" content="https://gwgm.vercel.app/logo.png">
 
 <link rel="icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Church",
+    "name": "Gracious Word Global Mission",
+    "alternateName": "GWGM",
+    "url": "https://gwgm.vercel.app",
+    "logo": "https://gwgm.vercel.app/logo.png",
+    "description": "Christ-centred church teaching the Gospel of Grace, raising disciples and helping people discover God's purpose. Branches in Uyo, Port Harcourt, Eket and AKSU.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Uyo",
+      "addressRegion": "Akwa Ibom",
+      "addressCountry": "NG"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": " 5.0563",
+      "longitude": "7.9379"
+    },
+    "telephone": "+2349112599268",
+    "sameAs": [
+      "https://t.me/graciouswordglobal",
+      "https://www.facebook.com/profile.php?id=61577426519345",
+      "https://www.instagram.com/thegeorgewealth"
+    ]
+  }
+</script>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What time are your Sunday services?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sunday services hold weekly at each branch — check the Events section or contact your nearest branch for the exact time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I become a member?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tap Register or Join Our Family on the website to fill out the membership form and receive your digital membership ID."
+        }
+      }
+      {
+        "@type": "Question",
+        "name": "Where do I listen to past sermons?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Visit the Sermons & Media Library section and tap "View all sermons" to play any MP3 message, or join our Telegram group for every message ever shared."
+        }
+      }
+      // add the rest of your real FAQs
+    ]
+  }
+</script>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -724,7 +806,7 @@
 
 <body class="antialiased">
 
-<a href="#hero" class="skip-link">Skip to content</a>
+<a href="index.html" class="skip-link">Skip to content</a>
 
 <div id="pageLoader" aria-hidden="true">
   <div class="loader-ring"></div>
@@ -737,8 +819,8 @@
 <!-- ============================== NAV ============================== -->
 <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 md:h-20">
-    <a href="#hero" class="flex items-center gap-3 shrink-0">
-      <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission Logo"
+    <a href="index.html" class="flex items-center gap-3 shrink-0">
+      <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission logo"
            class="w-9 h-9 rounded-full object-contain p-1" style="background:var(--logo-bg)" />
       <span class="nav-brand-text font-display font-semibold tracking-wide text-sm sm:text-base">
         Gracious Word <span class="brand-gradient">Global Mission</span>
@@ -746,18 +828,18 @@
     </a>
 
     <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-      <a href="#welcome" class="nav-link" data-section="welcome">Home</a>
-      <a href="#sermons" class="nav-link" data-section="sermons">Sermons</a>
-      <a href="#events" class="nav-link" data-section="events">Events</a>
-      <a href="#giving" class="nav-link" data-section="giving">Giving</a>
-      <a href="#branches" class="nav-link" data-section="branches">Branches</a>
+      <a href="index.html" class="nav-link active" data-section="welcome">Home</a>
+      <a href="sermons.html" class="nav-link" data-section="sermons">Sermons</a>
+      <a href="events.html" class="nav-link" data-section="events">Events</a>
+      <a href="giving.html" class="nav-link" data-section="giving">Giving</a>
+      <a href="branches.html" class="nav-link" data-section="branches">Branches</a>
       <button id="searchBtn" aria-label="Search the site" class="btn-hover nav-icon-btn">
         <i data-feather="search" class="w-4 h-4"></i>
       </button>
       <button id="darkModeToggle" aria-label="Toggle dark mode" class="btn-hover nav-icon-btn">
         <i data-feather="moon" class="w-4 h-4"></i>
       </button>
-      <a href="id_app.html" class="btn-hover ml-1 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2 rounded-full shadow-md">
+      <a href="register.html" class="btn-hover ml-1 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2 rounded-full shadow-md">
         Register
       </a>
     </div>
@@ -773,13 +855,13 @@
 
   <div id="mobileMenu" class="md:hidden max-h-0 px-5">
     <div class="flex flex-col gap-4 py-5 font-medium">
-      <a href="#welcome" class="mobile-link nav-link" data-section="welcome">Home</a>
-      <a href="#sermons" class="mobile-link nav-link" data-section="sermons">Sermons</a>
-      <a href="#events" class="mobile-link nav-link" data-section="events">Events</a>
-      <a href="#giving" class="mobile-link nav-link" data-section="giving">Giving</a>
-      <a href="#branches" class="mobile-link nav-link" data-section="branches">Branches</a>
-      <a href="#faq" class="mobile-link nav-link" data-section="faq">FAQ</a>
-      <a href="id_app.html" class="mobile-link text-teal font-semibold">Register Now →</a>
+      <a href="index.html" class="mobile-link nav-link active" data-section="welcome">Home</a>
+      <a href="sermons.html" class="mobile-link nav-link" data-section="sermons">Sermons</a>
+      <a href="events.html" class="mobile-link nav-link" data-section="events">Events</a>
+      <a href="giving.html" class="mobile-link nav-link" data-section="giving">Giving</a>
+      <a href="branches.html" class="mobile-link nav-link" data-section="branches">Branches</a>
+      <a href="index.html#faq" class="mobile-link nav-link" data-section="faq">FAQ</a>
+      <a href="register.html" class="mobile-link text-teal font-semibold">Register Now →</a>
     </div>
   </div>
 </nav>
@@ -965,146 +1047,88 @@
   <div id="ministriesGrid" class="max-w-6xl mx-auto mt-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6"></div>
 </section>
 
-<!-- ============================== SERMONS ============================== -->
-<section id="sermons" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
-  <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Sermons &amp; Media Library</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">Listen to the latest word, or explore every message we've shared.</p>
-  </div>
 
-  <div class="max-w-3xl mx-auto mt-12">
-    <div id="latestSermonSkeleton" class="arch-card bg-white dark:bg-[#10191c] shadow-lg p-8 animate-pulse">
-      <div class="h-4 w-24 bg-royal/10 rounded mb-3"></div>
-      <div class="h-5 w-1/2 bg-royal/10 rounded mb-2"></div>
-      <div class="h-3 w-1/3 bg-royal/10 rounded mb-6"></div>
-      <div class="h-24 w-full bg-royal/10 rounded-xl"></div>
-    </div>
-
-    <article id="latestSermonCard" class="hidden reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover border border-royal/5 dark:border-white/10">
-      <div class="p-6 sm:p-8">
-        <span class="text-xs font-semibold uppercase tracking-wider text-teal">Latest Sermon</span>
-        <h3 id="latestSermonTitle" class="mt-2 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">—</h3>
-        <p id="latestSermonMeta" class="mt-1 text-xs text-ink/50">—</p>
-        <p id="latestSermonUpdated" class="mt-1 text-xs text-ink/40">—</p>
-        <div id="latestSermonPlayer" class="mt-5"></div>
-      </div>
-    </article>
-
-    <p id="sermonsEmptyState" class="hidden text-center text-sm text-ink/50 italic">No sermons have been published yet. Please check back soon.</p>
-
-    <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-      <button id="viewAllSermonsBtn" class="btn-hover inline-flex items-center gap-2 border border-royal/20 dark:border-white/20 hover:border-teal hover:text-teal text-royal-deep dark:text-[#EAFBF7] font-semibold px-6 py-3 rounded-full">
-        <i data-feather="headphones" class="w-4 h-4"></i> View all sermons
-      </button>
-      <a id="telegramJoinBtn" href="#" target="_blank" rel="noopener noreferrer"
-        class="btn-hover inline-flex items-center gap-2 bg-[#229ED9] hover:bg-[#1b87ba] text-white font-semibold px-6 py-3 rounded-full">
-        <i data-feather="send" class="w-4 h-4"></i> Join our Telegram sermon group
-      </a>
-    </div>
+<!-- ============================== TEASERS ============================== -->
+<section class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+  <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+    <a href="sermons.html" class="reveal glow-card rounded-2xl shadow-md p-7 text-center block lift-hover">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="headphones" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Sermons</h3>
+      <p class="mt-2 text-sm text-ink/60 dark:text-white/50">Listen to the latest word and explore our media library.</p>
+      <span class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-teal tracking-wide uppercase">View all →</span>
+    </a>
+    <a href="events.html" class="reveal glow-card rounded-2xl shadow-md p-7 text-center block lift-hover">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="calendar" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Events</h3>
+      <p class="mt-2 text-sm text-ink/60 dark:text-white/50">Upcoming programs, conferences and gatherings.</p>
+      <span class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-teal tracking-wide uppercase">View all →</span>
+    </a>
+    <a href="giving.html" class="reveal glow-card rounded-2xl shadow-md p-7 text-center block lift-hover">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="heart" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Giving</h3>
+      <p class="mt-2 text-sm text-ink/60 dark:text-white/50">Tithes and offerings, securely from anywhere.</p>
+      <span class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-teal tracking-wide uppercase">View all →</span>
+    </a>
+    <a href="branches.html" class="reveal glow-card rounded-2xl shadow-md p-7 text-center block lift-hover">
+      <div class="w-12 h-12 mx-auto rounded-full bg-teal-soft flex items-center justify-center"><i data-feather="map-pin" class="text-teal w-5 h-5"></i></div>
+      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Branches</h3>
+      <p class="mt-2 text-sm text-ink/60 dark:text-white/50">Find a Gracious Word location near you.</p>
+      <span class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-teal tracking-wide uppercase">View all →</span>
+    </a>
   </div>
 </section>
 
-<!-- All sermons modal -->
-<div id="allSermonsModal" class="fixed inset-0 z-[100] hidden">
-  <div id="allSermonsBackdrop" class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
-  <div class="relative z-10 h-full w-full flex items-start justify-center p-4 sm:p-8 overflow-y-auto">
-    <div class="modal-content bg-cream dark:bg-[#0B1416] rounded-2xl max-w-3xl w-full mt-10 mb-10 p-6 sm:p-8">
-      <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <h3 class="font-display font-bold text-xl sm:text-2xl text-royal-deep dark:text-[#EAFBF7]">All Sermons</h3>
-        <div class="flex items-center gap-3">
-          <label for="sermonsPerPage" class="text-xs text-ink/60 dark:text-white/50">Per page</label>
-          <select id="sermonsPerPage" class="sermon-perpage-select">
-            <option value="5" selected>5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-          </select>
-          <button id="allSermonsCloseBtn" aria-label="Close" class="btn-hover w-10 h-10 rounded-full bg-royal/10 hover:bg-teal flex items-center justify-center">
-            <i data-feather="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-      </div>
-      <div id="allSermonsList" class="space-y-4"></div>
-
-      <div id="sermonsPagination" class="hidden mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p id="sermonsPageInfo" class="text-xs text-ink/50 dark:text-white/40">Page 1 of 1</p>
-        <div class="flex items-center gap-2">
-          <button id="sermonsPrevBtn" class="sermon-page-btn" aria-label="Previous page">‹ Prev</button>
-          <div id="sermonsPageButtons" class="flex items-center gap-2"></div>
-          <button id="sermonsNextBtn" class="sermon-page-btn" aria-label="Next page">Next ›</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<section id="sermons" class="hidden" aria-hidden="true">
+  <div id="latestSermonSkeleton" class="hidden"></div>
+  <article id="latestSermonCard" class="hidden"></article>
+  <p id="sermonsEmptyState" class="hidden"></p>
+  <button id="viewAllSermonsBtn" class="hidden"></button>
+  <a id="telegramJoinBtn" href="#" class="hidden"></a>
+  <div id="latestSermonTitle" class="hidden"></div>
+  <div id="latestSermonMeta" class="hidden"></div>
+  <div id="latestSermonUpdated" class="hidden"></div>
+  <div id="latestSermonPlayer" class="hidden"></div>
+  <div id="allSermonsList" class="hidden"></div>
+  <div id="sermonsPagination" class="hidden"></div>
+  <p id="sermonsPageInfo" class="hidden"></p>
+  <div id="sermonsPageButtons" class="hidden"></div>
+  <button id="sermonsPrevBtn" class="hidden"></button>
+  <button id="sermonsNextBtn" class="hidden"></button>
+  <select id="sermonsPerPage" class="hidden"><option value="5">5</option></select>
+</section>
+<div id="allSermonsModal" class="hidden">
+  <div id="allSermonsBackdrop"></div>
+  <button id="allSermonsCloseBtn" class="hidden"></button>
 </div>
 
-<!-- ============================== EVENTS ============================== -->
-<section id="events" class="py-20 sm:py-28 px-5 sm:px-8 bg-lavender dark:bg-[#071012]">
-  <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Events &amp; Programs</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">From youth meetings to conferences — here's what's coming up.</p>
+<section id="events" class="hidden" aria-hidden="true">
+  <div id="eventCountdownWrap" class="hidden">
+    <p id="eventCountdownLabel"></p>
+    <p id="eventCountdownTitle"></p>
+    <span id="cdDays"></span><span id="cdHours"></span><span id="cdMins"></span><span id="cdSecs"></span>
   </div>
-
-  <div id="eventCountdownWrap" class="hidden max-w-xl mx-auto mt-10 text-center reveal">
-    <p id="eventCountdownLabel" class="text-sm font-medium text-ink/70">Starts in</p>
-    <p id="eventCountdownTitle" class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7] mt-1">—</p>
-    <div class="flex items-center justify-center gap-3 mt-4">
-      <div class="countdown-unit"><span id="cdDays" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Days</span></div>
-      <div class="countdown-unit"><span id="cdHours" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Hrs</span></div>
-      <div class="countdown-unit"><span id="cdMins" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Min</span></div>
-      <div class="countdown-unit"><span id="cdSecs" class="block text-xl font-bold text-royal-deep dark:text-[#EAFBF7]">00</span><span class="text-[10px] uppercase text-ink/50">Sec</span></div>
-    </div>
-  </div>
-
-  <div id="eventsList" class="max-w-4xl mx-auto mt-14 grid sm:grid-cols-2 gap-6"></div>
-  <p id="eventsEmptyState" class="hidden text-center text-sm text-ink/50 italic mt-10">No upcoming events right now — check back soon.</p>
+  <div id="eventsList"></div>
+  <p id="eventsEmptyState" class="hidden"></p>
 </section>
-
-<!-- Event registration modal -->
-<div id="eventRegModal" class="fixed inset-0 z-[100] hidden">
-  <div id="eventRegBackdrop" class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
-  <div class="relative z-10 h-full w-full flex items-center justify-center p-5">
-    <div class="modal-content bg-white dark:bg-[#10191c] rounded-2xl max-w-md w-full p-6 sm:p-8">
-      <div class="flex items-center justify-between mb-5">
-        <h3 id="eventRegTitle" class="font-display font-bold text-lg text-royal-deep dark:text-[#EAFBF7]">Register for event</h3>
-        <button id="eventRegCloseBtn" aria-label="Close" class="btn-hover w-9 h-9 rounded-full bg-royal/10 hover:bg-teal flex items-center justify-center">
-          <i data-feather="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <form id="eventRegForm" class="space-y-3" novalidate>
-        <input type="hidden" id="eventRegEventId" />
-        <input required type="text" id="eventRegName" placeholder="Full name" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
-        <input required type="email" id="eventRegEmail" placeholder="Email address" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
-        <input type="tel" id="eventRegPhone" placeholder="Phone number (optional)" class="w-full px-4 py-2.5 rounded-lg border border-royal/15 dark:border-white/15 bg-transparent" />
-        <label class="flex items-start gap-2 text-xs text-ink/70 dark:text-[#CFE7E3]">
-          <input type="checkbox" id="eventRegReminder" class="mt-0.5" />
-          Remind me while this page is open (browser notification)
-        </label>
-        <p id="eventRegError" class="hidden text-sm text-red-600"></p>
-        <button type="submit" class="btn-hover w-full bg-teal hover:bg-lime text-[#041619] font-semibold py-2.5 rounded-lg">Confirm registration</button>
-      </form>
-      <div id="eventRegSuccess" class="hidden text-center py-4">
-        <i data-feather="check-circle" class="w-10 h-10 text-teal mx-auto"></i>
-        <p class="mt-3 font-medium text-royal-deep dark:text-[#EAFBF7]">You're registered! See you there.</p>
-      </div>
-    </div>
-  </div>
+<div id="eventRegModal" class="hidden">
+  <div id="eventRegBackdrop"></div>
+  <button id="eventRegCloseBtn" class="hidden"></button>
+  <form id="eventRegForm" class="hidden">
+    <input type="hidden" id="eventRegEventId" />
+    <input id="eventRegName" /><input id="eventRegEmail" /><input id="eventRegPhone" />
+    <input type="checkbox" id="eventRegReminder" />
+    <p id="eventRegError" class="hidden"></p>
+  </form>
+  <div id="eventRegSuccess" class="hidden"></div>
+  <h3 id="eventRegTitle" class="hidden"></h3>
 </div>
 
-<!-- ============================== GIVING ============================== -->
-<section id="giving" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
-  <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Online Giving</h2>
-    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">"Bring the whole tithe into the storehouse." Give your tithes and offerings securely, wherever you are.</p>
-  </div>
-
-  <div id="givingGrid" class="max-w-5xl mx-auto mt-12"></div>
-
-  <p id="givingEmptyState" class="hidden text-center text-sm text-ink/50 italic mt-10">
-    Giving options will appear here soon.
-  </p>
+<section id="giving" class="hidden" aria-hidden="true">
+  <div id="givingGrid"></div>
+  <p id="givingEmptyState" class="hidden"></p>
 </section>
 
+<section id="branches" class="hidden" aria-hidden="true"></section>
 <!-- ============================== CTA ============================== -->
 <section class="relative py-20 sm:py-28 px-5 sm:px-8 bg-gradient-to-br from-royal via-royal-light to-royal-deep text-center overflow-hidden">
   <div class="absolute inset-0 ray-divider top-0 bottom-auto"></div>
@@ -1114,50 +1138,9 @@
       There is a place for you at Gracious Word Global Mission. Join a family committed to Christ,
       committed to His Word and committed to one another.
     </p>
-    <a href="id_app.html" class="btn-hover inline-block mt-9 bg-teal hover:bg-lime text-royal-deep font-semibold px-10 py-4 rounded-full shadow-xl text-lg">Register Now</a>
+    <a href="register.html" class="btn-hover inline-block mt-9 bg-teal hover:bg-lime text-royal-deep font-semibold px-10 py-4 rounded-full shadow-xl text-lg">Register Now</a>
   </div>
   <div class="absolute inset-x-0 bottom-0 ray-divider"></div>
-</section>
-
-<!-- ============================== BRANCHES ============================== -->
-<section id="branches" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
-  <div class="max-w-3xl mx-auto text-center reveal">
-    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Our Church Branches</h2>
-  </div>
-
-  <div class="max-w-6xl mx-auto mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-    <div class="reveal arch-card glow-card shadow-md p-7 pt-9 text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Uyo City Headquarters</h3>
-      <p class="text-teal text-xs font-semibold uppercase tracking-wider mt-1">Headquarters</p>
-      <p class="mt-3 text-ink/60 text-sm">E3 Event Center, Ibom Tropicana Mall, Uyo (Temporary)</p>
-      <a href="https://www.google.com/maps/search/?api=1&query=E3+Event+Center,+Ibom+Tropicana+Mall,+Uyo" target="_blank" rel="noopener noreferrer"
-         class="map-btn btn-hover inline-block mt-5 text-sm font-medium rounded-full px-5 py-2">View on Map</a>
-    </div>
-
-    <div class="reveal arch-card glow-card shadow-md p-7 pt-9 text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Port Harcourt Branch</h3>
-      <p class="mt-3 text-ink/60 text-sm">(In Construction)</p>
-      <span class="inline-block mt-5 text-sm font-medium text-ink/35 border border-royal/10 dark:border-white/10 rounded-full px-5 py-2">Coming soon</span>
-    </div>
-
-    <div class="reveal arch-card glow-card shadow-md p-7 pt-9 text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">Eket Branch</h3>
-      <p class="mt-3 text-ink/60 text-sm">168 Eket Oron Road, Okopedi by cool room, Eket Akwa Ibom State</p>
-      <a href="https://www.google.com/maps/search/?api=1&query=168+Eket+Oron+Road,+Okopedi+by+Cool+Room,+Eket,+Akwa+Ibom+State" target="_blank" rel="noopener noreferrer"
-         class="map-btn btn-hover inline-block mt-5 text-sm font-medium rounded-full px-5 py-2">View on Map</a>
-    </div>
-
-    <div class="reveal arch-card glow-card shadow-md p-7 pt-9 text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-royal/10 flex items-center justify-center"><i data-feather="map-pin" class="text-royal dark:text-teal w-5 h-5"></i></div>
-      <h3 class="mt-5 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">AKSU Branch</h3>
-      <p class="mt-3 text-ink/60 text-sm">Behind Ikot Akpaden Main Market, Ikot Akpaden, Mkpat Enin LGA, Akwa Ibom State</p>
-      <a href="https://www.google.com/maps/search/?api=1&query=Behind+Ikot+Akpaden+Main+Market,+Ikot+Akpaden,+Mkpat+Enin+LGA,+Akwa+Ibom+State" target="_blank" rel="noopener noreferrer"
-         class="map-btn btn-hover inline-block mt-5 text-sm font-medium rounded-full px-5 py-2">View on Map</a>
-    </div>
-  </div>
 </section>
 
 <!-- ============================== FAQ ============================== -->
@@ -1195,7 +1178,7 @@
 <!-- ============================== SCRIPTURE ============================== -->
 <section class="relative py-28 sm:py-36 px-5 sm:px-8 text-center">
   <div class="absolute inset-0 -z-10">
-    <img src="footer.jpg" data-site-key="footer_image_url" alt="Congregation" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+    <img src="footer.jpg" data-site-key="footer_image_url" alt="Congregation worshipping at Gracious Word Global Mission" class="w-full h-full object-cover" loading="lazy" decoding="async" />
     <div class="absolute inset-0 bg-royal-deep/85"></div>
   </div>
   <div class="max-w-2xl mx-auto reveal">
@@ -1211,7 +1194,7 @@
   <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
     <div>
       <div class="flex items-center gap-3">
-        <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission Logo" class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]" />
+        <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission logo" class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]" />
         <span class="text-white font-display font-semibold">Gracious Word <span class="brand-gradient">Global Mission</span></span>
       </div>
       <p class="mt-4 text-sm italic text-white/60">"...bringing the God‑life to men"</p>
@@ -1220,11 +1203,11 @@
     <div>
       <h4 class="text-lime font-display font-semibold mb-4">Quick Links</h4>
       <ul class="space-y-2 text-sm">
-        <li><a href="#hero" class="hover:text-lime transition-colors">Home</a></li>
-        <li><a href="id_app.html" class="hover:text-lime transition-colors">Register</a></li>
-        <li><a href="#vision" class="hover:text-lime transition-colors">Vision</a></li>
-        <li><a href="#ministries" class="hover:text-lime transition-colors">Ministries</a></li>
-        <li><a href="#branches" class="hover:text-lime transition-colors">Branches</a></li>
+        <li><a href="index.html" class="hover:text-lime transition-colors">Home</a></li>
+        <li><a href="register.html" class="hover:text-lime transition-colors">Register</a></li>
+        <li><a href="index.html#vision" class="hover:text-lime transition-colors">Vision</a></li>
+        <li><a href="index.html#ministries" class="hover:text-lime transition-colors">Ministries</a></li>
+        <li><a href="branches.html" class="hover:text-lime transition-colors">Branches</a></li>
       </ul>
     </div>
 
@@ -1300,15 +1283,15 @@
         here are a few doors back home.
       </p>
       <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-        <a href="/" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-7 py-3 rounded-full">Back to homepage</a>
+        <a href="index.html" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-7 py-3 rounded-full">Back to homepage</a>
         <button id="notFoundSearchBtn" class="btn-hover border border-white/30 hover:border-lime hover:text-lime text-white font-semibold px-7 py-3 rounded-full">Search the site</button>
       </div>
       <div class="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/50">
-        <a href="/#sermons" class="hover:text-lime transition-colors">Sermons</a>
-        <a href="/#events" class="hover:text-lime transition-colors">Events</a>
-        <a href="/#giving" class="hover:text-lime transition-colors">Giving</a>
-        <a href="/#branches" class="hover:text-lime transition-colors">Branches</a>
-        <a href="/#faq" class="hover:text-lime transition-colors">FAQ</a>
+        <a href="sermons.html" class="hover:text-lime transition-colors">Sermons</a>
+        <a href="events.html" class="hover:text-lime transition-colors">Events</a>
+        <a href="giving.html" class="hover:text-lime transition-colors">Giving</a>
+        <a href="branches.html" class="hover:text-lime transition-colors">Branches</a>
+        <a href="index.html#faq" class="hover:text-lime transition-colors">FAQ</a>
       </div>
       <div class="mt-12 ray-divider"></div>
       <p class="mt-6 text-xs text-white/40">Gracious Word Global Mission · "...bringing the God‑life to men"</p>
@@ -1483,16 +1466,16 @@ setTimeout(() => document.getElementById('pageLoader').classList.add('done'), 25
    7. SITE SEARCH
    ========================================================================= */
 const STATIC_SEARCH_INDEX = [
-  { title: 'Home / Welcome', anchor: '#welcome', keywords: 'home welcome about church family' },
-  { title: "Today's Grace Card", anchor: '#grace-card', keywords: 'grace card daily word kids' },
-  { title: 'Our Vision, Mission & Purpose', anchor: '#vision', keywords: 'vision mission purpose' },
-  { title: 'Sermons & Media Library', anchor: '#sermons', keywords: 'sermon message preach audio mp3 media library telegram' },
-  { title: 'Events & Programs', anchor: '#events', keywords: 'event calendar program youth conference countdown register' },
-  { title: 'Online Giving', anchor: '#giving', keywords: 'giving tithe offering donate bank transfer seed' },
-  { title: 'Our Ministries', anchor: '#ministries', keywords: 'ministry music protocol security hospitality media youth women children' },
-  { title: 'Our Church Branches', anchor: '#branches', keywords: 'branch location uyo eket port harcourt aksu map' },
-  { title: 'Frequently Asked Questions', anchor: '#faq', keywords: 'faq question help answer' },
-  { title: 'Newsletter Signup', anchor: '#newsletter', keywords: 'newsletter subscribe email updates' },
+  { title: 'Home / Welcome', anchor: 'index.html#welcome', keywords: 'home welcome about church family' },
+  { title: "Today's Grace Card", anchor: 'index.html#grace-card', keywords: 'grace card daily word kids' },
+  { title: 'Our Vision, Mission & Purpose', anchor: 'index.html#vision', keywords: 'vision mission purpose' },
+  { title: 'Sermons & Media Library', anchor: 'sermons.html', keywords: 'sermon message preach audio mp3 media library telegram' },
+  { title: 'Events & Programs', anchor: 'events.html', keywords: 'event calendar program youth conference countdown register' },
+  { title: 'Online Giving', anchor: 'giving.html', keywords: 'giving tithe offering donate bank transfer seed' },
+  { title: 'Our Ministries', anchor: 'index.html#ministries', keywords: 'ministry music protocol security hospitality media youth women children' },
+  { title: 'Our Church Branches', anchor: 'branches.html', keywords: 'branch location uyo eket port harcourt aksu map' },
+  { title: 'Frequently Asked Questions', anchor: 'index.html#faq', keywords: 'faq question help answer' },
+  { title: 'Newsletter Signup', anchor: 'index.html#newsletter', keywords: 'newsletter subscribe email updates' },
 ];
 
 const searchOverlay = document.getElementById('searchOverlay');
@@ -1517,9 +1500,9 @@ function runSearch(query) {
   const q = query.trim().toLowerCase();
   if (!q) { searchResultsEl.innerHTML = ''; return; }
   const dynamic = [
-    ...(window.__gwgmSermons || []).map(s => ({ title: `Sermon: ${s.title}`, anchor: '#sermons', keywords: 'sermon message' })),
-    ...(window.__gwgmEvents || []).map(ev => ({ title: `Event: ${ev.title}`, anchor: '#events', keywords: 'event program' })),
-    ...(window.__gwgmPastors || []).map(p => ({ title: `${p.name} — ${p.role || 'Pastor'}`, anchor: '#welcome', keywords: 'pastor leader' })),
+    ...(window.__gwgmSermons || []).map(s => ({ title: `Sermon: ${s.title}`, anchor: 'sermons.html', keywords: 'sermon message' })),
+    ...(window.__gwgmEvents || []).map(ev => ({ title: `Event: ${ev.title}`, anchor: 'events.html', keywords: 'event program' })),
+    ...(window.__gwgmPastors || []).map(p => ({ title: `${p.name} — ${p.role || 'Pastor'}`, anchor: 'index.html#welcome', keywords: 'pastor leader' })),
   ];
   const combined = [...STATIC_SEARCH_INDEX, ...dynamic];
   const matches = combined.filter(item =>
@@ -1561,13 +1544,13 @@ document.addEventListener('keydown', (e) => {
     return `
       <div class="hero-slide" data-slide="main">
         <div class="hero-slide-bg">
-          <img src="land_image.jpg" data-site-key="land_image_url" alt="" loading="eager" decoding="async" fetchpriority="high" />
+          <img src="land_image.jpg" data-site-key="land_image_url" alt="Pst. George Wealth preaching during Service at Gracious Word Global Mission" loading="eager" decoding="async" fetchpriority="high" />
           <div class="hero-slide-overlay"></div>
         </div>
         <div class="hero-slide-inner">
           <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
             <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-royal-light/40 border-2 border-teal/60 halo-glow flex items-center justify-center mx-auto overflow-hidden shrink-0">
-              <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission Logo" class="w-20 h-20 sm:w-28 sm:h-28 object-contain" />
+              <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission logo" class="w-20 h-20 sm:w-28 sm:h-28 object-contain" />
             </div>
             <div class="text-center md:text-left">
               <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight tracking-tight">
@@ -1576,8 +1559,8 @@ document.addEventListener('keydown', (e) => {
               <p class="mt-5 font-display italic text-lime text-lg sm:text-xl max-w-xl mx-auto md:mx-0">"...bringing the God‑life to men"</p>
               <p class="mt-3 text-white/85 text-base sm:text-lg tracking-wide max-w-xl mx-auto md:mx-0">Living Christ. Loving People. Making Disciples.</p>
               <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                <a href="id_app.html" class="btn-hover bg-teal hover:bg-lime text-royal-deep font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 text-center">Join Our Family</a>
-                <a href="#welcome" class="btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full text-center">Learn More</a>
+                <a href="register.html" class="btn-hover bg-teal hover:bg-lime text-royal-deep font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 text-center">Join Our Family</a>
+                <a href="index.html" class="btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full text-center">Learn More</a>
               </div>
             </div>
           </div>
@@ -1635,10 +1618,10 @@ document.addEventListener('keydown', (e) => {
             </div>
 
             <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#events" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 inline-flex items-center justify-center gap-2">
+              <a href="events.html" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 inline-flex items-center justify-center gap-2">
                 <i data-feather="calendar" class="w-4 h-4"></i> See all events
               </a>
-              <a href="#branches" class="btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full inline-flex items-center justify-center gap-2">
+              <a href="branches.html" class="btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full inline-flex items-center justify-center gap-2">
                 <i data-feather="map-pin" class="w-4 h-4"></i> Find a branch
               </a>
             </div>
@@ -1720,7 +1703,7 @@ document.addEventListener('keydown', (e) => {
                 <button type="button" class="hl-copy-btn btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full text-sm inline-flex items-center gap-2" data-copy-text="${escapeHtml(num)}">
                   <i data-feather="copy" class="w-4 h-4"></i> Copy account number
                 </button>
-                <a href="#giving" class="btn-hover border border-white/30 hover:border-lime hover:text-lime text-white font-semibold px-6 py-3 rounded-full text-sm">All giving options</a>
+                <a href="giving.html" class="btn-hover border border-white/30 hover:border-lime hover:text-lime text-white font-semibold px-6 py-3 rounded-full text-sm">All giving options</a>
               </div>
             </div>
             <div class="bg-white/10 border border-white/15 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-2xl">
@@ -1768,7 +1751,7 @@ document.addEventListener('keydown', (e) => {
                 ${ev.location ? `<span class="inline-flex items-center gap-1.5"><i data-feather="map-pin" class="w-4 h-4"></i>${escapeHtml(ev.location)}</span>` : ''}
               </p>
               <div class="mt-7 flex flex-wrap gap-3">
-                <a href="#events" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full text-sm">See details</a>
+                <a href="events.html" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full text-sm">See details</a>
                 ${ev.allow_registration ? `<button type="button" class="hl-register-btn btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-6 py-3 rounded-full text-sm" data-event-id="${escapeHtml(ev.id)}" data-event-title="${escapeHtml(ev.title)}">Register</button>` : ''}
               </div>
             </div>
@@ -2880,8 +2863,16 @@ observeAllReveals();
 (function handle404() {
   const params = new URLSearchParams(window.location.search);
   const path = window.location.pathname;
-  const knownPaths = ['', '/', '/index.html', '/index'];
-  const isUnknownPath = !knownPaths.includes(path) && !path.endsWith('index.html');
+  const file = (path.split('/').pop() || '').toLowerCase();
+  const knownFiles = new Set([
+    '', 'index', 'index.html',
+    'sermons', 'sermons.html',
+    'events', 'events.html',
+    'giving', 'giving.html',
+    'branches', 'branches.html',
+    'register', 'register.html'
+  ]);
+  const isUnknownPath = !knownFiles.has(file);
   if (params.has('404') || isUnknownPath) {
     document.getElementById('page404').classList.remove('hidden');
     document.getElementById('pageLoader').classList.add('done');
@@ -2893,6 +2884,25 @@ observeAllReveals();
     openSearch();
   });
 })();
+
+/* Force active nav link based on current page (multi-page split) */
+(function forceActiveNavByPage() {
+  const path = (window.location.pathname || '').split('/').pop() || 'index.html';
+  const map = {
+    'index.html': 'welcome',
+    '': 'welcome',
+    'sermons.html': 'sermons',
+    'events.html': 'events',
+    'giving.html': 'giving',
+    'branches.html': 'branches',
+  };
+  const section = map[path];
+  if (!section) return;
+  document.querySelectorAll('#navbar .nav-link[data-section]').forEach(l => {
+    l.classList.toggle('active', l.dataset.section === section);
+  });
+})();
+
 </script>
 
 </body>
