@@ -1,0 +1,2707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Gracious Word Global Mission">
+<meta name="theme-color" content="#041619">
+<title>Sermons &amp; Media Library — Gracious Word Global Mission</title>
+<meta name="description" content="Gracious Word Global Mission — living Christ, loving people, making disciples. Sermons, events, giving, branches and more." />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gracious Word Global Mission">
+<meta property="og:title" content="Sermons &amp; Media Library — Gracious Word Global Mission">
+<meta property="og:description" content="Gracious Word Global Mission — living Christ, loving people, making disciples. Sermons, events, giving, branches and more.">
+<meta property="og:url" content="https://gwgm.vercel.app/sermons">
+<meta property="og:image" content="https://gwgm.vercel.app/logo.png">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sermons &amp; Media Library — Gracious Word Global Mission">
+<meta name="twitter:description" content="Gracious Word Global Mission — living Christ, loving people, making disciples. Sermons, events, giving, branches and more.">
+<meta name="twitter:image" content="https://gwgm.vercel.app/logo.png">
+
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Church",
+    "name": "Gracious Word Global Mission",
+    "alternateName": "GWGM",
+    "url": "https://gwgm.vercel.app",
+    "logo": "https://gwgm.vercel.app/logo.png",
+    "description": "Christ-centred church teaching the Gospel of Grace, raising disciples and helping people discover God's purpose. Branches in Uyo, Port Harcourt, Eket and AKSU.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Uyo",
+      "addressRegion": "Akwa Ibom",
+      "addressCountry": "NG"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": " 5.0563",
+      "longitude": "7.9379"
+    },
+    "telephone": "+2349112599268",
+    "sameAs": [
+      "https://t.me/graciouswordglobal",
+      "https://www.facebook.com/profile.php?id=61577426519345",
+      "https://www.instagram.com/thegeorgewealth"
+    ]
+  }
+</script>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What time are your Sunday services?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sunday services hold weekly at each branch — check the Events section or contact your nearest branch for the exact time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I become a member?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tap Register or Join Our Family on the website to fill out the membership form and receive your digital membership ID."
+        }
+      }
+      {
+        "@type": "Question",
+        "name": "Where do I listen to past sermons?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Visit the Sermons & Media Library section and tap "View all sermons" to play any MP3 message, or join our Telegram group for every message ever shared."
+        }
+      }
+      // add the rest of your real FAQs
+    ]
+  }
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          royal: { DEFAULT: '#041619', deep: '#041619', light: '#0A2A2F' },
+          teal:  { DEFAULT: '#00FFCF', light: '#66FFE1', deep: '#00C9A3', soft: '#DFFFF6' },
+          lime:  { DEFAULT: '#99FF00', light: '#C0FF66', deep: '#78CC00', soft: '#F0FFDE' },
+          crimson: { DEFAULT: '#DD040D' },
+          cream: '#FBF8F3',
+          lavender: '#F4EEFB',
+          ink: '#241B33',
+        },
+        fontFamily: {
+          display: ['"Plus Jakarta Sans"', 'sans-serif'],
+          body: ['"Plus Jakarta Sans"', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  :root{
+    --royal:#041619; --teal:#00FFCF; --teal-light:#66FFE1;
+    --lime:#99FF00; --lime-light:#C0FF66; --crimson:#DD040D;
+    --crimson-deep:#8B0209; --crimson-soft:#FF5A61;
+    /* Theme tokens — light mode: near-white throughout */
+    --page-bg: #FFFFFF;
+    --card-bg: #FFFFFF;
+    --text: #0F1416;
+    --text-muted: rgba(15,20,22,0.68);
+    --border: #E8EBEB;
+    --logo-bg: #FFFFFF;
+    --nav-bg: #FFFFFF;
+    --nav-text: #0F1416;
+    --section-alt: #F7F9F9;
+    --section-soft: #F4F7F7;
+  }
+  html.dark {
+    /* Dark palette matches footer (royal-deep #041619) */
+    --page-bg: #041619;
+    --card-bg: #0A2A2F;
+    --text: #FFFFFF;
+    --text-muted: rgba(255,255,255,0.65);
+    --border: rgba(255,255,255,0.12);
+    --logo-bg: #041619;
+    --nav-bg: #041619;
+    --nav-text: #FFFFFF;
+    --section-alt: #062025;
+    --section-soft: #051C20;
+  }
+
+  html { scroll-padding-top: 5.5rem; }
+  @media (min-width:768px){ html{ scroll-behavior:smooth; } }
+
+  body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    color: var(--text);
+    background-color: var(--page-bg);
+    -webkit-font-smoothing:antialiased;
+  }
+  body.no-scroll{ overflow:hidden !important; }
+  h1,h2,h3,.font-display{ font-family:'Plus Jakarta Sans',sans-serif; }
+
+  /* ---------- Signature "arch window" card ---------- */
+  .arch-card{
+    border-radius: 9999px 9999px 1rem 1rem / 3.2rem 3.2rem 1rem 1rem;
+    position:relative; overflow:hidden;
+  }
+  @media (max-width:480px){
+    .arch-card{ border-radius: 9999px 9999px .75rem .75rem / 2.2rem 2.2rem .75rem .75rem; }
+  }
+
+  .ray-divider{
+    height:2px;
+    background:linear-gradient(90deg,transparent,var(--teal) 20%,var(--lime) 50%,var(--teal) 80%,transparent);
+    opacity:.9;
+  }
+
+  /* ---------- Scroll reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .8s ease, transform .8s ease; }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+    html{ scroll-behavior:auto; }
+    .ministry-card, .hero-float, .hero-track{ animation:none !important; transition:none !important; }
+  }
+
+  /* ---------- Nav — matches page background ---------- */
+  #navbar{
+    background-color: var(--nav-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  #navbar.scrolled{
+    box-shadow: 0 6px 24px -8px rgba(0,0,0,.12);
+  }
+  html.dark #navbar.scrolled{ box-shadow: 0 6px 24px -8px rgba(0,0,0,.55); }
+
+  /* Active nav link: brand border-top */
+  #navbar .nav-link{
+    position: relative;
+    color: var(--nav-text);
+    opacity: 0.85;
+    transition: color .2s ease, opacity .2s ease;
+    padding-top: 2px;
+  }
+  #navbar .nav-link:hover{ opacity: 1; color: var(--teal); }
+  #navbar .nav-link.active{
+    opacity: 1;
+    border-top: 2.5px solid var(--teal);
+    color: var(--nav-text);
+  }
+  #navbar .nav-brand-text{ color: var(--nav-text); }
+  #navbar .nav-icon-btn{ color: var(--nav-text); opacity: 0.8; }
+  #navbar .nav-icon-btn:hover{ color: var(--lime); opacity: 1; }
+  #mobileMenu{ background-color: var(--nav-bg); border-top: 1px solid var(--border); }
+  #mobileMenu a{ color: var(--nav-text); }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--lime); outline-offset:3px; border-radius:6px;
+  }
+
+  /* ---------- Global hover polish ---------- */
+  .lift-hover{ transition: transform .35s ease, box-shadow .35s ease, border-color .3s ease; }
+  .lift-hover:hover{ transform:translateY(-8px); box-shadow:0 20px 40px -12px rgba(0,0,0,.18); }
+  html.dark .lift-hover:hover{ box-shadow:0 20px 40px -12px rgba(0,0,0,.5); }
+
+  .btn-hover{ transition: transform .2s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease; }
+  .btn-hover:hover{ transform:translateY(-2px); }
+  .btn-hover:active{ transform:translateY(0); }
+
+  .heading-flourish::after{
+    content:""; display:block; width:64px; height:3px; margin:.85rem auto 0;
+    background:linear-gradient(90deg,var(--teal),var(--lime)); border-radius:999px;
+  }
+  .heading-flourish.align-left::after{ margin:.85rem 0 0; }
+
+  .halo-glow{ box-shadow:0 0 0 6px rgba(0,255,207,.18), 0 0 60px 10px rgba(153,255,0,.22); }
+
+  .brand-gradient{
+    background:linear-gradient(90deg,var(--teal),var(--lime));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* ---------- Mobile nav ---------- */
+  #mobileMenu{ transition:max-height .4s ease; overflow:hidden; }
+
+  /* ---------- Grace card modal ---------- */
+  body.grace-modal-open > *:not(#graceCardModal){ filter:blur(10px) brightness(.6); transition:filter .35s ease; }
+  body.grace-modal-open{ overflow:hidden; }
+  #graceCardModal{ opacity:0; transition:opacity .35s ease; }
+  #graceCardModal.is-open{ opacity:1; }
+  #graceCardModal .modal-content{ transform:scale(.94); transition:transform .35s ease; }
+  #graceCardModal.is-open .modal-content{ transform:scale(1); }
+
+  @keyframes gc-pulse-dot{ 0%,100%{opacity:1} 50%{opacity:.35} }
+  .gc-live-dot{ animation:gc-pulse-dot 1.6s ease-in-out infinite; }
+
+  /* ---------- Theme safety net (override Tailwind dark: remnants) ---------- */
+  html.dark body{ color: var(--text); background-color: var(--page-bg); }
+  .text-ink{ color: var(--text) !important; }
+  html.dark .text-ink{ color: var(--text) !important; }
+  /* Keep opacity variants readable without forcing full black/white */
+  .text-ink\/80{ color: rgba(15,20,22,0.82) !important; }
+  .text-ink\/75{ color: rgba(15,20,22,0.78) !important; }
+  .text-ink\/70{ color: rgba(15,20,22,0.72) !important; }
+  .text-ink\/60{ color: rgba(15,20,22,0.62) !important; }
+  .text-ink\/50{ color: rgba(15,20,22,0.52) !important; }
+  .text-ink\/40{ color: rgba(15,20,22,0.42) !important; }
+  html.dark .text-ink\/80{ color: rgba(255,255,255,0.82) !important; }
+  html.dark .text-ink\/75{ color: rgba(255,255,255,0.75) !important; }
+  html.dark .text-ink\/70{ color: rgba(255,255,255,0.70) !important; }
+  html.dark .text-ink\/60{ color: rgba(255,255,255,0.60) !important; }
+  html.dark .text-ink\/50{ color: rgba(255,255,255,0.50) !important; }
+  html.dark .text-ink\/40{ color: rgba(255,255,255,0.40) !important; }
+  /* Light mode: cream/lavender become soft near-white so sections blend */
+  .bg-cream{ background-color: var(--page-bg) !important; }
+  .bg-lavender{ background-color: var(--section-soft) !important; }
+  html.dark .bg-cream, html.dark .bg-lavender{ background-color: var(--page-bg) !important; }
+  .bg-white, .dark\:bg-\[\#10191c\]{ background-color: var(--card-bg) !important; }
+  html.dark .bg-white, html.dark .dark\:bg-\[\#10191c\]{ background-color: var(--card-bg) !important; }
+  /* Unify all former dark section blues to footer palette */
+  html.dark .dark\:bg-\[\#0B1416\],
+  html.dark .dark\:bg-\[\#071012\],
+  html.dark .dark\:bg-\[\#0A2A2F\]{ background-color: var(--page-bg) !important; }
+  .text-royal-deep, .dark\:text-\[\#EAFBF7\]{ color: var(--text) !important; }
+  html.dark .text-royal-deep, html.dark .dark\:text-\[\#EAFBF7\]{ color: var(--text) !important; }
+  html.dark .bg-royal\/10{ background-color:rgba(255,255,255,.08) !important; }
+  html.dark .bg-teal-soft{ background-color:rgba(0,255,207,.08) !important; }
+  html.dark input, html.dark select, html.dark textarea{
+    background-color: #0A2A2F; color: #FFFFFF; border-color: rgba(255,255,255,.15);
+  }
+  html.dark ::placeholder{ color:rgba(255,255,255,.4); }
+  input, select, textarea{
+    background-color: #FFFFFF; color: #0F1416; border-color: #E8EBEB;
+  }
+
+  body, .bg-cream, .bg-lavender, .bg-white, .bg-royal-deep, #navbar, #mobileMenu{
+    transition: background-color .3s ease, color .3s ease, border-color .3s ease;
+  }
+
+  /* Consolidated primary buttons (light + dark) */
+  .btn-primary{
+    background-color: var(--teal);
+    color: #041619;
+    font-weight: 600;
+    border-radius: 9999px;
+    transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary:hover{ background-color: var(--lime); transform: translateY(-2px); }
+  .btn-primary:active{ transform: translateY(0); }
+
+  /* View on Map — dark fill on hover MUST force white text */
+  .map-btn{
+    color: #041619 !important;
+    border: 1.5px solid rgba(4,22,25,.28);
+    background: transparent;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .map-btn:hover,
+  .map-btn:focus-visible{
+    background: #041619 !important;
+    color: #FFFFFF !important;
+    border-color: #041619 !important;
+  }
+  html.dark .map-btn{
+    color: #EAFBF7 !important;
+    border-color: rgba(255,255,255,.28);
+  }
+  html.dark .map-btn:hover,
+  html.dark .map-btn:focus-visible{
+    background: var(--teal) !important;
+    color: #041619 !important;
+    border-color: var(--teal) !important;
+  }
+
+  /* ---------- Scroll progress ---------- */
+  #scrollProgress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg,var(--teal),var(--lime));
+    z-index:60; transition:width .1s ease-out;
+  }
+
+  /* ---------- Back to top ---------- */
+  #backToTop{
+    position:fixed; bottom:5.75rem; right:1.25rem; z-index:45;
+    width:46px; height:46px; border-radius:9999px;
+    background:var(--royal); color:var(--teal);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 24px -6px rgba(4,22,25,.5);
+    opacity:0; pointer-events:none; transform:translateY(12px);
+    transition:opacity .3s ease, transform .3s ease, background-color .25s ease, color .25s ease;
+  }
+  #backToTop.visible{ opacity:1; pointer-events:auto; transform:translateY(0); }
+  #backToTop:hover{ background:var(--teal); color:var(--royal); }
+
+  /* ---------- Floating contact ---------- */
+  #floatingContact{ position:fixed; bottom:1.25rem; right:1.25rem; z-index:46; }
+  #contactPanel{
+    position:absolute; bottom:64px; right:0; width:250px; background:#fff; border-radius:1rem;
+    box-shadow:0 20px 45px -12px rgba(4,22,25,.4); padding:1rem;
+    transform:scale(.9) translateY(8px); opacity:0; pointer-events:none;
+    transition:transform .25s ease, opacity .25s ease;
+  }
+  html.dark #contactPanel{ background:#0A2A2F; color:#FFFFFF; }
+  #contactPanel{ background:#FFFFFF; color:#0F1416; }
+  #contactPanel.open{ transform:scale(1) translateY(0); opacity:1; pointer-events:auto; }
+
+  /* ---------- Cookie banner ---------- */
+  #cookieBanner{ position:fixed; left:0; right:0; bottom:0; z-index:70; transform:translateY(100%); transition:transform .4s ease; }
+  #cookieBanner.visible{ transform:translateY(0); }
+
+  /* ---------- FAQ ---------- */
+  .faq-answer{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .faq-item.open .faq-answer{ max-height:520px; }
+  .faq-item.open .faq-chevron{ transform:rotate(180deg); }
+  .faq-chevron{ transition:transform .3s ease; }
+
+  /* ---------- Search overlay ---------- */
+  #searchOverlay{
+    position:fixed; inset:0; z-index:80; background:rgba(4,22,25,.94);
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  #searchOverlay.open{ opacity:1; pointer-events:auto; }
+  .search-result-item:hover, .search-result-item:focus-visible{ background:rgba(0,255,207,.12); }
+
+  /* ---------- Skip link ---------- */
+  .skip-link{
+    position:absolute; left:-999px; top:0; background:var(--royal); color:#fff;
+    padding:.75rem 1.25rem; border-radius:0 0 .75rem 0; z-index:100; font-weight:600;
+  }
+  .skip-link:focus{ left:0; }
+
+  /* ---------- Loader ---------- */
+  #pageLoader{
+    position:fixed; inset:0; z-index:200; background:var(--royal);
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1rem;
+    transition:opacity .5s ease, visibility .5s ease;
+  }
+  #pageLoader.done{ opacity:0; visibility:hidden; }
+  .loader-ring{
+    width:46px; height:46px; border-radius:50%;
+    border:3px solid rgba(0,255,207,.2); border-top-color:var(--teal);
+    animation:loader-spin .8s linear infinite;
+  }
+  @keyframes loader-spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- Countdown units ---------- */
+  .countdown-unit{ background:rgba(4,22,25,.06); border-radius:.75rem; padding:.6rem .4rem; min-width:58px; text-align:center; }
+  .countdown-unit{ background:rgba(0,0,0,.04); }
+  html.dark .countdown-unit{ background:rgba(255,255,255,.08); }
+
+  /* ---------- Toast ---------- */
+  #toastHost{ position:fixed; z-index:150; bottom:1.5rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:.5rem; align-items:center; pointer-events:none; }
+  .toast{
+    background:#041619; color:#EAFBF7; padding:.7rem 1.1rem; border-radius:999px;
+    font-size:.85rem; box-shadow:0 12px 30px -8px rgba(0,0,0,.5);
+    opacity:0; transform:translateY(10px); transition:opacity .25s ease, transform .25s ease;
+  }
+  .toast.show{ opacity:1; transform:translateY(0); }
+  .toast.err{ background:#7f1016; }
+
+  /* ---------- 404 ---------- */
+  #page404{ position:fixed; inset:0; z-index:190; background:var(--royal); overflow-y:auto; }
+
+  /* =========================================================
+     HERO FLOATING ELEMENTS
+     ========================================================= */
+  .hero-floats{ position:absolute; inset:0; pointer-events:none; z-index:2; overflow:hidden; }
+  .hero-float{
+    position:absolute; display:flex; align-items:center; justify-content:center;
+    width:76px; height:76px; border-radius:9999px;
+    background:rgba(0,255,207,.10); border:2px solid rgba(0,255,207,.35);
+    color:var(--teal); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    animation:hero-float-y 9s ease-in-out infinite;
+    opacity:.85;
+    box-shadow: 0 0 30px rgba(0,255,207,.15);
+  }
+  .hero-float svg{ width:32px; height:32px; }
+  .hero-float.f-lime{ color:var(--lime); border-color:rgba(153,255,0,.4); background:rgba(153,255,0,.10); box-shadow: 0 0 30px rgba(153,255,0,.18); }
+  @keyframes hero-float-y{
+    0%,100%{ transform: translate3d(0,0,0) rotate(0deg); }
+    50%{ transform: translate3d(0,-30px,0) rotate(10deg); }
+  }
+  @media (max-width:640px){
+    .hero-float{ width:54px; height:54px; }
+    .hero-float svg{ width:22px; height:22px; }
+  }
+
+  /* =========================================================
+     HERO CAROUSEL
+     ========================================================= */
+  #hero{
+    position:relative;
+    height: 100vh;
+    min-height: 640px;
+    overflow:hidden;
+  }
+  .hero-viewport{ position:absolute; inset:0; overflow:hidden; }
+  #heroTrack{
+    display:flex; flex-wrap:nowrap;
+    height:100%;
+    transition: transform .9s cubic-bezier(.22,.61,.36,1);
+    will-change: transform;
+  }
+  #heroTrack.no-transition{ transition:none; }
+  .hero-slide{
+    position:relative;
+    flex: 0 0 100%;
+    width:100%;
+    height:100%;
+    display:flex; align-items:center;
+    overflow:hidden;
+  }
+  .hero-slide-inner{
+    position:relative; z-index:3;
+    width:100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 6rem 1.25rem 4rem;
+  }
+  @media (min-width:640px){ .hero-slide-inner{ padding: 7rem 2rem 5rem; } }
+
+  .hero-slide-bg{ position:absolute; inset:0; z-index:0; }
+  .hero-slide-bg img{ width:100%; height:100%; object-fit:cover; }
+  .hero-slide-overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(to bottom, rgba(4,22,25,.90), rgba(4,22,25,.82), rgba(4,22,25,.95));
+  }
+
+  .hero-arrow{
+    position:absolute; top:50%; transform: translateY(-50%);
+    z-index: 20;
+    width: 48px; height: 48px;
+    border-radius: 9999px;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.2);
+    color:#fff;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    transition: background-color .25s ease, color .25s ease, border-color .25s ease, transform .2s ease;
+  }
+  .hero-arrow:hover{ background: var(--teal); color: var(--royal); border-color: var(--teal); }
+  .hero-arrow:active{ transform: translateY(-50%) scale(.96); }
+  #heroPrev{ left: 1rem; }
+  #heroNext{ right: 1rem; }
+  @media (min-width:768px){
+    #heroPrev{ left: 1.75rem; }
+    #heroNext{ right: 1.75rem; }
+  }
+
+  .hero-dots{
+    position:absolute; bottom: 1.25rem; left: 50%; transform: translateX(-50%);
+    z-index: 20;
+    display:flex; align-items:center; gap:.5rem;
+  }
+  .hero-dot{
+    width: 10px; height: 10px; border-radius:9999px;
+    background: rgba(255,255,255,.28);
+    transition: width .3s ease, background-color .3s ease;
+    cursor:pointer;
+  }
+  .hero-dot.active{ background: var(--teal); width: 30px; }
+  .hero-dot:hover{ background: var(--lime); }
+
+  .hero-progress{
+    position:absolute; bottom:0; left:0; right:0; height:3px;
+    background: rgba(255,255,255,.08);
+    z-index: 19;
+  }
+  .hero-progress-fill{
+    height:100%; width:0%;
+    background: linear-gradient(90deg, var(--teal), var(--lime));
+    transition: width .25s linear;
+  }
+
+  /* Live pulse dot — RED for the live slide only, but subtle */
+  .live-pulse{
+    display:inline-block; width:9px; height:9px; border-radius:9999px; background:var(--crimson-soft);
+    box-shadow:0 0 0 0 rgba(255,90,97,.7); animation: live-pulse 1.6s infinite;
+  }
+  @keyframes live-pulse{
+    0%{ box-shadow:0 0 0 0 rgba(255,90,97,.75); }
+    70%{ box-shadow:0 0 0 12px rgba(255,90,97,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(255,90,97,0); }
+  }
+
+  /* =========================================================
+     MINISTRY CARDS — light mode near-white, dark mode glass
+     ========================================================= */
+  .ministry-card{
+    position: relative;
+    border-radius: 1rem;
+    background: #FFFFFF;
+    border: 1.5px solid #E8EBEB;
+    color: #0F1416;
+    transition:
+      border-color .3s ease,
+      background-color .3s ease,
+      box-shadow .3s ease,
+      transform .35s ease;
+  }
+  .ministry-card p{ color: #0F1416; }
+  .ministry-card:hover,
+  .ministry-card:focus-within{
+    border-color: var(--teal);
+    background: #F0FFFB;
+    box-shadow: 0 0 0 1px rgba(0,255,207,.25), 0 12px 28px -10px rgba(0,201,163,.18);
+  }
+  .ministry-card:hover .ministry-icon-wrap,
+  .ministry-card:focus-within .ministry-icon-wrap{
+    background: rgba(0,255,207,.22);
+  }
+  .ministry-card:hover p,
+  .ministry-card:focus-within p{
+    color: #00A88A;
+  }
+  html.dark .ministry-card{
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.12);
+    color: #fff;
+  }
+  html.dark .ministry-card p{ color: #fff; }
+  html.dark .ministry-card:hover,
+  html.dark .ministry-card:focus-within{
+    border-color: var(--teal);
+    background: rgba(0,255,207,.06);
+    box-shadow: 0 0 0 1px rgba(0,255,207,.18), 0 12px 28px -10px rgba(0,255,207,.22);
+  }
+  html.dark .ministry-card:hover p,
+  html.dark .ministry-card:focus-within p{
+    color: var(--lime);
+  }
+
+  /* =========================================================
+     GLOW CARDS — Vision/Mission/Purpose, Branches, Why Join
+     ========================================================= */
+  .vmp-card,
+  .glow-card{
+    position: relative;
+    overflow: visible; /* allow glow to show outside */
+    border: 1.5px solid rgba(4,22,25,.08);
+    background: #FFFFFF;
+    transition:
+      border-color .35s ease,
+      box-shadow .35s ease,
+      transform .35s ease,
+      background-color .35s ease;
+  }
+  .vmp-card:hover,
+  .vmp-card:focus-within,
+  .glow-card:hover,
+  .glow-card:focus-within{
+    border-color: rgba(0,255,207,.55);
+    box-shadow:
+      0 0 0 1px rgba(0,255,207,.35),
+      0 0 24px 4px rgba(0,255,207,.22),
+      0 0 48px 8px rgba(153,255,0,.12),
+      0 16px 36px -12px rgba(4,22,25,.12);
+    transform: translateY(-6px);
+  }
+  html.dark .vmp-card,
+  html.dark .glow-card{
+    border-color: rgba(255,255,255,.10);
+    background: #0A2A2F;
+  }
+  html.dark .vmp-card:hover,
+  html.dark .vmp-card:focus-within,
+  html.dark .glow-card:hover,
+  html.dark .glow-card:focus-within{
+    border-color: rgba(0,255,207,.5);
+    box-shadow:
+      0 0 0 1px rgba(0,255,207,.3),
+      0 0 28px 6px rgba(0,255,207,.2),
+      0 0 56px 10px rgba(153,255,0,.1),
+      0 16px 36px -12px rgba(0,0,0,.45);
+  }
+
+  /* =========================================================
+     COPY BUTTONS — lift on hover (Online Giving)
+     ========================================================= */
+  .copy-btn{
+    color: #111111 !important;
+    border-color: #EEEEEE !important;
+    background: rgba(0,0,0,.04);
+    transition:
+      background-color .2s ease,
+      color .2s ease,
+      border-color .2s ease,
+      transform .2s ease,
+      box-shadow .2s ease;
+  }
+  .copy-btn:hover{
+    background: var(--teal) !important;
+    color: #041619 !important;
+    border-color: var(--teal) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px -6px rgba(0,201,163,.45);
+  }
+  .copy-btn:active{ transform: translateY(0); box-shadow: none; }
+  html.dark .copy-btn{
+    color: #FFFFFF !important;
+    border-color: rgba(255,255,255,.25) !important;
+    background: rgba(255,255,255,.06);
+  }
+  html.dark .copy-btn:hover{
+    background: var(--teal) !important;
+    color: #041619 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px -6px rgba(0,255,207,.4);
+  }
+
+  /* =========================================================
+     SERMON PAGINATION
+     ========================================================= */
+  .sermon-page-btn{
+    min-width:38px; height:38px; border-radius:9999px; font-size:.8rem; font-weight:600;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid #EEEEEE; color:#111111; background:#FFFFFF;
+    transition: all .2s ease;
+  }
+  html.dark .sermon-page-btn{ background:#141414; color:#FFFFFF; border-color:rgba(255,255,255,.15); }
+  .sermon-page-btn:hover:not(:disabled){ border-color:var(--teal); color:var(--teal); }
+  .sermon-page-btn.active{ background:var(--teal); border-color:var(--teal); color:#041619; }
+  .sermon-page-btn:disabled{ opacity:.35; cursor:not-allowed; }
+
+  .sermon-perpage-select{
+    border:1px solid #EEEEEE; color:#111111; background:#FFFFFF;
+    border-radius:9999px; padding:.35rem .75rem; font-size:.8rem; font-weight:600;
+  }
+  html.dark .sermon-perpage-select{ background:#141414; color:#FFFFFF; border-color:rgba(255,255,255,.15); }
+
+  /* =========================================================
+     GIVING GRID — center when 1 card, animate shift as more arrive
+     ========================================================= */
+  #givingGrid{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    transition: all .4s ease;
+  }
+  #givingGrid .giving-card{
+    flex: 0 0 100%;
+    max-width: 28rem;
+    transition: transform .4s ease, opacity .4s ease;
+  }
+  @media (min-width:768px){
+    #givingGrid .giving-card{ flex: 0 0 calc(50% - .75rem); max-width: none; }
+  }
+  @media (min-width:1024px){
+    #givingGrid .giving-card{ flex: 0 0 calc(33.333% - 1rem); }
+  }
+  /* When exactly one card, keep it truly centered */
+  #givingGrid.single-card{ justify-content: center; }
+  #givingGrid.single-card .giving-card{ flex: 0 0 100%; max-width: 28rem; }
+
+  /* ---------- Weekly Services Slide ---------- */
+  .service-chip{
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .35rem 1rem .35rem .8rem;
+    border-radius: 9999px;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    background: rgba(0,255,207,.12);
+    border: 1px solid rgba(0,255,207,.25);
+    color: var(--teal-light);
+    white-space: nowrap;
+  }
+  .service-chip .dot{
+    width: 6px; height: 6px;
+    border-radius: 9999px;
+    background: var(--lime);
+    flex-shrink: 0;
+  }
+  .service-card-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: .75rem;
+  }
+  .service-card{
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: .9rem;
+    padding: .85rem 1rem;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: border-color .3s ease, background-color .3s ease, transform .3s ease;
+  }
+  .service-card:hover{
+    border-color: var(--teal);
+    background: rgba(0,255,207,.08);
+    transform: translateY(-3px);
+  }
+  .service-card .service-day{
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--lime);
+    margin-bottom: .15rem;
+  }
+  .service-card .service-name{
+    font-size: .85rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .service-card .service-note{
+    font-size: .68rem;
+    color: rgba(255,255,255,.55);
+    margin-top: .15rem;
+  }
+  .service-card.highlight{
+    border-color: rgba(153,255,0,.35);
+    background: rgba(153,255,0,.06);
+  }
+  .service-card.highlight .service-day{ color: var(--lime); }
+
+  /* ---------- Print ---------- */
+  @media print{
+    #navbar,#mobileMenu,#scrollProgress,#backToTop,#floatingContact,#cookieBanner,
+    #searchOverlay,#pageLoader,#toastHost,.no-print,#graceCardModal,#allSermonsModal,
+    #eventRegModal,#confirmModal,#page404,#hero,.hero-floats{ display:none !important; }
+    body{ background:#fff !important; color:#000 !important; }
+    a[href]::after{ content:" (" attr(href) ")"; font-size:.75em; color:#555; }
+    .arch-card, section, article{ break-inside:avoid; }
+    .reveal{ opacity:1 !important; transform:none !important; }
+    #navbar{ position:static !important; }
+    img{ max-width:100% !important; }
+  }
+</style>
+</head>
+
+<body class="antialiased">
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<div id="pageLoader" aria-hidden="true">
+  <div class="loader-ring"></div>
+  <p class="text-teal/70 text-xs tracking-[0.3em] uppercase">Gracious Word</p>
+</div>
+
+<div id="scrollProgress"></div>
+<div id="toastHost" aria-live="polite"></div>
+
+<!-- ============================== NAV ============================== -->
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 md:h-20">
+    <a href="index.html" class="flex items-center gap-3 shrink-0">
+      <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission logo"
+           class="w-9 h-9 rounded-full object-contain p-1" style="background:var(--logo-bg)" />
+      <span class="nav-brand-text font-display font-semibold tracking-wide text-sm sm:text-base">
+        Gracious Word <span class="brand-gradient">Global Mission</span>
+      </span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+      <a href="index.html" class="nav-link" data-section="welcome">Home</a>
+      <a href="sermons.html" class="nav-link active" data-section="sermons">Sermons</a>
+      <a href="events.html" class="nav-link" data-section="events">Events</a>
+      <a href="giving.html" class="nav-link" data-section="giving">Giving</a>
+      <a href="branches.html" class="nav-link" data-section="branches">Branches</a>
+      <button id="searchBtn" aria-label="Search the site" class="btn-hover nav-icon-btn">
+        <i data-feather="search" class="w-4 h-4"></i>
+      </button>
+      <button id="darkModeToggle" aria-label="Toggle dark mode" class="btn-hover nav-icon-btn">
+        <i data-feather="moon" class="w-4 h-4"></i>
+      </button>
+      <a href="register.html" class="btn-hover ml-1 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2 rounded-full shadow-md">
+        Register
+      </a>
+    </div>
+
+    <div class="flex items-center gap-4 md:hidden">
+      <button id="searchBtnMobile" aria-label="Search the site" class="btn-hover nav-icon-btn"><i data-feather="search" class="w-6 h-6"></i></button>
+      <button id="darkModeToggleMobile" aria-label="Toggle dark mode" class="btn-hover nav-icon-btn"><i data-feather="moon" class="w-6 h-6"></i></button>
+      <button id="menuBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu" class="btn-hover nav-icon-btn">
+        <i data-feather="menu" class="w-7 h-7"></i>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="md:hidden max-h-0 px-5">
+    <div class="flex flex-col gap-4 py-5 font-medium">
+      <a href="index.html" class="mobile-link nav-link" data-section="welcome">Home</a>
+      <a href="sermons.html" class="mobile-link nav-link active" data-section="sermons">Sermons</a>
+      <a href="events.html" class="mobile-link nav-link" data-section="events">Events</a>
+      <a href="giving.html" class="mobile-link nav-link" data-section="giving">Giving</a>
+      <a href="branches.html" class="mobile-link nav-link" data-section="branches">Branches</a>
+      <a href="index.html#faq" class="mobile-link nav-link" data-section="faq">FAQ</a>
+      <a href="register.html" class="mobile-link text-teal font-semibold">Register Now →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================== SEARCH ============================== -->
+<div id="searchOverlay" role="dialog" aria-modal="true" aria-label="Site search">
+  <div class="max-w-2xl mx-auto pt-24 sm:pt-32 px-5">
+    <div class="flex items-center gap-3 bg-white/10 border border-white/15 rounded-full px-5 py-3">
+      <i data-feather="search" class="text-white/60 w-5 h-5"></i>
+      <input id="searchInput" type="text" placeholder="Search sermons, events, ministries…"
+        class="bg-transparent flex-1 outline-none text-white placeholder:text-white/40" autocomplete="off" />
+      <button id="searchCloseBtn" aria-label="Close search" class="btn-hover text-white/60 hover:text-lime">
+        <i data-feather="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <p class="mt-3 text-white/35 text-xs px-2">Tip: press <kbd class="px-1.5 py-0.5 rounded bg-white/10">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 rounded bg-white/10">/</kbd> anywhere</p>
+    <div id="searchResults" class="mt-4 space-y-1 max-h-[55vh] overflow-y-auto"></div>
+  </div>
+</div>
+
+<main id="main" class="pt-20">
+<div id="pastorsGrid" class="hidden" aria-hidden="true"></div>
+<div id="ministriesGrid" class="hidden" aria-hidden="true"></div>
+<div id="faqList" class="hidden" aria-hidden="true"></div>
+<p id="faqEmptyState" class="hidden"></p>
+<form id="newsletterForm" class="hidden"><input id="newsletterEmail" /><p id="newsletterError" class="hidden"></p><div id="newsletterSuccess" class="hidden"></div></form>
+<!-- ============================== SERMONS ============================== -->
+<section id="sermons" class="py-20 sm:py-28 px-5 sm:px-8 bg-cream dark:bg-[#0B1416]">
+  <div class="max-w-3xl mx-auto text-center reveal">
+    <h2 class="font-display font-bold text-3xl sm:text-4xl text-royal-deep dark:text-[#EAFBF7] heading-flourish">Sermons &amp; Media Library</h2>
+    <p class="mt-4 text-ink/70 text-sm sm:text-base max-w-xl mx-auto">Listen to the latest word, or explore every message we've shared.</p>
+  </div>
+
+  <div class="max-w-3xl mx-auto mt-12">
+    <div id="latestSermonSkeleton" class="arch-card bg-white dark:bg-[#10191c] shadow-lg p-8 animate-pulse">
+      <div class="h-4 w-24 bg-royal/10 rounded mb-3"></div>
+      <div class="h-5 w-1/2 bg-royal/10 rounded mb-2"></div>
+      <div class="h-3 w-1/3 bg-royal/10 rounded mb-6"></div>
+      <div class="h-24 w-full bg-royal/10 rounded-xl"></div>
+    </div>
+
+    <article id="latestSermonCard" class="hidden reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover border border-royal/5 dark:border-white/10">
+      <div class="p-6 sm:p-8">
+        <span class="text-xs font-semibold uppercase tracking-wider text-teal">Latest Sermon</span>
+        <h3 id="latestSermonTitle" class="mt-2 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">—</h3>
+        <p id="latestSermonMeta" class="mt-1 text-xs text-ink/50">—</p>
+        <p id="latestSermonUpdated" class="mt-1 text-xs text-ink/40">—</p>
+        <div id="latestSermonPlayer" class="mt-5"></div>
+      </div>
+    </article>
+
+    <p id="sermonsEmptyState" class="hidden text-center text-sm text-ink/50 italic">No sermons have been published yet. Please check back soon.</p>
+
+    <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <button id="viewAllSermonsBtn" class="btn-hover inline-flex items-center gap-2 border border-royal/20 dark:border-white/20 hover:border-teal hover:text-teal text-royal-deep dark:text-[#EAFBF7] font-semibold px-6 py-3 rounded-full">
+        <i data-feather="headphones" class="w-4 h-4"></i> View all sermons
+      </button>
+      <a id="telegramJoinBtn" href="#" target="_blank" rel="noopener noreferrer"
+        class="btn-hover inline-flex items-center gap-2 bg-[#229ED9] hover:bg-[#1b87ba] text-white font-semibold px-6 py-3 rounded-full">
+        <i data-feather="send" class="w-4 h-4"></i> Join our Telegram sermon group
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- All sermons modal -->
+<div id="allSermonsModal" class="fixed inset-0 z-[100] hidden">
+  <div id="allSermonsBackdrop" class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
+  <div class="relative z-10 h-full w-full flex items-start justify-center p-4 sm:p-8 overflow-y-auto">
+    <div class="modal-content bg-cream dark:bg-[#0B1416] rounded-2xl max-w-3xl w-full mt-10 mb-10 p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <h3 class="font-display font-bold text-xl sm:text-2xl text-royal-deep dark:text-[#EAFBF7]">All Sermons</h3>
+        <div class="flex items-center gap-3">
+          <label for="sermonsPerPage" class="text-xs text-ink/60 dark:text-white/50">Per page</label>
+          <select id="sermonsPerPage" class="sermon-perpage-select">
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+          </select>
+          <button id="allSermonsCloseBtn" aria-label="Close" class="btn-hover w-10 h-10 rounded-full bg-royal/10 hover:bg-teal flex items-center justify-center">
+            <i data-feather="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+      <div id="allSermonsList" class="space-y-4"></div>
+
+      <div id="sermonsPagination" class="hidden mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p id="sermonsPageInfo" class="text-xs text-ink/50 dark:text-white/40">Page 1 of 1</p>
+        <div class="flex items-center gap-2">
+          <button id="sermonsPrevBtn" class="sermon-page-btn" aria-label="Previous page">‹ Prev</button>
+          <div id="sermonsPageButtons" class="flex items-center gap-2"></div>
+          <button id="sermonsNextBtn" class="sermon-page-btn" aria-label="Next page">Next ›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section id="events" class="hidden" aria-hidden="true">
+  <div id="eventCountdownWrap" class="hidden">
+    <p id="eventCountdownLabel"></p>
+    <p id="eventCountdownTitle"></p>
+    <span id="cdDays"></span><span id="cdHours"></span><span id="cdMins"></span><span id="cdSecs"></span>
+  </div>
+  <div id="eventsList"></div>
+  <p id="eventsEmptyState" class="hidden"></p>
+</section>
+<div id="eventRegModal" class="hidden">
+  <div id="eventRegBackdrop"></div>
+  <button id="eventRegCloseBtn" class="hidden"></button>
+  <form id="eventRegForm" class="hidden">
+    <input type="hidden" id="eventRegEventId" />
+    <input id="eventRegName" /><input id="eventRegEmail" /><input id="eventRegPhone" />
+    <input type="checkbox" id="eventRegReminder" />
+    <p id="eventRegError" class="hidden"></p>
+  </form>
+  <div id="eventRegSuccess" class="hidden"></div>
+  <h3 id="eventRegTitle" class="hidden"></h3>
+</div>
+
+<section id="giving" class="hidden" aria-hidden="true">
+  <div id="givingGrid"></div>
+  <p id="givingEmptyState" class="hidden"></p>
+</section>
+
+<section id="branches" class="hidden" aria-hidden="true"></section>
+</main><!-- ============================== FOOTER ============================== -->
+<footer class="bg-royal-deep text-white/80 pt-16 pb-8 px-5 sm:px-8">
+  <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div>
+      <div class="flex items-center gap-3">
+        <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission logo" class="w-9 h-9 rounded-full object-contain p-1 bg-[rgba(75,29,143,0.28)]" />
+        <span class="text-white font-display font-semibold">Gracious Word <span class="brand-gradient">Global Mission</span></span>
+      </div>
+      <p class="mt-4 text-sm italic text-white/60">"...bringing the God‑life to men"</p>
+    </div>
+
+    <div>
+      <h4 class="text-lime font-display font-semibold mb-4">Quick Links</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="index.html" class="hover:text-lime transition-colors">Home</a></li>
+        <li><a href="register.html" class="hover:text-lime transition-colors">Register</a></li>
+        <li><a href="index.html#vision" class="hover:text-lime transition-colors">Vision</a></li>
+        <li><a href="index.html#ministries" class="hover:text-lime transition-colors">Ministries</a></li>
+        <li><a href="branches.html" class="hover:text-lime transition-colors">Branches</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="text-lime font-display font-semibold mb-4">Contact</h4>
+      <ul class="space-y-2 text-sm">
+        <li class="flex items-center gap-2"><i data-feather="mail" class="w-4 h-4"></i>
+          <a href="mailto:graciousword78@gmail.com" class="hover:text-teal transition-colors">graciousword78@gmail.com</a></li>
+        <li class="flex items-center gap-2"><i data-feather="phone" class="w-4 h-4"></i> 09112599268</li>
+        <li class="flex items-center gap-2"><i data-feather="phone" class="w-4 h-4"></i> 07039020047</li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="text-lime font-display font-semibold mb-4">Follow Us</h4>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://www.facebook.com/share/18z5KfA6bh/?mibextid=wwXIfr" aria-label="Facebook" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="facebook" class="w-4 h-4"></i></a>
+        <a href="https://www.instagram.com/thegeorgewealth?igsh=MTQwdDhyeDFzMTg1aw%3D%3D&utm_source=qr" aria-label="Instagram" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="instagram" class="w-4 h-4"></i></a>
+        <a href="#" aria-label="YouTube" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="youtube" class="w-4 h-4"></i></a>
+        <a href="https://www.tiktok.com/@graciousword_uyo?_r=1&_t=ZS-98PVv4vvikq" aria-label="TikTok" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="music" class="w-4 h-4"></i></a>
+        <a id="footerTelegramLink" href="#" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="btn-hover w-9 h-9 rounded-full bg-white/10 hover:bg-teal hover:text-royal flex items-center justify-center"><i data-feather="send" class="w-4 h-4"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="ray-divider max-w-6xl mx-auto mt-12"></div>
+  <p class="text-center text-xs text-white/50 mt-6" id="copyrightText"></p>
+</footer>
+
+<button id="backToTop" aria-label="Back to top"><i data-feather="arrow-up" class="w-5 h-5"></i></button>
+
+<div id="floatingContact">
+  <div id="contactPanel">
+    <p class="font-display font-semibold text-royal-deep dark:text-[#EAFBF7] mb-3 text-sm">Get in touch</p>
+    <div class="space-y-2 text-sm">
+      <a href="mailto:graciousword78@gmail.com" class="flex items-center gap-2 text-ink/80 dark:text-[#CFE7E3] hover:text-teal transition-colors"><i data-feather="mail" class="w-4 h-4"></i> Email us</a>
+      <a href="tel:+2349112599268" class="flex items-center gap-2 text-ink/80 dark:text-[#CFE7E3] hover:text-teal transition-colors"><i data-feather="phone" class="w-4 h-4"></i> Call us</a>
+      <a id="contactTelegramLink" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-ink/80 dark:text-[#CFE7E3] hover:text-teal transition-colors"><i data-feather="send" class="w-4 h-4"></i> Telegram</a>
+    </div>
+  </div>
+  <button id="contactToggleBtn" aria-label="Contact us" class="btn-hover w-14 h-14 rounded-full bg-teal hover:bg-lime text-[#041619] flex items-center justify-center shadow-xl">
+    <i data-feather="message-circle" class="w-6 h-6"></i>
+  </button>
+</div>
+
+<div id="cookieBanner" class="bg-royal-deep text-white/90 px-5 py-4 sm:px-8 flex flex-col sm:flex-row items-center gap-3 justify-between">
+  <p class="text-sm text-center sm:text-left">We use minimal cookies to remember your preferences (like dark mode). No tracking, no third-party ads.</p>
+  <button id="cookieAcceptBtn" class="btn-hover shrink-0 bg-teal hover:bg-lime text-[#041619] font-semibold px-5 py-2 rounded-full text-sm">Got it</button>
+</div>
+
+<div id="confirmModal" class="fixed inset-0 z-[110] hidden">
+  <div class="absolute inset-0 bg-royal-deep/90 backdrop-blur-sm"></div>
+  <div class="relative z-10 h-full w-full flex items-center justify-center p-5">
+    <div class="bg-white dark:bg-[#10191c] rounded-2xl max-w-sm w-full p-6 text-center">
+      <p id="confirmModalMessage" class="text-royal-deep dark:text-[#EAFBF7] font-medium">Are you sure?</p>
+      <div class="mt-5 flex gap-3">
+        <button id="confirmModalCancel" class="btn-hover flex-1 border border-royal/20 dark:border-white/20 rounded-full py-2 font-medium text-royal-deep dark:text-[#EAFBF7]">Cancel</button>
+        <button id="confirmModalConfirm" class="btn-hover flex-1 bg-red-600 hover:bg-red-700 text-white rounded-full py-2 font-medium">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== 404 VIEW ============================== -->
+<div id="page404" class="hidden">
+  <div class="min-h-full flex items-center justify-center px-6 py-20 relative">
+    <div class="absolute inset-0 ray-divider top-0 bottom-auto"></div>
+    <div class="max-w-lg text-center">
+      <p class="font-display text-[5rem] sm:text-[7rem] leading-none brand-gradient font-extrabold">404</p>
+      <h1 class="mt-2 font-display font-bold text-2xl sm:text-3xl text-white">This page has wandered off</h1>
+      <p class="mt-4 text-white/70 text-sm sm:text-base leading-relaxed">
+        The link may be broken, or the page may have been moved. But you are not lost —
+        here are a few doors back home.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="index.html" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-7 py-3 rounded-full">Back to homepage</a>
+        <button id="notFoundSearchBtn" class="btn-hover border border-white/30 hover:border-lime hover:text-lime text-white font-semibold px-7 py-3 rounded-full">Search the site</button>
+      </div>
+      <div class="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/50">
+        <a href="sermons.html" class="hover:text-lime transition-colors">Sermons</a>
+        <a href="events.html" class="hover:text-lime transition-colors">Events</a>
+        <a href="giving.html" class="hover:text-lime transition-colors">Giving</a>
+        <a href="branches.html" class="hover:text-lime transition-colors">Branches</a>
+        <a href="index.html#faq" class="hover:text-lime transition-colors">FAQ</a>
+      </div>
+      <div class="mt-12 ray-divider"></div>
+      <p class="mt-6 text-xs text-white/40">Gracious Word Global Mission · "...bringing the God‑life to men"</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== SCRIPT ============================== -->
+<script>
+/* =========================================================================
+   0. CONFIG
+   ========================================================================= */
+const GWGM_CONFIG = {
+  supabaseUrl: 'https://osrzaimxlcsvoitxvuya.supabase.co',
+  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zcnphaW14bGNzdm9pdHh2dXlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NTA2ODEsImV4cCI6MjEwMTMyNjY4MX0.Q3NF1s1IMPMU2Lo0pD30ZZs-Y40iwwVUKBALwNHBywo',
+  telegramGroupUrl: 'https://t.me/YOUR_TELEGRAM_GROUP',
+};
+
+let gwgmClient = null;
+try {
+  if (!GWGM_CONFIG.supabaseUrl.includes('YOUR_') && window.supabase) {
+    gwgmClient = window.supabase.createClient(GWGM_CONFIG.supabaseUrl, GWGM_CONFIG.supabaseKey);
+  }
+} catch (err) {
+  console.error('[GWGM] Supabase client could not be created:', err);
+}
+
+/* =========================================================================
+   1. UTILITIES
+   ========================================================================= */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+function safeUrl(url) {
+  if (!url) return '';
+  const s = String(url).trim();
+  if (/^(javascript|data|vbscript):/i.test(s)) return '';
+  return s;
+}
+
+function formatDate(value, opts) {
+  if (!value) return '';
+  const d = new Date(value);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString(undefined, opts || { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function toast(message, isError) {
+  const host = document.getElementById('toastHost');
+  const el = document.createElement('div');
+  el.className = 'toast' + (isError ? ' err' : '');
+  el.textContent = message;
+  host.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 3200);
+}
+
+let featherTimer = null;
+function refreshIcons() {
+  clearTimeout(featherTimer);
+  featherTimer = setTimeout(() => { try { feather.replace(); } catch (e) {} }, 0);
+}
+
+/* =========================================================================
+   2. REVEAL OBSERVER
+   ========================================================================= */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+function observeReveal(el) { if (el && el.classList.contains('reveal')) revealObserver.observe(el); }
+function observeAllReveals(root) {
+  (root || document).querySelectorAll('.reveal:not(.is-visible)').forEach(observeReveal);
+}
+
+/* =========================================================================
+   3. DARK MODE
+   ========================================================================= */
+function applyDarkMode(isDark) {
+  document.documentElement.classList.toggle('dark', isDark);
+  document.querySelectorAll('#darkModeToggle i, #darkModeToggleMobile i').forEach(icon => {
+    icon.setAttribute('data-feather', isDark ? 'sun' : 'moon');
+  });
+  refreshIcons();
+}
+const storedDarkPref = localStorage.getItem('gwgm_dark_mode');
+const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyDarkMode(storedDarkPref !== null ? storedDarkPref === 'true' : systemPrefersDark);
+
+function toggleDarkMode() {
+  const isDark = !document.documentElement.classList.contains('dark');
+  applyDarkMode(isDark);
+  localStorage.setItem('gwgm_dark_mode', String(isDark));
+}
+document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+document.getElementById('darkModeToggleMobile').addEventListener('click', toggleDarkMode);
+
+/* Active nav highlight via IntersectionObserver */
+(function setupActiveNav() {
+  const links = document.querySelectorAll('#navbar .nav-link[data-section]');
+  const sections = Array.from(links).map(l => document.getElementById(l.dataset.section)).filter(Boolean);
+  if (!sections.length) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const id = entry.target.id;
+      links.forEach(l => l.classList.toggle('active', l.dataset.section === id));
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+  sections.forEach(s => io.observe(s));
+})();
+
+/* =========================================================================
+   4. NAV / MOBILE MENU
+   ========================================================================= */
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+let menuOpen = false;
+
+function setMenu(open) {
+  menuOpen = open;
+  mobileMenu.style.maxHeight = open ? mobileMenu.scrollHeight + 'px' : '0px';
+  menuBtn.setAttribute('aria-expanded', String(open));
+  menuBtn.innerHTML = open ? '<i data-feather="x" class="w-7 h-7"></i>' : '<i data-feather="menu" class="w-7 h-7"></i>';
+  refreshIcons();
+}
+menuBtn.addEventListener('click', () => setMenu(!menuOpen));
+document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => setMenu(false)));
+window.addEventListener('resize', () => { if (menuOpen) setMenu(false); });
+
+/* =========================================================================
+   5. SCROLL
+   ========================================================================= */
+const navbar = document.getElementById('navbar');
+const backToTopBtn = document.getElementById('backToTop');
+const progressBar = document.getElementById('scrollProgress');
+let ticking = false;
+
+window.addEventListener('scroll', () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    const y = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (docHeight > 0 ? (y / docHeight) * 100 : 0) + '%';
+    navbar.classList.toggle('scrolled', y > 40);
+    backToTopBtn.classList.toggle('visible', y > 500);
+    ticking = false;
+  });
+}, { passive: true });
+
+backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* =========================================================================
+   6. PAGE LOADER
+   ========================================================================= */
+window.addEventListener('load', () => document.getElementById('pageLoader').classList.add('done'));
+setTimeout(() => document.getElementById('pageLoader').classList.add('done'), 2500);
+
+/* =========================================================================
+   7. SITE SEARCH
+   ========================================================================= */
+const STATIC_SEARCH_INDEX = [
+  { title: 'Home / Welcome', anchor: 'index.html#welcome', keywords: 'home welcome about church family' },
+  { title: "Today's Grace Card", anchor: 'index.html#grace-card', keywords: 'grace card daily word kids' },
+  { title: 'Our Vision, Mission & Purpose', anchor: 'index.html#vision', keywords: 'vision mission purpose' },
+  { title: 'Sermons & Media Library', anchor: 'sermons.html', keywords: 'sermon message preach audio mp3 media library telegram' },
+  { title: 'Events & Programs', anchor: 'events.html', keywords: 'event calendar program youth conference countdown register' },
+  { title: 'Online Giving', anchor: 'giving.html', keywords: 'giving tithe offering donate bank transfer seed' },
+  { title: 'Our Ministries', anchor: 'index.html#ministries', keywords: 'ministry music protocol security hospitality media youth women children' },
+  { title: 'Our Church Branches', anchor: 'branches.html', keywords: 'branch location uyo eket port harcourt aksu map' },
+  { title: 'Frequently Asked Questions', anchor: 'index.html#faq', keywords: 'faq question help answer' },
+  { title: 'Newsletter Signup', anchor: 'index.html#newsletter', keywords: 'newsletter subscribe email updates' },
+];
+
+const searchOverlay = document.getElementById('searchOverlay');
+const searchInput = document.getElementById('searchInput');
+const searchResultsEl = document.getElementById('searchResults');
+
+function openSearch() {
+  searchOverlay.classList.add('open');
+  setTimeout(() => searchInput.focus(), 80);
+}
+function closeSearch() {
+  searchOverlay.classList.remove('open');
+  searchInput.value = '';
+  searchResultsEl.innerHTML = '';
+}
+document.getElementById('searchBtn').addEventListener('click', openSearch);
+document.getElementById('searchBtnMobile').addEventListener('click', openSearch);
+document.getElementById('searchCloseBtn').addEventListener('click', closeSearch);
+searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
+
+function runSearch(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) { searchResultsEl.innerHTML = ''; return; }
+  const dynamic = [
+    ...(window.__gwgmSermons || []).map(s => ({ title: `Sermon: ${s.title}`, anchor: 'sermons.html', keywords: 'sermon message' })),
+    ...(window.__gwgmEvents || []).map(ev => ({ title: `Event: ${ev.title}`, anchor: 'events.html', keywords: 'event program' })),
+    ...(window.__gwgmPastors || []).map(p => ({ title: `${p.name} — ${p.role || 'Pastor'}`, anchor: 'index.html#welcome', keywords: 'pastor leader' })),
+  ];
+  const combined = [...STATIC_SEARCH_INDEX, ...dynamic];
+  const matches = combined.filter(item =>
+    item.title.toLowerCase().includes(q) || (item.keywords || '').toLowerCase().includes(q)
+  ).slice(0, 12);
+  searchResultsEl.innerHTML = matches.length
+    ? matches.map(m => `<a href="${m.anchor}" class="search-result-item block px-4 py-3 rounded-lg text-white/90 transition-colors">${escapeHtml(m.title)}</a>`).join('')
+    : '<p class="text-white/40 px-4 py-3 text-sm">No matches found. Try "sermon", "giving" or "branch".</p>';
+}
+searchInput.addEventListener('input', (e) => runSearch(e.target.value));
+searchResultsEl.addEventListener('click', (e) => { if (e.target.closest('a')) closeSearch(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && searchOverlay.classList.contains('open')) closeSearch();
+  if ((e.metaKey || e.ctrlKey) && e.key === '/') { e.preventDefault(); openSearch(); }
+});
+
+/* =========================================================================
+   8. HERO CAROUSEL
+   ========================================================================= */
+(function initHeroCarousel() {
+  const track = document.getElementById('heroTrack');
+  const dotsEl = document.getElementById('heroDots');
+  const prevBtn = document.getElementById('heroPrev');
+  const nextBtn = document.getElementById('heroNext');
+  const progressFill = document.getElementById('heroProgressFill');
+  if (!track) return;
+
+  const AUTO_ADVANCE_MS = 8000;
+  const PROGRESS_TICK_MS = 80;
+
+  let slides = [];
+  let index = 0;
+  let autoTimer = null;
+  let progressTimer = null;
+  let progressElapsed = 0;
+  let paused = false;
+
+  function slideMain() {
+    return `
+      <div class="hero-slide" data-slide="main">
+        <div class="hero-slide-bg">
+          <img src="land_image.jpg" data-site-key="land_image_url" alt="" loading="eager" decoding="async" fetchpriority="high" />
+          <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide-inner">
+          <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+            <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-royal-light/40 border-2 border-teal/60 halo-glow flex items-center justify-center mx-auto overflow-hidden shrink-0">
+              <img src="logo.png" data-site-key="logo_url" alt="Gracious Word Global Mission logo" class="w-20 h-20 sm:w-28 sm:h-28 object-contain" />
+            </div>
+            <div class="text-center md:text-left">
+              <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight tracking-tight">
+                GRACIOUS WORD<br class="hidden sm:block" /> <span class="brand-gradient">GLOBAL MISSION</span>
+              </h1>
+              <p class="mt-5 font-display italic text-lime text-lg sm:text-xl max-w-xl mx-auto md:mx-0">"...bringing the God‑life to men"</p>
+              <p class="mt-3 text-white/85 text-base sm:text-lg tracking-wide max-w-xl mx-auto md:mx-0">Living Christ. Loving People. Making Disciples.</p>
+              <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <a href="register.html" class="btn-hover bg-teal hover:bg-lime text-royal-deep font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 text-center">Join Our Family</a>
+                <a href="index.html" class="btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full text-center">Learn More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /* --- NEW: Weekly Services Slide --- */
+  function slideWeeklyServices() {
+    return `
+      <div class="hero-slide" data-slide="weekly-services">
+        <div class="hero-slide-bg">
+          <div class="absolute inset-0" style="background: linear-gradient(135deg, #041619 0%, #0A2A2F 60%, #041619 100%);"></div>
+          <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 25% 40%, #00FFCF 0%, transparent 50%), radial-gradient(circle at 75% 60%, #99FF00 0%, transparent 50%);"></div>
+        </div>
+        <div class="hero-slide-inner">
+          <div class="max-w-3xl mx-auto text-center">
+            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-bold text-lime mb-5">
+              <i data-feather="calendar" class="w-4 h-4"></i> Weekly Services
+            </span>
+            <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
+              Join Us <span class="brand-gradient">Every Week</span>
+            </h2>
+            <p class="mt-4 text-white/70 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+              Experience the presence of God through our regular services. Every Sunday and Tuesday, we gather to worship, learn, and grow together.
+            </p>
+
+            <div class="service-card-grid mt-8 text-left">
+              <!-- First Sunday highlighted as the anchor service -->
+              <div class="service-card highlight">
+                <p class="service-day">Every First Sunday</p>
+                <p class="service-name">Thanksgiving Service</p>
+                <p class="service-note">A special time of gratitude and praise</p>
+              </div>
+              <div class="service-card">
+                <p class="service-day">Every Second Sunday</p>
+                <p class="service-name">Communion Service</p>
+                <p class="service-note">Remembering the Lord's sacrifice</p>
+              </div>
+              <div class="service-card">
+                <p class="service-day">Every Tuesday</p>
+                <p class="service-name">Bible Study &amp; Prayer</p>
+                <p class="service-note">6:00 PM — Midweek refresh</p>
+              </div>
+              <div class="service-card">
+                <p class="service-day">Other Sundays</p>
+                <p class="service-name">Moment of Grace</p>
+                <p class="service-note">Our Sunday celebration</p>
+              </div>
+              <div class="service-card">
+                <p class="service-day">Last Sunday</p>
+                <p class="service-name">Family &amp; Friends Service</p>
+                <p class="service-note">Bring a friend, celebrate family</p>
+              </div>
+            </div>
+
+            <div class="mt-9 flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="events.html" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-teal/20 inline-flex items-center justify-center gap-2">
+                <i data-feather="calendar" class="w-4 h-4"></i> See all events
+              </a>
+              <a href="branches.html" class="btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-8 py-3.5 rounded-full inline-flex items-center justify-center gap-2">
+                <i data-feather="map-pin" class="w-4 h-4"></i> Find a branch
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /* Live slide — rebuild live session card so it stays inside the site palette
+     (teal/lime/royal) with red introduced tastefully only along the card's border. */
+  function slideLive(cfg) {
+    const hasYt = !!safeUrl(cfg.youtube_url);
+    const hasFb = !!safeUrl(cfg.facebook_url);
+    const thumb = safeUrl(cfg.thumbnail_url);
+    const title = cfg.title || 'We are LIVE now';
+
+    const watchBtns = [];
+    if (hasYt) watchBtns.push(`
+      <a href="${escapeHtml(safeUrl(cfg.youtube_url))}" target="_blank" rel="noopener noreferrer"
+         class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full text-sm inline-flex items-center gap-2 shadow-lg shadow-teal/20">
+         <i data-feather="youtube" class="w-4 h-4 text-royal-deep"></i> Watch on YouTube
+      </a>`);
+    if (hasFb) watchBtns.push(`
+      <a href="${escapeHtml(safeUrl(cfg.facebook_url))}" target="_blank" rel="noopener noreferrer"
+         class="btn-hover border border-white/30 hover:border-lime hover:text-lime text-white font-semibold px-6 py-3 rounded-full text-sm inline-flex items-center gap-2">
+         <i data-feather="facebook" class="w-4 h-4 text-teal"></i> Watch on Facebook
+      </a>`);
+
+    return `
+      <div class="hero-slide" data-slide="live">
+        <div class="hero-slide-bg">
+          ${thumb ? `<img src="${escapeHtml(thumb)}" alt="" loading="lazy" />` : ''}
+          <div class="hero-slide-overlay" style="background: linear-gradient(to bottom, rgba(4,22,25,.96), rgba(10,42,47,.90), rgba(4,22,25,.98));"></div>
+        </div>
+        <div class="hero-slide-inner">
+          <div class="grid md:grid-cols-[1.3fr_1fr] gap-8 items-center">
+            <div>
+              <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-bold text-lime bg-royal-light/80 border border-teal/30 px-3 py-1.5 rounded-full shadow-lg shadow-teal/10">
+                <span class="w-2 h-2 rounded-full bg-crimson live-pulse"></span> Live Service
+              </span>
+              <h2 class="mt-4 font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">${escapeHtml(title)}</h2>
+              <p class="mt-4 text-white/80 text-base sm:text-lg max-w-lg">Join our live service from wherever you are. Worship with us in real time.</p>
+              <div class="mt-7 flex flex-wrap gap-3">${watchBtns.join('') || '<span class="text-white/60 text-sm">Stream links coming soon</span>'}</div>
+            </div>
+            <div class="hidden md:flex justify-end">
+              <!-- Live Session Card: Palette stays teal/lime/royal with red introduced tastefully only along the border -->
+              <div class="relative w-64 h-44 lg:w-72 lg:h-48 rounded-2xl bg-[#041619]/90 border-2 border-crimson/80 shadow-[0_0_25px_rgba(221,4,13,0.3)] flex items-center justify-center overflow-hidden backdrop-blur">
+                ${thumb
+                  ? `<img src="${escapeHtml(thumb)}" alt="" class="w-full h-full object-cover" loading="lazy" />`
+                  : `<i data-feather="play-circle" class="w-16 h-16 text-teal"></i>`}
+                <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold text-white bg-royal-deep/90 border border-crimson/80 px-2.5 py-1 rounded-full shadow-md">
+                  <span class="w-1.5 h-1.5 rounded-full bg-crimson live-pulse"></span> LIVE
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function slideGiving(cfg) {
+    const name = cfg.account_name || '—';
+    const num  = cfg.account_number || '—';
+    const bank = cfg.bank_name || '—';
+    return `
+      <div class="hero-slide" data-slide="giving">
+        <div class="hero-slide-bg">
+          <div class="absolute inset-0 bg-gradient-to-br from-royal-light via-royal-deep to-[#0A2A2F]"></div>
+        </div>
+        <div class="hero-slide-inner">
+          <div class="grid md:grid-cols-[1.3fr_1fr] gap-8 items-center">
+            <div>
+              <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-bold text-lime">
+                <i data-feather="gift" class="w-3.5 h-3.5"></i> Give Online
+              </span>
+              <h2 class="mt-4 font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">Partner with the Mission</h2>
+              <p class="mt-4 text-white/75 text-base sm:text-lg max-w-lg">Your tithes and offerings fuel the work of the Gospel. Give securely via bank transfer.</p>
+              <div class="mt-7 flex flex-wrap gap-3">
+                <button type="button" class="hl-copy-btn btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full text-sm inline-flex items-center gap-2" data-copy-text="${escapeHtml(num)}">
+                  <i data-feather="copy" class="w-4 h-4"></i> Copy account number
+                </button>
+                <a href="giving.html" class="btn-hover border border-white/30 hover:border-lime hover:text-lime text-white font-semibold px-6 py-3 rounded-full text-sm">All giving options</a>
+              </div>
+            </div>
+            <div class="bg-white/10 border border-white/15 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-2xl">
+              <p class="text-[10px] uppercase tracking-widest text-white/50">Account Name</p>
+              <p class="mt-1 text-white font-semibold break-words">${escapeHtml(name)}</p>
+              <p class="mt-4 text-[10px] uppercase tracking-widest text-white/50">Account Number</p>
+              <p class="mt-1 text-lime font-mono font-bold text-2xl sm:text-3xl tracking-wider break-all">${escapeHtml(num)}</p>
+              <p class="mt-4 text-[10px] uppercase tracking-widest text-white/50">Bank</p>
+              <p class="mt-1 text-white font-semibold">${escapeHtml(bank)}</p>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function slideEvent(ev) {
+    const startStr = formatDate(ev.event_date, { weekday: 'long', month: 'long', day: 'numeric' });
+    const endStr = ev.end_date && ev.end_date !== ev.event_date
+      ? formatDate(ev.end_date, { weekday: 'long', month: 'long', day: 'numeric' })
+      : '';
+    const dateStr = endStr ? `${startStr} – ${endStr}` : startStr;
+    const banner = safeUrl(ev.image_url);
+    const now = Date.now();
+    const startMs = new Date(`${ev.event_date}T${(ev.event_time || '00:00').slice(0,5)}:00`).getTime();
+    const isLiveNow = !isNaN(startMs) && now >= startMs;
+    const badge = isLiveNow ? 'Happening Now' : 'Upcoming Event';
+    return `
+      <div class="hero-slide" data-slide="event">
+        <div class="hero-slide-bg">
+          ${banner ? `<img src="${escapeHtml(banner)}" alt="" loading="lazy" />` : ''}
+          <div class="hero-slide-overlay" style="background: linear-gradient(to bottom, rgba(4,22,25,.88), rgba(4,22,25,.82), rgba(4,22,25,.95));"></div>
+          ${!banner ? '<div class="absolute inset-0 bg-gradient-to-br from-teal/20 via-royal-deep to-royal-deep"></div>' : ''}
+        </div>
+        <div class="hero-slide-inner">
+          <div class="grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+            <div>
+              <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-bold text-lime">
+                <span class="w-2 h-2 rounded-full bg-lime gc-live-dot"></span> ${badge}
+              </span>
+              <h2 class="mt-4 font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">${escapeHtml(ev.title)}</h2>
+              ${ev.description ? `<p class="mt-4 text-white/75 text-base sm:text-lg max-w-lg">${escapeHtml(ev.description)}</p>` : ''}
+              <p class="mt-5 text-white/80 text-sm sm:text-base flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span class="inline-flex items-center gap-1.5"><i data-feather="calendar" class="w-4 h-4"></i>${escapeHtml(dateStr)}</span>
+                ${ev.event_time ? `<span class="inline-flex items-center gap-1.5"><i data-feather="clock" class="w-4 h-4"></i>${escapeHtml(ev.event_time)}${ev.end_time ? ' – ' + escapeHtml(ev.end_time) : ''}</span>` : ''}
+                ${ev.location ? `<span class="inline-flex items-center gap-1.5"><i data-feather="map-pin" class="w-4 h-4"></i>${escapeHtml(ev.location)}</span>` : ''}
+              </p>
+              <div class="mt-7 flex flex-wrap gap-3">
+                <a href="events.html" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full text-sm">See details</a>
+                ${ev.allow_registration ? `<button type="button" class="hl-register-btn btn-hover border border-white/40 hover:border-lime hover:text-lime text-white font-semibold px-6 py-3 rounded-full text-sm" data-event-id="${escapeHtml(ev.id)}" data-event-title="${escapeHtml(ev.title)}">Register</button>` : ''}
+              </div>
+            </div>
+            <div class="hidden md:flex justify-end">
+              ${banner
+                ? `<div class="w-52 h-52 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border-2 border-teal/40 shadow-2xl"><img src="${escapeHtml(banner)}" alt="" class="w-full h-full object-cover" loading="lazy" /></div>`
+                : `<div class="w-52 h-52 lg:w-64 lg:h-64 rounded-full bg-white/5 border border-white/15 flex items-center justify-center shadow-2xl"><i data-feather="calendar" class="w-20 h-20 text-teal"></i></div>`}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function slideCustom(item) {
+    const bg = safeUrl(item.image_url);
+    const btnUrl = safeUrl(item.button_url);
+    return `
+      <div class="hero-slide" data-slide="custom">
+        <div class="hero-slide-bg">
+          ${bg ? `<img src="${escapeHtml(bg)}" alt="" loading="lazy" />` : ''}
+          <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide-inner">
+          <div class="grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+            <div>
+              <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-bold text-lime">
+                <i data-feather="star" class="w-3.5 h-3.5"></i> ${escapeHtml(item.tag || 'Highlight')}
+              </span>
+              <h2 class="mt-4 font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">${escapeHtml(item.title || '')}</h2>
+              ${item.description ? `<p class="mt-4 text-white/75 text-base sm:text-lg max-w-lg">${escapeHtml(item.description)}</p>` : ''}
+              ${btnUrl ? `<div class="mt-7"><a href="${escapeHtml(btnUrl)}" target="_blank" rel="noopener noreferrer" class="btn-hover bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full text-sm inline-flex items-center gap-2">${escapeHtml(item.button_text || 'Learn more')} <i data-feather="arrow-right" class="w-4 h-4"></i></a></div>` : ''}
+            </div>
+            <div class="hidden md:flex justify-end">
+              <div class="w-52 h-52 lg:w-64 lg:h-64 rounded-full bg-white/5 border border-white/15 flex items-center justify-center shadow-2xl">
+                <i data-feather="sparkles" class="w-20 h-20 text-teal"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function render() {
+    if (!slides.length) return;
+    track.innerHTML = slides.map(s => s.html).join('');
+    dotsEl.innerHTML = slides.map((_, i) =>
+      `<button type="button" class="hero-dot ${i === index ? 'active' : ''}" role="tab" aria-selected="${i === index}" data-index="${i}" aria-label="Go to slide ${i + 1}"></button>`
+    ).join('');
+    refreshIcons();
+    moveTo(index, false);
+  }
+
+  function moveTo(i, animate = true) {
+    if (!slides.length) return;
+    index = (i + slides.length) % slides.length;
+    track.classList.toggle('no-transition', !animate);
+    track.style.transform = `translate3d(-${index * 100}%, 0, 0)`;
+    if (!animate) {
+      void track.offsetWidth;
+      track.classList.remove('no-transition');
+    }
+    dotsEl.querySelectorAll('.hero-dot').forEach((d, di) => {
+      d.classList.toggle('active', di === index);
+      d.setAttribute('aria-selected', String(di === index));
+    });
+    resetProgress();
+  }
+
+  function next() { moveTo(index + 1, true); }
+  function prev() { moveTo(index - 1, true); }
+
+  function startAuto() {
+    stopAuto();
+    progressElapsed = 0;
+    updateProgress();
+    progressTimer = setInterval(() => {
+      if (paused || document.hidden) return;
+      progressElapsed += PROGRESS_TICK_MS;
+      if (progressElapsed >= AUTO_ADVANCE_MS) {
+        progressElapsed = 0;
+        next();
+      }
+      updateProgress();
+    }, PROGRESS_TICK_MS);
+  }
+  function stopAuto() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+  }
+  function resetProgress() { progressElapsed = 0; updateProgress(); }
+  function updateProgress() {
+    if (!progressFill) return;
+    const pct = Math.min(100, (progressElapsed / AUTO_ADVANCE_MS) * 100);
+    progressFill.style.width = pct + '%';
+  }
+
+  prevBtn.addEventListener('click', () => { prev(); startAuto(); });
+  nextBtn.addEventListener('click', () => { next(); startAuto(); });
+  dotsEl.addEventListener('click', (e) => {
+    const dot = e.target.closest('.hero-dot');
+    if (!dot) return;
+    moveTo(parseInt(dot.dataset.index, 10), true);
+    startAuto();
+  });
+
+  const heroEl = document.getElementById('hero');
+  heroEl.addEventListener('mouseenter', () => { paused = true; });
+  heroEl.addEventListener('mouseleave', () => { paused = false; });
+  heroEl.addEventListener('focusin',   () => { paused = true; });
+  heroEl.addEventListener('focusout',  () => { paused = false; });
+  heroEl.addEventListener('touchstart', () => { paused = true; }, { passive: true });
+  heroEl.addEventListener('touchend',   () => { setTimeout(() => { paused = false; }, 5000); }, { passive: true });
+  document.addEventListener('visibilitychange', () => { paused = document.hidden; });
+
+  let startX = 0, dx = 0, dragging = false;
+  heroEl.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; dx = 0; dragging = true; }, { passive: true });
+  heroEl.addEventListener('touchmove',  (e) => { if (!dragging) return; dx = e.touches[0].clientX - startX; }, { passive: true });
+  heroEl.addEventListener('touchend',   () => {
+    if (!dragging) return;
+    dragging = false;
+    if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); startAuto(); }
+  });
+
+  heroEl.setAttribute('tabindex', '-1');
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && document.activeElement === heroEl) { e.preventDefault(); next(); startAuto(); }
+    if (e.key === 'ArrowLeft'  && document.activeElement === heroEl) { e.preventDefault(); prev(); startAuto(); }
+  });
+
+  track.addEventListener('click', async (e) => {
+    const regBtn = e.target.closest('.hl-register-btn');
+    if (regBtn) { openEventRegistration(regBtn.dataset.eventId, regBtn.dataset.eventTitle); return; }
+    const copyBtn = e.target.closest('.hl-copy-btn');
+    if (copyBtn) {
+      const text = copyBtn.dataset.copyText || '';
+      try { await navigator.clipboard.writeText(text); toast('Account number copied'); }
+      catch (err) { toast('Copy failed — please copy manually', true); }
+    }
+  });
+
+  window.__gwgmHero = {
+    setData({ event, giving, live, custom }) {
+      const list = [];
+      // 1. Main slide — highest priority
+      list.push({ key: 'main', html: slideMain() });
+      // 2. Featured / upcoming event — second priority
+      if (event) list.push({ key: 'event', html: slideEvent(event) });
+      // 3. NEW: Weekly Services slide — right after event
+      list.push({ key: 'weekly-services', html: slideWeeklyServices() });
+      // 4. Live service
+      list.push({ key: 'live', html: slideLive(live || {}) });
+      // 5. Giving
+      list.push({ key: 'giving', html: slideGiving(giving || {}) });
+      // 6. Optional custom highlights
+      (custom || []).forEach((c, i) => {
+        if (c && (c.title || c.description || c.image_url)) list.push({ key: 'custom-' + i, html: slideCustom(c) });
+      });
+      slides = list;
+      if (index >= slides.length) index = 0;
+      render();
+      startAuto();
+    },
+    refresh() { render(); }
+  };
+})();
+
+/* =========================================================================
+   9. GRACE CARD
+   ========================================================================= */
+class GraceCardManager {
+  constructor(client) {
+    this.client = client;
+    this.cards = { main: null, kids: null };
+    this.activeType = 'main';
+    this.countdownTimer = null;
+    this.modalOpen = false;
+    this.els = {
+      tabMain: document.getElementById('graceCardTabMain'),
+      tabKids: document.getElementById('graceCardTabKids'),
+      trigger: document.getElementById('graceCardTrigger'),
+      image: document.getElementById('graceCardImage'),
+      skeleton: document.getElementById('graceCardSkeleton'),
+      title: document.getElementById('graceCardTitle'),
+      scripture: document.getElementById('graceCardScripture'),
+      countdownText: document.getElementById('graceCardCountdownText'),
+      emptyState: document.getElementById('graceCardEmptyState'),
+      modal: document.getElementById('graceCardModal'),
+      backdrop: document.getElementById('graceCardBackdrop'),
+      closeBtn: document.getElementById('graceCardClose'),
+      modalImage: document.getElementById('graceCardModalImage'),
+      modalTitle: document.getElementById('graceCardModalTitle'),
+      modalScripture: document.getElementById('graceCardModalScripture'),
+      modalDate: document.getElementById('graceCardModalDate'),
+    };
+  }
+
+  async init() {
+    this.bindEvents();
+    if (!this.client) { this.showEmptyState(); return; }
+    try { await this.fetchCards(); }
+    catch (err) { console.error('[GraceCard]', err); this.showEmptyState(); }
+  }
+
+  /** Parse YYYY-MM-DD as local start/end of day (avoids UTC midnight off-by-one). */
+  dayStartMs(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(String(dateStr).slice(0, 10) + 'T00:00:00');
+    return isNaN(d.getTime()) ? null : d.getTime();
+  }
+  dayEndMs(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(String(dateStr).slice(0, 10) + 'T23:59:59.999');
+    return isNaN(d.getTime()) ? null : d.getTime();
+  }
+
+  /** Card is showable only while active, published, and not past expiry. */
+  isCardCurrentlyValid(c) {
+    if (!c || !c.image_url) return false;
+    const now = Date.now();
+    const pub = this.dayStartMs(c.publish_date);
+    if (pub != null && now < pub) return false;
+    const exp = this.dayEndMs(c.expiry_date);
+    // If expiry_date is set and today is after that day → hide until a new card is uploaded
+    if (exp != null && now > exp) return false;
+    return true;
+  }
+
+  async fetchCards() {
+    const { data, error } = await this.client
+      .from('grace_cards')
+      .select('id, card_type, title, scripture, image_url, publish_date, expiry_date, is_active, uploaded_at, created_at')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+
+    const valid = (data || []).filter(c => this.isCardCurrentlyValid(c));
+    // Newest valid card per type only
+    this.cards.main = valid.find(c => c.card_type === 'main') || null;
+    this.cards.kids = valid.find(c => c.card_type === 'kids') || null;
+
+    const hasMain = !!this.cards.main;
+    const hasKids = !!this.cards.kids;
+
+    // Hide Kids tab when no valid kids card
+    if (this.els.tabKids) this.els.tabKids.classList.toggle('hidden', !hasKids);
+    if (this.els.tabMain) this.els.tabMain.classList.toggle('hidden', !hasMain && hasKids);
+
+    if (!hasKids && this.activeType === 'kids') this.activeType = 'main';
+    if (!hasMain && hasKids) this.activeType = 'kids';
+
+    // Both expired / missing → empty state; otherwise render the active tab
+    if (!hasMain && !hasKids) {
+      this.cards.main = null;
+      this.cards.kids = null;
+      this.showEmptyState();
+      return;
+    }
+    this.render(this.activeType);
+  }
+
+  switchTab(type) {
+    this.activeType = type;
+    const on = ['bg-teal', 'text-[#041619]'];
+    const off = ['bg-white/40', 'dark:bg-white/10', 'text-royal-deep', 'dark:text-[#EAFBF7]', 'border', 'border-royal/10', 'dark:border-white/15'];
+    this.els.tabMain.setAttribute('aria-selected', String(type === 'main'));
+    this.els.tabKids.setAttribute('aria-selected', String(type === 'kids'));
+    [this.els.tabMain, this.els.tabKids].forEach((tab, i) => {
+      const isOn = (i === 0) === (type === 'main');
+      on.forEach(c => tab.classList.toggle(c, isOn));
+      off.forEach(c => tab.classList.toggle(c, !isOn));
+    });
+    this.render(type);
+  }
+
+  render(type) {
+    const card = this.cards[type];
+    if (!card) { this.showEmptyState(); return; }
+    const url = safeUrl(card.image_url);
+    if (!url) { this.showEmptyState(); return; }
+    const img = this.els.image;
+    const skeleton = this.els.skeleton;
+    const showImage = () => { img.classList.remove('hidden'); skeleton.classList.add('hidden'); };
+    const showBroken = () => { skeleton.classList.add('hidden'); img.classList.add('hidden'); };
+    img.classList.add('hidden');
+    skeleton.classList.remove('hidden');
+    img.onload = showImage;
+    img.onerror = showBroken;
+    if (img.src === url || img.getAttribute('src') === url) {
+      if (img.complete && img.naturalWidth > 0) showImage();
+      else { img.src = ''; img.src = url; }
+    } else img.src = url;
+    img.alt = card.title || "Today's Grace Card";
+    if (img.complete && img.naturalWidth > 0) showImage();
+    this.els.title.textContent = card.title || "Today's Grace Card";
+    this.els.scripture.textContent = card.scripture || '';
+    this.els.scripture.classList.toggle('hidden', !card.scripture);
+    this.els.trigger.disabled = false;
+    this.els.trigger.classList.remove('hidden');
+    this.els.emptyState.classList.add('hidden');
+    this.startCountdown(card);
+  }
+
+  showEmptyState() {
+    if (this.els.trigger) this.els.trigger.classList.add('hidden');
+    if (this.els.emptyState) {
+      this.els.emptyState.classList.remove('hidden');
+      this.els.emptyState.textContent = 'No Grace Card is available right now. Please check back after a new one is published.';
+    }
+    clearInterval(this.countdownTimer);
+  }
+
+  startCountdown(card) {
+    clearInterval(this.countdownTimer);
+    // No expiry set → card stays until replaced; show a soft “live” label
+    if (!card.expiry_date) {
+      if (this.els.countdownText) this.els.countdownText.textContent = 'Live now';
+      return;
+    }
+    const endMs = this.dayEndMs(card.expiry_date);
+    if (endMs == null) {
+      if (this.els.countdownText) this.els.countdownText.textContent = 'Live now';
+      return;
+    }
+    const tick = () => {
+      const diff = endMs - Date.now();
+      if (diff <= 0) {
+        // Expired → hide this card and do not show it again until a new upload
+        if (this.els.countdownText) this.els.countdownText.textContent = 'Expired';
+        clearInterval(this.countdownTimer);
+        if (card.card_type === 'main') this.cards.main = null;
+        if (card.card_type === 'kids') this.cards.kids = null;
+        this.fetchCards().catch(() => this.showEmptyState());
+        return;
+      }
+      if (this.els.countdownText) {
+        this.els.countdownText.textContent = `Card ends in ${this.formatDuration(diff)}`;
+      }
+    };
+    tick();
+    this.countdownTimer = setInterval(tick, 1000);
+  }
+  formatDuration(ms) {
+    const t = Math.max(0, Math.floor(ms / 1000));
+    const h = String(Math.floor(t / 3600)).padStart(2, '0');
+    const m = String(Math.floor((t % 3600) / 60)).padStart(2, '0');
+    const s = String(t % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+
+  bindEvents() {
+    this.els.tabMain.addEventListener('click', () => this.switchTab('main'));
+    this.els.tabKids.addEventListener('click', () => this.switchTab('kids'));
+    this.els.trigger.addEventListener('click', () => this.openModal());
+    this.els.closeBtn.addEventListener('click', () => this.closeModal());
+    this.els.backdrop.addEventListener('click', () => this.closeModal());
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.modalOpen) this.closeModal(); });
+  }
+
+  openModal() {
+    const card = this.cards[this.activeType];
+    if (!card) return;
+    this.els.modalImage.src = safeUrl(card.image_url);
+    this.els.modalImage.alt = card.title || "Today's Grace Card";
+    this.els.modalTitle.textContent = card.title || "Today's Grace Card";
+    this.els.modalScripture.textContent = card.scripture || '';
+    this.els.modalScripture.classList.toggle('hidden', !card.scripture);
+    const uploaded = card.uploaded_at || card.created_at;
+    this.els.modalDate.textContent = uploaded ? `Published ${formatDate(uploaded)}` : '';
+    this.els.modal.classList.remove('hidden');
+    document.body.classList.add('grace-modal-open');
+    requestAnimationFrame(() => this.els.modal.classList.add('is-open'));
+    this.modalOpen = true;
+    this.els.closeBtn.focus();
+  }
+
+  closeModal() {
+    this.els.modal.classList.remove('is-open');
+    document.body.classList.remove('grace-modal-open');
+    this.modalOpen = false;
+    setTimeout(() => { if (!this.modalOpen) this.els.modal.classList.add('hidden'); }, 350);
+    this.els.trigger.focus();
+  }
+}
+
+const graceCardManager = new GraceCardManager(gwgmClient);
+graceCardManager.init();
+
+/* =========================================================================
+   10. SITE CONTENT
+   ========================================================================= */
+let siteContentCache = {};
+
+async function loadSiteContent() {
+  if (!gwgmClient) { feedHeroFromCache(); renderGivingOptions(); renderFaqs(); return; }
+  try {
+    const { data, error } = await gwgmClient.from('site_content').select('key, value');
+    if (error) throw error;
+    const map = Object.fromEntries((data || []).map(r => [r.key, r.value]));
+    siteContentCache = map;
+    document.querySelectorAll('[data-site-key]').forEach(img => {
+      const key = img.getAttribute('data-site-key');
+      if (map[key]) img.src = safeUrl(map[key]);
+    });
+    const tg = map.telegram_group_url || GWGM_CONFIG.telegramGroupUrl;
+    ['telegramJoinBtn', 'contactTelegramLink', 'footerTelegramLink'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.href = safeUrl(tg);
+    });
+  } catch (err) {
+    console.error('[GWGM] site content load failed:', err);
+    ['telegramJoinBtn', 'contactTelegramLink', 'footerTelegramLink'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.href = GWGM_CONFIG.telegramGroupUrl;
+    });
+  } finally {
+    feedHeroFromCache();
+    renderGivingOptions();
+    renderFaqs();
+  }
+}
+
+function feedHeroFromCache() {
+  if (!window.__gwgmHero) return;
+  const map = siteContentCache || {};
+  const live = {
+    title:         map.live_title || 'Live Service',
+    youtube_url:   map.live_youtube_url || '',
+    facebook_url:  map.live_facebook_url || '',
+    thumbnail_url: map.live_thumbnail_url || '',
+  };
+  const giving = {
+    account_name:   map.giving_account_name   || 'Gracious Word Global Mission',
+    account_number: map.giving_account_number || '',
+    bank_name:      map.giving_bank_name      || '',
+  };
+  let custom = [];
+  if (map.highlights_custom) {
+    try {
+      const parsed = typeof map.highlights_custom === 'string' ? JSON.parse(map.highlights_custom) : map.highlights_custom;
+      if (Array.isArray(parsed)) custom = parsed;
+    } catch (err) { console.warn('[GWGM] highlights_custom could not be parsed:', err); }
+  }
+  const evList = window.__gwgmEvents || [];
+  const featured = evList.find(e => e.is_featured) || evList[0] || null;
+  window.__gwgmHero.setData({ event: featured, giving, live, custom });
+}
+
+/* =========================================================================
+   11. GIVING OPTIONS — auto-center one card, shift-left as more arrive
+   ========================================================================= */
+function renderGivingOptions() {
+  const grid = document.getElementById('givingGrid');
+  const empty = document.getElementById('givingEmptyState');
+  if (!grid) return;
+
+  const map = siteContentCache || {};
+  let options = [];
+
+  if (map.giving_options) {
+    try {
+      const parsed = typeof map.giving_options === 'string' ? JSON.parse(map.giving_options) : map.giving_options;
+      if (Array.isArray(parsed)) options = parsed;
+    } catch (err) { console.warn('[GWGM] giving_options parse failed:', err); }
+  }
+
+  if (!options.length) {
+    const name = map.giving_account_name || 'Gracious Word Global Mission';
+    const num  = map.giving_account_number || '';
+    const bank = map.giving_bank_name || '';
+    if (num || bank || name) {
+      options = [{
+        title: 'Bank Transfer',
+        fields: [
+          { label: 'Account Name', value: name, copy: true },
+          { label: 'Account Number', value: num, copy: true, mono: true },
+          { label: 'Bank', value: bank, copy: true },
+        ],
+      }];
+    }
+  }
+
+  if (!options.length) {
+    grid.innerHTML = '';
+    grid.classList.remove('single-card');
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  grid.innerHTML = options.map((opt) => {
+    const title = opt.title || opt.label || 'Giving Option';
+    const fields = Array.isArray(opt.fields) ? opt.fields : [];
+    const link = safeUrl(opt.link || '');
+    const buttonText = opt.button_text || 'Give online now';
+
+    return `
+      <div class="giving-card reveal arch-card bg-white dark:bg-[#10191c] shadow-xl p-8 pt-10 border border-royal/5 dark:border-white/10">
+        <h3 class="font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7] text-center mb-6">${escapeHtml(title)}</h3>
+        <div class="space-y-4">
+          ${fields.map(f => `
+            <div class="flex items-center justify-between gap-3 bg-lavender dark:bg-[#071012] rounded-lg px-4 py-3">
+              <div class="min-w-0">
+                <p class="text-[10px] uppercase tracking-wide text-ink/50">${escapeHtml(f.label)}</p>
+                <p class="font-medium text-royal-deep dark:text-[#EAFBF7] ${f.mono ? 'font-mono break-all' : 'break-words'}">${escapeHtml(f.value)}</p>
+              </div>
+              ${f.copy !== false && f.value ? `
+                <button type="button" class="copy-btn shrink-0 text-xs font-semibold border rounded-full px-3 py-1.5" data-copy-value="${escapeHtml(f.value)}">Copy</button>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+        ${link ? `
+          <a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer"
+            class="mt-6 w-full btn-hover inline-flex items-center justify-center gap-2 bg-teal hover:bg-lime text-[#041619] font-semibold px-6 py-3 rounded-full">
+            <i data-feather="credit-card" class="w-4 h-4"></i> ${escapeHtml(buttonText)}
+          </a>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  grid.classList.toggle('single-card', options.length === 1);
+  grid.querySelectorAll('.reveal').forEach(observeReveal);
+  refreshIcons();
+}
+
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.copy-btn');
+  if (!btn) return;
+  let text = '';
+  if (btn.dataset.copyValue) text = btn.dataset.copyValue;
+  else if (btn.dataset.copyTarget) {
+    const el = document.getElementById(btn.dataset.copyTarget);
+    if (el) text = el.textContent.trim();
+  }
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    toast('Copied to clipboard');
+    setTimeout(() => { btn.textContent = original; }, 1800);
+  } catch (err) {
+    console.error('[GWGM] clipboard copy failed:', err);
+    toast('Copy failed — please copy manually', true);
+  }
+});
+
+/* =========================================================================
+   12. FAQs
+   ========================================================================= */
+function renderFaqs() {
+  const list = document.getElementById('faqList');
+  const empty = document.getElementById('faqEmptyState');
+  if (!list) return;
+  const map = siteContentCache || {};
+  let faqs = [];
+  if (map.faqs) {
+    try {
+      const parsed = typeof map.faqs === 'string' ? JSON.parse(map.faqs) : map.faqs;
+      if (Array.isArray(parsed)) faqs = parsed;
+    } catch (err) { console.warn('[GWGM] faqs parse failed:', err); }
+  }
+  if (!faqs.length) {
+    faqs = [
+      { question: 'What time are your Sunday services?', answer: 'Sunday services hold weekly at each branch — check the Events section above or contact your nearest branch for the exact time.' },
+      { question: 'How do I become a member?', answer: 'Tap "Join Our Family" or "Register Now" anywhere on this site to fill out our membership form and receive your digital membership ID.' },
+      { question: 'Can I give online from outside Nigeria?', answer: 'Yes — use the "Give online now" link in the Online Giving section, which accepts international cards.' },
+      { question: 'Where can I listen to past sermons?', answer: 'Visit the Sermons & Media Library section and tap "View all sermons" to play any MP3 message, or join our Telegram group for every message ever shared.' },
+    ];
+  }
+  empty.classList.add('hidden');
+  list.innerHTML = faqs.map(f => `
+    <div class="faq-item reveal bg-white dark:bg-[#10191c] rounded-xl border border-royal/5 dark:border-white/10 overflow-hidden">
+      <button type="button" class="faq-question btn-hover w-full flex items-center justify-between gap-3 px-5 py-4 text-left font-semibold text-royal-deep dark:text-[#EAFBF7] hover:text-teal">
+        ${escapeHtml(f.question || f.q || '')} <i data-feather="chevron-down" class="faq-chevron w-4 h-4 shrink-0"></i>
+      </button>
+      <div class="faq-answer px-5 text-sm text-ink/70 dark:text-[#CFE7E3]">
+        <p class="pb-4">${escapeHtml(f.answer || f.a || '')}</p>
+      </div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.reveal').forEach(observeReveal);
+  refreshIcons();
+  list.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const wasOpen = item.classList.contains('open');
+      list.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+}
+
+loadSiteContent();
+
+/* =========================================================================
+   13. PASTORS
+   ========================================================================= */
+async function loadPastors() {
+  const grid = document.getElementById('pastorsGrid');
+  const LOCAL_HEADSHOTS = { georgewealth: 'Georgewealth.jpeg', ronke: 'ronke.jpeg' };
+  function localHeadshotFor(name) {
+    const n = String(name || '').toLowerCase();
+    if (n.includes('ronke')) return LOCAL_HEADSHOTS.ronke;
+    if (n.includes('georgewealth') || n.includes('george wealth')) return LOCAL_HEADSHOTS.georgewealth;
+    return '';
+  }
+  const fallback = [
+    { name: 'Pastor Georgewealth Udoh', role: 'Lead Pastor', quote: "Our calling is to help people know Christ, grow in grace and walk in God's purpose.", photo_url: LOCAL_HEADSHOTS.georgewealth },
+    { name: 'Pastor Ronke Georgewealth Udoh', role: 'Lead Pastor', quote: 'Every believer deserves a loving church family where faith, purpose and destiny are nurtured.', photo_url: LOCAL_HEADSHOTS.ronke },
+  ];
+  let pastors = fallback;
+  if (gwgmClient) {
+    try {
+      const { data, error } = await gwgmClient.from('pastors').select('id, name, role, quote, photo_url, sort_order, updated_at').order('sort_order', { ascending: true });
+      if (!error && data && data.length) pastors = data.map(p => ({ ...p, photo_url: p.photo_url || localHeadshotFor(p.name) || '' }));
+    } catch (err) { console.error('[GWGM] pastors load failed:', err); }
+  }
+  window.__gwgmPastors = pastors;
+  grid.innerHTML = pastors.map(p => {
+    const photo = safeUrl(p.photo_url) || localHeadshotFor(p.name);
+    return `
+    <div class="reveal arch-card bg-white dark:bg-[#10191c] shadow-xl lift-hover p-8 pt-10 text-center border border-royal/5 dark:border-white/10">
+      <div class="w-28 h-28 mx-auto rounded-full bg-lavender dark:bg-[#071012] border-4 border-teal/40 flex items-center justify-center overflow-hidden">
+        ${photo ? `<img src="${escapeHtml(photo)}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover" loading="lazy" />`
+                : `<span class="text-royal/40 dark:text-white/30 text-xs font-medium text-center px-2">Photo coming soon</span>`}
+      </div>
+      <h3 class="mt-6 font-display font-semibold text-xl text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(p.name)}</h3>
+      <p class="text-teal text-sm font-medium tracking-wide mt-1">${escapeHtml(p.role || 'Pastor')}</p>
+      ${p.quote ? `<p class="mt-4 italic text-ink/70 dark:text-[#CFE7E3] text-sm leading-relaxed">"${escapeHtml(p.quote)}"</p>` : ''}
+      ${p.updated_at ? `<p class="mt-4 text-[11px] text-ink/40 dark:text-white/35">Last updated ${formatDate(p.updated_at)}</p>` : ''}
+    </div>`;
+  }).join('');
+  observeAllReveals(grid);
+  refreshIcons();
+}
+loadPastors();
+
+/* =========================================================================
+   14. MINISTRIES (border-only rotating gradient on hover)
+   ========================================================================= */
+const ministries = [
+  { name: 'Music', icon: 'music' }, { name: 'Protocol', icon: 'shield' },
+  { name: 'Security', icon: 'lock' }, { name: 'Hospitality', icon: 'coffee' },
+  { name: 'Dance & Drama', icon: 'star' }, { name: 'Administration', icon: 'clipboard' },
+  { name: 'Missions', icon: 'globe' }, { name: 'Publicity', icon: 'volume-2' },
+  { name: 'Media', icon: 'camera' }, { name: 'Technical', icon: 'settings' },
+  { name: 'Children', icon: 'smile' }, { name: 'Youth', icon: 'zap' },
+  { name: 'Women', icon: 'heart' }, { name: 'Prayer', icon: 'sunrise' },
+];
+
+const ministriesGrid = document.getElementById('ministriesGrid');
+ministries.forEach(m => {
+  const wrap = document.createElement('div');
+  wrap.className = 'reveal ministry-card lift-hover p-6 text-center cursor-default';
+  wrap.innerHTML = `
+    <div class="ministry-icon-wrap w-11 h-11 mx-auto rounded-full bg-teal/20 flex items-center justify-center transition-colors duration-300">
+      <i data-feather="${m.icon}" class="text-[#00C9A3] dark:text-lime w-5 h-5"></i>
+    </div>
+    <p class="mt-4 font-medium text-sm transition-colors duration-300">${escapeHtml(m.name)}</p>
+  `;
+  ministriesGrid.appendChild(wrap);
+  observeReveal(wrap);
+});
+refreshIcons();
+
+/* =========================================================================
+   15. SERMONS
+   ========================================================================= */
+function sermonAudioUrl(s) { return safeUrl(s.audio_url || ''); }
+
+function audioPlayerHtml(url, title) {
+  const safe = safeUrl(url);
+  if (!safe) return `<div class="w-full rounded-xl bg-royal-deep/5 dark:bg-white/5 px-5 py-8 text-center text-sm text-ink/50 dark:text-white/40">Audio unavailable</div>`;
+  return `
+    <div class="sermon-player w-full rounded-xl bg-gradient-to-br from-royal-deep to-[#0A2A2F] p-5 sm:p-6 text-white shadow-lg">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-11 h-11 rounded-full bg-teal/20 flex items-center justify-center shrink-0">
+          <i data-feather="headphones" class="w-5 h-5 text-teal"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-[11px] uppercase tracking-wider text-teal/80 font-semibold">Audio sermon</p>
+          <p class="text-sm font-medium truncate">${escapeHtml(title || 'Sermon')}</p>
+        </div>
+      </div>
+      <audio class="w-full sermon-audio" controls preload="metadata" src="${escapeHtml(safe)}" style="height:40px;border-radius:9999px;"></audio>
+    </div>`;
+}
+
+let allSermons = [];
+let currentSermonPage = 1;
+let sermonsPerPage = 5;
+
+function renderSermonsPage() {
+  const listEl = document.getElementById('allSermonsList');
+  const pagerEl = document.getElementById('sermonsPagination');
+  const infoEl = document.getElementById('sermonsPageInfo');
+  const btnsEl = document.getElementById('sermonsPageButtons');
+  const prevBtn = document.getElementById('sermonsPrevBtn');
+  const nextBtn = document.getElementById('sermonsNextBtn');
+
+  const totalPages = Math.max(1, Math.ceil(allSermons.length / sermonsPerPage));
+  if (currentSermonPage > totalPages) currentSermonPage = totalPages;
+  if (currentSermonPage < 1) currentSermonPage = 1;
+
+  const start = (currentSermonPage - 1) * sermonsPerPage;
+  const pageItems = allSermons.slice(start, start + sermonsPerPage);
+
+  listEl.innerHTML = pageItems.map(s => `
+    <div class="border border-royal/10 dark:border-white/10 rounded-xl p-4">
+      <p class="font-display font-semibold text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(s.title)}</p>
+      <p class="text-xs text-ink/50 dark:text-white/40 mt-1">
+        ${escapeHtml([s.preacher, formatDate(s.sermon_date || s.created_at)].filter(Boolean).join(' · '))}
+      </p>
+      ${s.description ? `<p class="text-sm text-ink/60 dark:text-white/50 mt-2">${escapeHtml(s.description)}</p>` : ''}
+      <p class="text-[11px] text-ink/40 dark:text-white/30 mt-0.5">Last updated ${formatDate(s.updated_at || s.created_at)}</p>
+      <div class="mt-3">${audioPlayerHtml(sermonAudioUrl(s), s.title)}</div>
+    </div>
+  `).join('');
+  refreshIcons();
+
+  if (totalPages <= 1) { pagerEl.classList.add('hidden'); return; }
+  pagerEl.classList.remove('hidden');
+  pagerEl.classList.add('flex');
+  infoEl.textContent = `Page ${currentSermonPage} of ${totalPages} · ${allSermons.length} sermons`;
+
+  prevBtn.disabled = currentSermonPage === 1;
+  nextBtn.disabled = currentSermonPage === totalPages;
+
+  const btns = [];
+  const windowSize = 1;
+  const pushPage = (n) => btns.push(`<button type="button" class="sermon-page-btn ${n === currentSermonPage ? 'active' : ''}" data-page="${n}" aria-label="Page ${n}">${n}</button>`);
+  const pushDots = () => btns.push(`<span class="px-1.5 text-ink/40 dark:text-white/40 select-none">…</span>`);
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= currentSermonPage - windowSize && i <= currentSermonPage + windowSize)) pushPage(i);
+    else if (i === currentSermonPage - windowSize - 1 || i === currentSermonPage + windowSize + 1) pushDots();
+  }
+  btnsEl.innerHTML = btns.join('');
+}
+
+function scrollSermonModalTop() {
+  const modalBody = document.querySelector('#allSermonsModal .modal-content');
+  if (modalBody) modalBody.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('sermonsPageButtons').addEventListener('click', (e) => {
+  const btn = e.target.closest('.sermon-page-btn');
+  if (!btn || btn.disabled) return;
+  currentSermonPage = parseInt(btn.dataset.page, 10);
+  renderSermonsPage();
+  scrollSermonModalTop();
+});
+document.getElementById('sermonsPrevBtn').addEventListener('click', () => {
+  if (currentSermonPage > 1) { currentSermonPage--; renderSermonsPage(); scrollSermonModalTop(); }
+});
+document.getElementById('sermonsNextBtn').addEventListener('click', () => {
+  const totalPages = Math.max(1, Math.ceil(allSermons.length / sermonsPerPage));
+  if (currentSermonPage < totalPages) { currentSermonPage++; renderSermonsPage(); scrollSermonModalTop(); }
+});
+document.getElementById('sermonsPerPage').addEventListener('change', (e) => {
+  sermonsPerPage = parseInt(e.target.value, 10) || 5;
+  currentSermonPage = 1;
+  renderSermonsPage();
+  scrollSermonModalTop();
+});
+
+async function loadSermons() {
+  const skeleton = document.getElementById('latestSermonSkeleton');
+  const card = document.getElementById('latestSermonCard');
+  const empty = document.getElementById('sermonsEmptyState');
+  if (!gwgmClient) { skeleton.classList.add('hidden'); empty.classList.remove('hidden'); return; }
+  try {
+    const { data, error } = await gwgmClient
+      .from('sermons')
+      .select('id, title, audio_url, description, preacher, sermon_date, artwork_url, created_at, updated_at')
+      .order('sermon_date', { ascending: false });
+    if (error) throw error;
+    skeleton.classList.add('hidden');
+    if (!data || !data.length) { empty.classList.remove('hidden'); return; }
+    window.__gwgmSermons = data;
+    allSermons = data;
+    currentSermonPage = 1;
+    const latest = data[0];
+    document.getElementById('latestSermonTitle').textContent = latest.title;
+    document.getElementById('latestSermonMeta').textContent =
+      [latest.preacher, formatDate(latest.sermon_date || latest.created_at)].filter(Boolean).join(' · ');
+    document.getElementById('latestSermonUpdated').textContent =
+      `Last updated ${formatDate(latest.updated_at || latest.created_at)}`;
+    document.getElementById('latestSermonPlayer').innerHTML = audioPlayerHtml(sermonAudioUrl(latest), latest.title);
+    card.classList.remove('hidden');
+    observeReveal(card);
+    refreshIcons();
+    renderSermonsPage();
+  } catch (err) {
+    console.error('[GWGM] sermons load failed:', err);
+    skeleton.classList.add('hidden');
+    empty.classList.remove('hidden');
+  }
+}
+loadSermons();
+
+/* =========================================================================
+   16. ALL SERMONS MODAL — with body scroll lock
+   ========================================================================= */
+const allSermonsModal = document.getElementById('allSermonsModal');
+let savedScrollY = 0;
+function lockBodyScroll() {
+  savedScrollY = window.scrollY || window.pageYOffset || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  document.body.classList.add('no-scroll');
+}
+function unlockBodyScroll() {
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  document.body.classList.remove('no-scroll');
+  window.scrollTo(0, savedScrollY);
+}
+document.getElementById('viewAllSermonsBtn').addEventListener('click', () => {
+  currentSermonPage = 1;
+  renderSermonsPage();
+  allSermonsModal.classList.remove('hidden');
+  lockBodyScroll();
+});
+document.getElementById('allSermonsCloseBtn').addEventListener('click', () => {
+  allSermonsModal.classList.add('hidden');
+  unlockBodyScroll();
+});
+document.getElementById('allSermonsBackdrop').addEventListener('click', () => {
+  allSermonsModal.classList.add('hidden');
+  unlockBodyScroll();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !allSermonsModal.classList.contains('hidden')) {
+    allSermonsModal.classList.add('hidden');
+    unlockBodyScroll();
+  }
+});
+
+/* =========================================================================
+   17. EVENTS
+   ========================================================================= */
+let cdTimer = null;
+let upcomingEvents = [];
+
+async function loadEvents() {
+  const listEl = document.getElementById('eventsList');
+  const emptyEl = document.getElementById('eventsEmptyState');
+  if (!gwgmClient) { emptyEl.classList.remove('hidden'); return; }
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const { data, error } = await gwgmClient
+      .from('events')
+      .select('id, title, description, event_date, end_date, event_time, end_time, location, allow_registration, is_featured, image_url, updated_at')
+      .order('event_date', { ascending: true });
+    if (error) throw error;
+    // Keep events that have not ended yet (end_date falls back to event_date)
+    upcomingEvents = (data || []).filter(ev => {
+      const end = ev.end_date || ev.event_date;
+      return end && end >= today;
+    });
+    window.__gwgmEvents = upcomingEvents;
+    if (!upcomingEvents.length) { emptyEl.classList.remove('hidden'); feedHeroFromCache(); return; }
+    listEl.innerHTML = upcomingEvents.map(ev => {
+      const startLabel = formatDate(ev.event_date, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' });
+      const endLabel = ev.end_date && ev.end_date !== ev.event_date
+        ? formatDate(ev.end_date, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })
+        : '';
+      const dateLine = endLabel ? `${startLabel} → ${endLabel}` : startLabel;
+      const timeLine = [ev.event_time, ev.end_time].filter(Boolean).join(' – ');
+      const banner = safeUrl(ev.image_url);
+      return `
+      <article class="reveal arch-card bg-white dark:bg-[#10191c] shadow-md lift-hover border border-royal/5 dark:border-white/10 overflow-hidden">
+        ${banner ? `<div class="w-full aspect-[16/9] bg-lavender dark:bg-[#071012] overflow-hidden"><img src="${escapeHtml(banner)}" alt="" class="w-full h-full object-cover" loading="lazy" /></div>` : ''}
+        <div class="p-6 ${banner ? 'pt-5' : 'pt-8'}">
+          <p class="text-xs font-semibold uppercase tracking-wide text-teal">
+            ${escapeHtml(dateLine)}${timeLine ? ' · ' + escapeHtml(timeLine) : ''}
+          </p>
+          <h3 class="mt-2 font-display font-semibold text-lg text-royal-deep dark:text-[#EAFBF7]">${escapeHtml(ev.title)}</h3>
+          ${ev.description ? `<p class="mt-2 text-sm text-ink/70 dark:text-[#CFE7E3]">${escapeHtml(ev.description)}</p>` : ''}
+          ${ev.location ? `<p class="mt-2 text-xs text-ink/50 dark:text-white/40 flex items-center gap-1"><i data-feather="map-pin" class="w-3.5 h-3.5"></i> ${escapeHtml(ev.location)}</p>` : ''}
+          <p class="mt-3 text-[11px] text-ink/40 dark:text-white/30">Last updated ${escapeHtml(formatDate(ev.updated_at || ev.event_date))}</p>
+          ${ev.allow_registration ? `<button type="button" class="event-register-btn btn-hover mt-4 text-sm font-semibold text-teal border border-teal/40 rounded-full px-4 py-2 hover:bg-teal hover:text-[#041619]" data-event-id="${escapeHtml(ev.id)}" data-event-title="${escapeHtml(ev.title)}">Register</button>` : ''}
+        </div>
+      </article>`;
+    }).join('');
+    listEl.querySelectorAll('.reveal').forEach(observeReveal);
+    refreshIcons();
+    const featured = upcomingEvents.find(e => e.is_featured) || upcomingEvents[0];
+    if (featured) startEventCountdown(featured);
+    feedHeroFromCache();
+  } catch (err) {
+    console.error('[GWGM] events load failed:', err);
+    emptyEl.classList.remove('hidden');
+  }
+}
+
+function startEventCountdown(event) {
+  const wrap = document.getElementById('eventCountdownWrap');
+  const labelEl = document.getElementById('eventCountdownLabel');
+  wrap.classList.remove('hidden');
+  document.getElementById('eventCountdownTitle').textContent = event.title;
+
+  const start = new Date(`${event.event_date}T${(event.event_time || '00:00').slice(0, 5)}:00`);
+  const endDate = event.end_date || event.event_date;
+  const end = new Date(`${endDate}T${(event.end_time || event.event_time || '23:59').slice(0, 5)}:00`);
+  if (isNaN(start.getTime())) return;
+
+  const tick = () => {
+    const now = Date.now();
+    let targetMs;
+    if (now < start.getTime()) {
+      // Not started yet
+      if (labelEl) labelEl.textContent = 'Starts in';
+      targetMs = start.getTime();
+    } else if (!isNaN(end.getTime()) && now < end.getTime()) {
+      // Event is ongoing — count down to end
+      if (labelEl) labelEl.textContent = 'Ends in';
+      targetMs = end.getTime();
+    } else {
+      // Finished
+      clearInterval(cdTimer);
+      wrap.classList.add('hidden');
+      return;
+    }
+    const diff = targetMs - now;
+    document.getElementById('cdDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+    document.getElementById('cdHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+    document.getElementById('cdMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+    document.getElementById('cdSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+  };
+  tick();
+  clearInterval(cdTimer);
+  cdTimer = setInterval(tick, 1000);
+}
+loadEvents();
+
+const eventRegModal = document.getElementById('eventRegModal');
+
+function openEventRegistration(eventId, eventTitle) {
+  document.getElementById('eventRegEventId').value = eventId;
+  document.getElementById('eventRegTitle').textContent = `Register: ${eventTitle}`;
+  document.getElementById('eventRegForm').classList.remove('hidden');
+  document.getElementById('eventRegSuccess').classList.add('hidden');
+  document.getElementById('eventRegError').classList.add('hidden');
+  document.getElementById('eventRegForm').reset();
+  document.getElementById('eventRegEventId').value = eventId;
+  eventRegModal.classList.remove('hidden');
+}
+window.openEventRegistration = openEventRegistration;
+
+document.getElementById('eventsList').addEventListener('click', (e) => {
+  const btn = e.target.closest('.event-register-btn');
+  if (!btn) return;
+  openEventRegistration(btn.dataset.eventId, btn.dataset.eventTitle);
+});
+document.getElementById('eventRegCloseBtn').addEventListener('click', () => eventRegModal.classList.add('hidden'));
+document.getElementById('eventRegBackdrop').addEventListener('click', () => eventRegModal.classList.add('hidden'));
+
+document.getElementById('eventRegForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('eventRegError');
+  errorEl.classList.add('hidden');
+  const payload = {
+    event_id: document.getElementById('eventRegEventId').value,
+    name: document.getElementById('eventRegName').value.trim(),
+    email: document.getElementById('eventRegEmail').value.trim(),
+    phone: document.getElementById('eventRegPhone').value.trim() || null,
+  };
+  try {
+    if (!gwgmClient) throw new Error('Registration is temporarily unavailable.');
+    if (!payload.name || !payload.email) throw new Error('Please enter your name and email.');
+    const { error } = await gwgmClient.from('event_registrations').insert(payload);
+    if (error) throw error;
+    if (document.getElementById('eventRegReminder').checked) requestReminder(payload.event_id);
+    document.getElementById('eventRegForm').classList.add('hidden');
+    document.getElementById('eventRegSuccess').classList.remove('hidden');
+    toast('Registration confirmed 🎉');
+  } catch (err) {
+    errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errorEl.classList.remove('hidden');
+  }
+});
+
+function requestReminder(eventId) {
+  const ev = upcomingEvents.find(e => String(e.id) === String(eventId));
+  if (!ev || !('Notification' in window)) return;
+  Notification.requestPermission().then(perm => {
+    if (perm !== 'granted') return;
+    const target = new Date(`${ev.event_date}T${(ev.event_time || '00:00').slice(0,5)}:00`).getTime() - Date.now() - 3600000;
+    if (target > 0 && target < 2147483647) {
+      setTimeout(() => new Notification(`Reminder: ${ev.title}`, { body: 'Starting in about an hour.' }), target);
+    }
+  });
+}
+
+/* =========================================================================
+   18. NEWSLETTER
+   ========================================================================= */
+document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('newsletterError');
+  errorEl.classList.add('hidden');
+  const email = document.getElementById('newsletterEmail').value.trim();
+  try {
+    if (!gwgmClient) throw new Error('Sign-up is temporarily unavailable.');
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) throw new Error('Please enter a valid email address.');
+    const { error } = await gwgmClient.from('newsletter_subscribers').insert({ email });
+    if (error && error.code !== '23505') throw error;
+    document.getElementById('newsletterForm').classList.add('hidden');
+    document.getElementById('newsletterSuccess').classList.remove('hidden');
+    refreshIcons();
+  } catch (err) {
+    errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errorEl.classList.remove('hidden');
+  }
+});
+
+/* =========================================================================
+   19. FLOATING CONTACT
+   ========================================================================= */
+const contactPanel = document.getElementById('contactPanel');
+document.getElementById('contactToggleBtn').addEventListener('click', () => contactPanel.classList.toggle('open'));
+document.addEventListener('click', (e) => {
+  const host = document.getElementById('floatingContact');
+  if (host && !host.contains(e.target)) contactPanel.classList.remove('open');
+});
+
+/* =========================================================================
+   20. COOKIE BANNER
+   ========================================================================= */
+const cookieBanner = document.getElementById('cookieBanner');
+if (!localStorage.getItem('gwgm_cookie_ack')) {
+  setTimeout(() => cookieBanner.classList.add('visible'), 900);
+}
+document.getElementById('cookieAcceptBtn').addEventListener('click', () => {
+  localStorage.setItem('gwgm_cookie_ack', 'true');
+  cookieBanner.classList.remove('visible');
+});
+
+/* =========================================================================
+   21. CONFIRM MODAL
+   ========================================================================= */
+function gwgmConfirm(message, confirmLabel) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('confirmModal');
+    document.getElementById('confirmModalMessage').textContent = message;
+    const confirmBtn = document.getElementById('confirmModalConfirm');
+    const cancelBtn = document.getElementById('confirmModalCancel');
+    confirmBtn.textContent = confirmLabel || 'Confirm';
+    modal.classList.remove('hidden');
+    const cleanup = (result) => {
+      modal.classList.add('hidden');
+      confirmBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(result);
+    };
+    const onConfirm = () => cleanup(true);
+    const onCancel = () => cleanup(false);
+    confirmBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+  });
+}
+window.gwgmConfirm = gwgmConfirm;
+
+/* =========================================================================
+   22. UTM TRACKING ON OUTBOUND LINKS
+   ========================================================================= */
+(function tagOutboundLinks() {
+  const params = 'utm_source=gwgm-website&utm_medium=referral&utm_campaign=site-links';
+  const tag = (a) => {
+    try {
+      const url = new URL(a.href);
+      if (url.hostname === window.location.hostname) return;
+      if (url.search.includes('utm_')) return;
+      url.search += (url.search ? '&' : '?') + params;
+      a.href = url.toString();
+    } catch (err) { /* ignore */ }
+  };
+  document.querySelectorAll('a[href^="http"]').forEach(tag);
+  const mo = new MutationObserver(muts => {
+    muts.forEach(m => {
+      if (m.type === 'attributes' && m.attributeName === 'href') {
+        const a = m.target;
+        if (a.tagName === 'A' && a.href.startsWith('http')) tag(a);
+      }
+    });
+  });
+  mo.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['href'] });
+})();
+
+/* =========================================================================
+   23. COPYRIGHT + ICONS + REVEALS
+   ========================================================================= */
+document.getElementById('copyrightText').textContent =
+  `© ${new Date().getFullYear()} Gracious Word Global Mission. All Rights Reserved.`;
+refreshIcons();
+observeAllReveals();
+
+/* =========================================================================
+   24. 404 HANDLING
+   ========================================================================= */
+(function handle404() {
+  const params = new URLSearchParams(window.location.search);
+  const path = window.location.pathname;
+  const file = (path.split('/').pop() || '').toLowerCase();
+  const knownFiles = new Set([
+    '', 'index', 'index.html',
+    'sermons', 'sermons.html',
+    'events', 'events.html',
+    'giving', 'giving.html',
+    'branches', 'branches.html',
+    'register', 'register.html'
+  ]);
+  const isUnknownPath = !knownFiles.has(file);
+  if (params.has('404') || isUnknownPath) {
+    document.getElementById('page404').classList.remove('hidden');
+    document.getElementById('pageLoader').classList.add('done');
+    document.body.style.overflow = 'hidden';
+  }
+  document.getElementById('notFoundSearchBtn').addEventListener('click', () => {
+    document.getElementById('page404').classList.add('hidden');
+    document.body.style.overflow = '';
+    openSearch();
+  });
+})();
+
+/* Force active nav link based on current page (multi-page split) */
+(function forceActiveNavByPage() {
+  const path = (window.location.pathname || '').split('/').pop() || 'index.html';
+  const map = {
+    'index.html': 'welcome',
+    '': 'welcome',
+    'sermons.html': 'sermons',
+    'events.html': 'events',
+    'giving.html': 'giving',
+    'branches.html': 'branches',
+  };
+  const section = map[path];
+  if (!section) return;
+  document.querySelectorAll('#navbar .nav-link[data-section]').forEach(l => {
+    l.classList.toggle('active', l.dataset.section === section);
+  });
+})();
+
+</script>
+
+</body>
+</html>
